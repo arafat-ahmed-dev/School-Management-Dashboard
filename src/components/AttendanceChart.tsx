@@ -14,6 +14,11 @@ import {
 
 const data = [
   {
+    name: "SUN",
+    present: 60,
+    absent: 40,
+  },
+  {
     name: "Mon",
     present: 60,
     absent: 40,
@@ -38,6 +43,11 @@ const data = [
     present: 65,
     absent: 55,
   },
+  {
+    name: "SAT",
+    present: 65,
+    absent: 55,
+  },
 ];
 
 const AttendanceChart = () => {
@@ -48,7 +58,7 @@ const AttendanceChart = () => {
         <Image src="/moreDark.png" alt="" width={20} height={20} />
       </div>
       <ResponsiveContainer width="100%" height="90%">
-        <BarChart width={500} height={300} data={data} barSize={20}>
+        <BarChart width={500} height={300} data={data} barSize={15}>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ddd" />
           <XAxis
             dataKey="name"
