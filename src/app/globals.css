@@ -9,6 +9,19 @@
 .tspan {
     font-weight: 500 !important;
 }
+.react-calendar{
+    width: 100% !important;
+    border: none !important;
+}
+.react-calendar__tile--active{
+    background-color: #C3EBFA !important;  
+    color: black !important;
+     font-weight: 500 !important;
+    border-radius: 15px;
+}
+.react-calendar__navigation__label__labelText {
+    font-weight: 600 !important;
+}
 @media (min-width: 400px) {
     .recharts-text{
         font-size: 16px !important;
