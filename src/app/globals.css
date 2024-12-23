@@ -1,38 +1,138 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-.recharts-text{
-    font-size: 12px !important;
-    font-weight: 500 !important;
-    width: 100% !important;
+.recharts-text {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  width: 100% !important;
 }
 .tspan {
-    font-weight: 500 !important;
+  font-weight: 500 !important;
 }
-.react-calendar{
-    width: 100% !important;
-    border: none !important;
+.react-calendar {
+  width: 100% !important;
+  border: none !important;
 }
 
-
-.react-calendar__tile--active{
-    background-color: #C3EBFA !important;  
-    color: black !important;
-     font-weight: 500 !important;
-    border-radius: 15px;
+.react-calendar__tile--active {
+  background-color: #c3ebfa !important;
+  color: black !important;
+  font-weight: 500 !important;
+  border-radius: 15px;
 }
 .react-calendar__navigation__label__labelText {
-    font-weight: 600 !important;
+  font-weight: 600 !important;
 }
 @media (min-width: 400px) {
-    .recharts-text{
-        font-size: 16px !important;
-        width: 100% !important;
-    }
-    .react-calendar__navigation button {
-        min-width: 44px !important;
-    }
+  .recharts-text {
+    font-size: 16px !important;
+    width: 100% !important;
+  }
+  .react-calendar__navigation button {
+    min-width: 44px !important;
+  }
+  .rbc-event-label {
+    font-size: 12px !important;
+  }
+  .rbc-day-slot {
+    font-size: 14px !important;
+  }
+  .rbc-event {
+    border: none !important;
+    color: black !important;
+    padding: 10px !important;
+    margin: 10px !important;
+    width: 100% !important;
+  }
 }
 .react-calendar__navigation button {
-    min-width: 24px !important;
+  min-width: 24px !important;
+}
+.rbc-btn-group:first-child {
+  display: none !important;
+}
+
+.rbc-toolbar-label {
+  text-align: right !important;
+  padding: 0px 20px !important;
+}
+
+.rbc-btn-group:last-child {
+  font-size: 13px !important;
+}
+
+.rbc-btn-group:last-child button {
+  border: none !important;
+  background-color: #f1f0ff !important;
+  margin-left: 2px !important;
+}
+
+.rbc-toolbar button.rbc-active {
+  background-color: #dbdafe !important;
+  box-shadow: none !important;
+}
+
+.rbc-time-view {
+  border-color: #eee !important;
+}
+
+.rbc-time-header {
+  display: none !important;
+}
+
+.rbc-time-content {
+  border: none !important;
+}
+
+.rbc-time-gutter.rbc-time-column {
+  font-size: 12px !important;
+}
+
+.rbc-time-gutter.rbc-time-column .rbc-timeslot-group {
+  padding: 10px 0px !important;
+}
+
+.rbc-timeslot-group {
+  background-color: #f7fdff !important;
+}
+
+.rbc-day-slot {
+  font-size: 12px !important;
+}
+
+.rbc-event {
+  border: none !important;
+  color: black !important;
+  width: 100% !important;
+}
+
+.rbc-event:nth-child(1) {
+  background-color: #e2f8ff !important;
+}
+.rbc-event:nth-child(2) {
+  background-color: #fefce8 !important;
+}
+.rbc-event:nth-child(3) {
+  background-color: #f2f1ff !important;
+}
+.rbc-event:nth-child(4) {
+  background-color: #fdf2fb !important;
+}
+.rbc-event:nth-child(5) {
+  background-color: #e2f8ff !important;
+}
+.rbc-event:nth-child(6) {
+  background-color: #fefce8 !important;
+}
+.rbc-event:nth-child(7) {
+  background-color: #f2f1ff !important;
+}
+.rbc-event:nth-child(8) {
+  background-color: #fdf2fb !important;
+}
+
+.rbc-event-label {
+  color: gray !important;
+  margin-bottom: 5px;
+  font-size: 10px !important;
 }
