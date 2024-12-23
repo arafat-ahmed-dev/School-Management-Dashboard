@@ -9,9 +9,9 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="min-h-screen max-h-[120vh] flex">
-      {/* LEFT */}
-      <div className="w-[14%] md:w-[8%] lg:w-[16%] p-4">
+    <div className="h-screen flex">
+      {/* LEFT: Fixed Sidebar */}
+      <div className="w-[14%] md:w-[8%] lg:w-[16%] p-4 fixed top-0 left-0 h-full bg-white">
         <Link
           href={"/"}
           className="flex items-center justify-center lg:justify-start gap-2"
@@ -21,8 +21,8 @@ export default function DashboardLayout({
         </Link>
         <Menu />
       </div>
-      {/* RIGHT */}
-      <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] overflow-scroll flex flex-col">
+      {/* RIGHT: Content area with scroll */}
+      <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] ml-[14%] md:ml-[8%] lg:ml-[16%] overflow-y-auto flex flex-col">
         <Navbar />
         {children}
       </div>

@@ -9,7 +9,7 @@ const menuItems = [
       {
         icon: "/home.png",
         label: "Home",
-        href: "/",
+        href: `/${role}`,
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
@@ -118,7 +118,7 @@ const menuItems = [
 ];
 const Menu = () => {
   return (
-    <div className="mt-4 text-sm">
+    <div className="mt-4 text-sm h-screen overflow-y-auto pb-4">
       {menuItems.map((i) => (
         <div className="flex flex-col gap-2" key={i.title}>
           <span className="hidden lg:block text-gray-400 font-light my-2">
