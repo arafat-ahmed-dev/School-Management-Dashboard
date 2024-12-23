@@ -1,3 +1,4 @@
+import FormModel from "@/components/FormModel";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -44,12 +45,8 @@ const LessonListPage = () => {
         <div className="flex items-center gap-2">
           {role === "admin" && (
             <>
-              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple">
-                <Image src="/edit.png" alt="" width={16} height={16} />
-              </button>
-              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple">
-                <Image src="/delete.png" alt="" width={16} height={16} />
-              </button>
+              <FormModel table="lesson" type="update" />
+              <FormModel table="lesson" type="delete" />
             </>
           )}
         </div>
@@ -71,11 +68,7 @@ const LessonListPage = () => {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === "admin" && (
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-                <Image src="/plus.png" alt="" width={14} height={14} />
-              </button>
-            )}
+            {role === "admin" && <FormModel table="lesson" type="create" />}
           </div>
         </div>
       </div>
