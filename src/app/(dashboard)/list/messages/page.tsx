@@ -4,7 +4,7 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { messagesData, role } from "@/lib/data";
 import Image from "next/image";
-import FormModel from "@/components/FormModel";
+import FormModel from "@/components/FormModal";
 
 type Message = {
   id: number;
@@ -54,7 +54,7 @@ const MessageListPage = () => {
           {role === "admin" && (
             <>
               <FormModel table="message" type="update" />
-              <FormModel table="message" type="delete" />
+              <FormModel table="message" type="delete" id={item.id} />
             </>
           )}
         </div>

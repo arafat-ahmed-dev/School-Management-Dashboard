@@ -1,4 +1,4 @@
-import FormModel from "@/components/FormModel";
+import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -81,7 +81,11 @@ const StudentListPage = () => {
           {role === "admin" && (
             <>
               <FormModel table="student" type="update" />
-              <FormModel table="student" type="delete" />
+              <FormModel
+                table="student"
+                type="delete"
+                id={item.id}
+              />
             </>
           )}
         </div>

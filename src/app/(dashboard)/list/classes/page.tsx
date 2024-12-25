@@ -1,4 +1,4 @@
-import FormModel from "@/components/FormModel";
+import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -54,7 +54,7 @@ const ClassListPage = () => {
           {role === "admin" && (
             <>
               <FormModel table="class" type="update" />
-              <FormModel table="class" type="delete" />
+              <FormModel table="class" type="delete" id={item.id} />
             </>
           )}
         </div>

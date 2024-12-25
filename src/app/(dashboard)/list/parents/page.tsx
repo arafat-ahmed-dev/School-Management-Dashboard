@@ -1,4 +1,4 @@
-import FormModel from "@/components/FormModel";
+import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -60,7 +60,7 @@ const ParentListPage = () => {
           {role === "admin" && (
             <>
               <FormModel table="parent" type="update" />
-              <FormModel table="parent" type="delete" />
+              <FormModel table="parent" type="delete" id={item.id} />
             </>
           )}
         </div>

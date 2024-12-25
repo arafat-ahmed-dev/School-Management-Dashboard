@@ -1,4 +1,4 @@
-import FormModel from "@/components/FormModel";
+import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
@@ -60,7 +60,7 @@ const EventListPage = () => {
           {role === "admin" && (
             <>
               <FormModel table="event" type="update" />
-              <FormModel table="event" type="delete" />
+              <FormModel table="event" type="delete" id={item.id} />
             </>
           )}
         </div>
