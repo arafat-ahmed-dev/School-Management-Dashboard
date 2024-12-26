@@ -1,115 +1,96 @@
-import FormModel from "@/components/FormModal";
-import Pagination from "@/components/Pagination";
-import Table from "@/components/Table";
-import TableSearch from "@/components/TableSearch";
-import { resultsData, role } from "@/lib/data";
-import Image from "next/image";
+"use client";
+import { Header } from "@/components/result/Header";
+import { OverviewCards } from "@/components/result/OverviewCards";
+import { useState } from "react";
 
-type Result = {
-  id: number;
-  subject: string;
-  class: string;
-  teacher: string;
-  student: string;
-  type: "exam" | "assignment";
-  date: string;
-  score: number;
-};
+// Mock data (you would typically fetch this from an API)
+const classData = {
+  7: { students: 120, averageScore: 78 },
+  8: { students: 125, averageScore: 80 },
+  9: { students: 130, averageScore: 81 },
+  10: { groups: ['Science', 'Commerce', 'Arts'], students: 150, averageScore: 82 },
+  11: { groups: ['Science', 'Commerce', 'Arts'], students: 130, averageScore: 79 },
+  12: { groups: ['Science', 'Commerce', 'Arts'], students: 120, averageScore: 85 },
+}
 
-const columns = [
-  {
-    header: "Subject Name",
-    accessor: "subject",
-  },
-  {
-    header: "Student",
-    accessor: "student",
-  },
-  {
-    header: "Score",
-    accessor: "score",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Teacher",
-    accessor: "teacher",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Class",
-    accessor: "class",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Date",
-    accessor: "date",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Type",
-    accessor: "type",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
-];
+const groupPerformanceData = [
+  { group: 'Science', class10: 85, class11: 82, class12: 88 },
+  { group: 'Commerce', class10: 80, class11: 78, class12: 83 },
+  { group: 'Arts', class10: 82, class11: 77, class12: 84 },
+]
 
-const ResultListPage = () => {
-  const renderRow = (item: Result) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
-    >
-      <td className="flex items-center gap-4 p-4">{item.subject}</td>
-      <td>{item.student}</td>
-      <td className="hidden md:table-cell">{item.score}</td>
-      <td className="hidden md:table-cell">{item.teacher}</td>
-      <td className="hidden md:table-cell">{item.class}</td>
-      <td className="hidden md:table-cell">{item.date}</td>
-      <td className="hidden md:table-cell">{item.type}</td>
-      <td>
-        <div className="flex items-center gap-2">
-          {role === "admin" ||
-            (role === "teacher" && (
-              <>
-                <FormModel table="result" type="update" />
-                <FormModel table="result" type="delete" id={item.id} />
-              </>
-            ))}
-        </div>
-      </td>
-    </tr>
-  );
+const classTrendData = [
+  { month: 'Jan', class7: 75, class8: 76, class9: 77, class10: 78, class11: 75, class12: 82 },
+  { month: 'Feb', class7: 76, class8: 77, class9: 78, class10: 80, class11: 76, class12: 83 },
+  { month: 'Mar', class7: 77, class8: 78, class9: 79, class10: 82, class11: 78, class12: 85 },
+  { month: 'Apr', class7: 76, class8: 77, class9: 78, class10: 81, class11: 77, class12: 84 },
+  { month: 'May', class7: 78, class8: 79, class9: 80, class10: 83, class11: 79, class12: 86 },
+  { month: 'Jun', class7: 79, class8: 80, class9: 81, class10: 85, class11: 80, class12: 88 },
+]
+
+const studentGrowthData = [
+  { month: 'Jan', growth: 2 },
+  { month: 'Feb', growth: 3 },
+  { month: 'Mar', growth: 5 },
+  { month: 'Apr', growth: 4 },
+  { month: 'May', growth: 7 },
+  { month: 'Jun', growth: 6 },
+]
+
+const averageMarksData = [
+  { subject: 'Math', current: 85, previous: 82 },
+  { subject: 'Science', current: 78, previous: 80 },
+  { subject: 'English', current: 82, previous: 79 },
+  { subject: 'History', current: 76, previous: 75 },
+  { subject: 'Art', current: 90, previous: 88 },
+]
+
+const mockStudents = [
+  { id: 1, name: "Alice Johnson", grade: "A", class: 10, group: "Science", averageScore: 92, subjects: { Math: 95, Science: 88, English: 90, History: 89, Art: 98 } },
+  { id: 2, name: "Bob Smith", grade: "B", class: 11, group: "Commerce", averageScore: 85, subjects: { Math: 82, Science: 85, English: 88, History: 80, Art: 90 } },
+  { id: 3, name: "Charlie Brown", grade: "C", class: 8, averageScore: 78, subjects: { Math: 75, Science: 80, English: 76, History: 78, Art: 81 } },
+  { id: 4, name: "Diana Ross", grade: "A", class: 12, group: "Arts", averageScore: 95, subjects: { Math: 98, Science: 92, English: 95, History: 93, Art: 97 } },
+  { id: 5, name: "Ethan Hunt", grade: "B", class: 9, averageScore: 88, subjects: { Math: 85, Science: 90, English: 87, History: 86, Art: 92 } },
+]
+
+  const currentAverage =
+    averageMarksData.reduce((sum, subject) => sum + subject.current, 0) /
+    averageMarksData.length;
+  const previousAverage =
+    averageMarksData.reduce((sum, subject) => sum + subject.previous, 0) /
+    averageMarksData.length;
+  const growthPercentage =
+    ((currentAverage - previousAverage) / previousAverage) * 100;
+
+const ResultPage = () => {
+  const [dateRange, setDateRange] = useState
+  ("This Month");
+  const [chartType, setChartType] = useState("bar");
+   const handleDownload = (format: string) => {
+     // Placeholder for download functionality
+     console.log(`Downloading report in ${format} format`);
+     // In a real application, this would trigger a backend request to generate and serve the file
+   };
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
-      {/* TOP */}
-      <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">All Results</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <TableSearch />
-          <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
-            {role === "admin" ||
-              (role === "teacher" && (
-                <FormModel table="result" type="create" />
-              ))}
-          </div>
-        </div>
+      <Header
+        dateRange={dateRange}
+        setDateRange={setDateRange}
+        handleDownload={handleDownload}
+      />
+      <OverviewCards
+        currentAverage={currentAverage}
+        growthPercentage={growthPercentage}
+        totalStudents={1234}
+        topSubject="Art"
+        topSubjectScore={90}
+      />
+      <div className="grid grid-cols-1 gap-6 mb-6">
+        
       </div>
-      {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={resultsData} />
-      {/* PAGINATION */}
-      <Pagination />
     </div>
   );
-};
+}
 
-export default ResultListPage;
+export default ResultPage
