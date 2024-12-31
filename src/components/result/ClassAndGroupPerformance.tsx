@@ -22,11 +22,11 @@ import {
 } from "recharts";
 
 interface ClassAndGroupPerformanceProps {
-  classTrendData: Array<{ month: string } & { [key: string]: number }>;
-  groupPerformanceData: Array<{ group: string } & { [key: string]: number }>;
+  classTrendData: Array<{ month: string } & Record<string, number | string>>;
+  groupPerformanceData: Array<
+    { group: string } & Record<string, number | string>
+  >;
 }
-
-
 
 export function ClassAndGroupPerformance({
   classTrendData,

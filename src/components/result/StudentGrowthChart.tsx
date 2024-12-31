@@ -34,7 +34,7 @@ export function StudentGrowthChart({ data }: StudentGrowthChartProps) {
               color: "hsl(var(--chart-1))",
             },
           }}
-          className="h-[300px]"
+          className="h-[300px] w-full"
         >
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>

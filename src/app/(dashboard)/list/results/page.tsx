@@ -34,7 +34,7 @@ const classData = {
 const groupPerformanceData = [
   { group: "Science", class10: 85, class11: 82, class12: 88 },
   { group: "Commerce", class10: 80, class11: 78, class12: 83 },
-  { group: "Arts", class10: 82, class11: 77, class12: 84 },
+  { group: "Arts", class10: 82, class11: 77, class12: 84 }
 ];
 
 const classTrendData = [
@@ -91,7 +91,7 @@ const classTrendData = [
     class10: 85,
     class11: 80,
     class12: 88,
-  },
+  }
 ];
 
 const studentGrowthData = [
