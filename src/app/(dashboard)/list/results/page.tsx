@@ -261,11 +261,28 @@ const averageMarksData = {
 };
 
 
-const mockStudents = [
+// Type guard to validate student grades
+const isValidGrade = (grade: string): grade is "A+" | "A" | "B" | "C" | "D" | "F" => {
+  return ["A+", "A", "B", "C", "D", "F"].includes(grade);
+};
+
+// Validate and transform student data
+const validateStudents = (students: any[]) => {
+  return students.map(student => {
+    if (!isValidGrade(student.grade)) {
+      console.warn(`Invalid grade found for student ${student.id}: ${student.grade}`);
+      // Default to 'F' for invalid grades
+      return { ...student, grade: "F" };
+    }
+    return student;
+  });
+};
+
+const mockStudents = validateStudents([
   {
     id: 1,
     name: "Alice Johnson",
-    grade: "A",
+    grade: "A+",
     class: 10,
     group: "Science",
     averageScore: 92,
@@ -305,7 +322,143 @@ const mockStudents = [
     averageScore: 88,
     subjects: { Math: 85, Science: 90, English: 87, History: 86, Art: 92 },
   },
-];
+  {
+    id: 6,
+    name: "Sophia Turner",
+    grade: "A",
+    class: 10,
+    group: "Science",
+    averageScore: 91,
+    subjects: { Math: 94, Science: 87, English: 89, History: 88, Art: 92 },
+  },
+  {
+    id: 7,
+    name: "James Carter",
+    grade: "C",
+    class: 11,
+    group: "Commerce",
+    averageScore: 80,
+    subjects: { Math: 78, Science: 80, English: 85, History: 75, Art: 82 },
+  },
+  {
+    id: 8,
+    name: "Mia Lewis",
+    grade: "B",
+    class: 12,
+    group: "Arts",
+    averageScore: 84,
+    subjects: { Math: 80, Science: 82, English: 86, History: 88, Art: 90 },
+  },
+  {
+    id: 9,
+    name: "Lucas Davis",
+    grade: "A+",
+    class: 9,
+    group: "Science",
+    averageScore: 96,
+    subjects: { Math: 98, Science: 94, English: 92, History: 90, Art: 97 },
+  },
+  {
+    id: 10,
+    name: "Olivia Martinez",
+    grade: "F",
+    class: 8,
+    group: "Commerce",
+    averageScore: 58,
+    subjects: { Math: 55, Science: 60, English: 60, History: 52, Art: 62 },
+  },
+  {
+    id: 11,
+    name: "Noah Walker",
+    grade: "A",
+    class: 11,
+    group: "Commerce",
+    averageScore: 93,
+    subjects: { Math: 95, Science: 88, English: 91, History: 89, Art: 96 },
+  },
+  {
+    id: 12,
+    name: "Emma King",
+    grade: "B",
+    class: 10,
+    group: "Arts",
+    averageScore: 86,
+    subjects: { Math: 80, Science: 85, English: 88, History: 84, Art: 92 },
+  },
+  {
+    id: 13,
+    name: "Grace White",
+    grade: "A+",
+    class: 12,
+    group: "Science",
+    averageScore: 98,
+    subjects: { Math: 100, Science: 96, English: 94, History: 92, Art: 99 },
+  },
+  {
+    id: 14,
+    name: "Henry Adams",
+    grade: "B",
+    class: 9,
+    group: "Commerce",
+    averageScore: 89,
+    subjects: { Math: 87, Science: 90, English: 91, History: 85, Art: 93 },
+  },
+  {
+    id: 15,
+    name: "Lily Scott",
+    grade: "A",
+    class: 11,
+    group: "Arts",
+    averageScore: 94,
+    subjects: { Math: 92, Science: 89, English: 96, History: 90, Art: 98 },
+  },
+  {
+    id: 16,
+    name: "Mason Green",
+    grade: "D",
+    class: 8,
+    group: "Science",
+    averageScore: 65,
+    subjects: { Math: 62, Science: 64, English: 68, History: 66, Art: 70 },
+  },
+  {
+    id: 17,
+    name: "Ella Thompson",
+    grade: "B",
+    class: 10,
+    group: "Commerce",
+    averageScore: 87,
+    subjects: { Math: 84, Science: 85, English: 89, History: 82, Art: 88 },
+  },
+  {
+    id: 18,
+    name: "Jack Davis",
+    grade: "A+",
+    class: 9,
+    group: "Arts",
+    averageScore: 93,
+    subjects: { Math: 96, Science: 90, English: 91, History: 89, Art: 95 },
+  },
+  {
+    id: 19,
+    name: "Ava Moore",
+    grade: "C",
+    class: 12,
+    group: "Commerce",
+    averageScore: 79,
+    subjects: { Math: 74, Science: 78, English: 81, History: 77, Art: 80 },
+  },
+  {
+    id: 20,
+    name: "Zoe Walker",
+    grade: "B",
+    class: 8,
+    group: "Arts",
+    averageScore: 85,
+    subjects: { Math: 83, Science: 82, English: 88, History: 80, Art: 90 },
+  },
+]);
+
 const performanceInsights = [
   "Overall student performance has improved by 5% compared to last month.",
   "Math scores show the highest improvement, with a 7% increase.",
@@ -385,7 +538,7 @@ const ResultPage = () => {
       />
       <ClassLevelOverview classData={classData} />
 
-      <StudentPerformanceTable />
+      <StudentPerformanceTable mockStudents={mockStudents} />
     </div>
   );
 };

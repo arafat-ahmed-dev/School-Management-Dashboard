@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useMemo } from "react";
 import {
   Card,
@@ -29,61 +27,43 @@ import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-const mockStudents = [
-  {
-    id: 1,
-    name: "Alice Johnson",
-    grade: "A",
-    class: 10,
-    group: "Science",
-    averageScore: 92,
-    subjects: { Math: 95, Science: 88, English: 90, History: 89, Art: 98 },
-  },
-  {
-    id: 2,
-    name: "Bob Smith",
-    grade: "B",
-    class: 11,
-    group: "Commerce",
-    averageScore: 85,
-    subjects: { Math: 82, Science: 85, English: 88, History: 80, Art: 90 },
-  },
-  {
-    id: 3,
-    name: "Charlie Brown",
-    grade: "C",
-    class: 8,
-    averageScore: 78,
-    subjects: { Math: 75, Science: 80, English: 76, History: 78, Art: 81 },
-  },
-  {
-    id: 4,
-    name: "Diana Ross",
-    grade: "A",
-    class: 12,
-    group: "Arts",
-    averageScore: 95,
-    subjects: { Math: 98, Science: 92, English: 95, History: 93, Art: 97 },
-  },
-  {
-    id: 5,
-    name: "Ethan Hunt",
-    grade: "B",
-    class: 9,
-    averageScore: 88,
-    subjects: { Math: 85, Science: 90, English: 87, History: 86, Art: 92 },
-  },
-];
+// Define types for subjects and score range
+interface Subjects {
+  Math: number;
+  Science: number;
+  English: number;
+  History: number;
+  Art: number;
+}
 
-export default function StudentPerformanceTable() {
+interface Student {
+  id: number;
+  name: string;
+  grade: "A+" | "A" | "B" | "C" | "D" | "F";
+  class: number;
+  group?: "Science" | "Commerce" | "Arts" | "N/A";
+  averageScore: number;
+  subjects: Subjects;
+}
+
+interface StudentPerformanceTableProps {
+  mockStudents: Student[];
+}
+
+export default function StudentPerformanceTable({
+  mockStudents,
+}: StudentPerformanceTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [gradeFilter, setGradeFilter] = useState("All");
-  const [classFilter, setClassFilter] = useState("All");
-  const [groupFilter, setGroupFilter] = useState("All");
-  const [scoreRange, setScoreRange] = useState([0, 100]);
+  const [gradeFilter, setGradeFilter] = useState<
+    "All" | "A+" | "A" | "B" | "C" | "D" | "F"
+  >("All");
+  const [classFilter, setClassFilter] = useState<"All" | string>("All");
+  const [groupFilter, setGroupFilter] = useState<"All" | string>("All");
+  const [scoreRange, setScoreRange] = useState<[number, number]>([0, 100]);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const filteredStudents = useMemo(() => {
-    return mockStudents.filter(
+    const filtered = mockStudents.filter(
       (student) =>
         student.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
         (gradeFilter === "All" || student.grade === gradeFilter) &&
@@ -94,7 +74,13 @@ export default function StudentPerformanceTable() {
         student.averageScore >= scoreRange[0] &&
         student.averageScore <= scoreRange[1]
     );
-  }, [searchTerm, gradeFilter, classFilter, groupFilter, scoreRange]);
+    
+    return filtered.sort((a, b) => 
+      sortOrder === "desc" 
+        ? b.averageScore - a.averageScore 
+        : a.averageScore - b.averageScore
+    );
+  }, [searchTerm, gradeFilter, classFilter, groupFilter, scoreRange, sortOrder]);
 
   return (
     <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300">
@@ -105,7 +91,7 @@ export default function StudentPerformanceTable() {
         <CardDescription>Individual student results</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-wrap gap-4 mb-4">
+        <div className="flex flex-wrap gap-4 mb-4 justify-center md:justify-start md:flex-row">
           <div className="flex-1 min-w-[200px]">
             <Input
               type="text"
@@ -115,17 +101,28 @@ export default function StudentPerformanceTable() {
               className="w-full"
             />
           </div>
-          <Select value={gradeFilter} onValueChange={setGradeFilter}>
+          <Select
+            value={gradeFilter}
+            onValueChange={(value) =>
+              setGradeFilter(
+                value as "All" | "A+" | "A" | "B" | "C" | "D" | "F"
+              )
+            }
+          >
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Filter by Grade" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="All">All Grades</SelectItem>
+              <SelectItem value="A+">Grade A+</SelectItem>
               <SelectItem value="A">Grade A</SelectItem>
               <SelectItem value="B">Grade B</SelectItem>
               <SelectItem value="C">Grade C</SelectItem>
+              <SelectItem value="D">Grade D</SelectItem>
+              <SelectItem value="F">Grade F</SelectItem>
             </SelectContent>
           </Select>
+
           <Select value={classFilter} onValueChange={setClassFilter}>
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Filter by Class" />
@@ -139,7 +136,11 @@ export default function StudentPerformanceTable() {
               ))}
             </SelectContent>
           </Select>
-          <Select value={groupFilter} onValueChange={setGroupFilter}>
+          <Select
+            value={groupFilter}
+            onValueChange={setGroupFilter}
+            disabled={classFilter === "7" || classFilter === "8"}
+          >
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Filter by Group" />
             </SelectTrigger>
@@ -156,8 +157,8 @@ export default function StudentPerformanceTable() {
               max={100}
               step={1}
               value={scoreRange}
-              onValueChange={setScoreRange}
-              className="w-full"
+              onValueChange={(value: [number, number]) => setScoreRange(value)} // Ensure the type matches [number, number]
+              className="w-full mb-2 md:mb-0"
             />
             <div className="text-sm text-gray-500 mt-1">
               Score Range: {scoreRange[0]} - {scoreRange[1]}
@@ -167,27 +168,54 @@ export default function StudentPerformanceTable() {
         <ScrollArea className="h-[400px] w-full">
           <table className="w-full">
             <thead>
-              <tr className="border-b">
-                <th className="px-4 py-2 text-left">Name</th>
-                <th className="px-4 py-2 text-left">Grade</th>
-                <th className="px-4 py-2 text-left">Class</th>
-                <th className="px-4 py-2 text-left">Group</th>
-                <th className="px-4 py-2 text-left">Average Score</th>
-                <th className="px-4 py-2 text-left">Actions</th>
+              <tr className="border-b text-[12px] md:text-base">
+                <th className="md:px-4 py-2 text-left">Name</th>
+                <th className="md:px-4 py-2 text-left  hidden md:table-cell">
+                  Grade
+                </th>
+                <th className="md:px-4 py-2 text-left">Class</th>
+                <th className="md:px-4 py-2 text-left hidden md:table-cell">
+                  Group
+                </th>
+                <th className="md:px-4 py-2 text-left">
+                  <button
+                    onClick={() =>
+                      setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"))
+                    }
+                    className="flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded"
+                  >
+                    Average Score
+                    {sortOrder === "desc" ? "▼" : "▲"}
+                  </button>
+                </th>
+                <th className="md:px-4 py-2 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredStudents.map((student) => (
-                <tr key={student.id} className="border-b">
-                  <td className="px-4 py-2">{student.name}</td>
-                  <td className="px-4 py-2">{student.grade}</td>
-                  <td className="px-4 py-2">{student.class}</td>
-                  <td className="px-4 py-2">{student.group || "N/A"}</td>
-                  <td className="px-4 py-2">{student.averageScore}</td>
-                  <td className="px-4 py-2">
+                <tr
+                  key={student.id}
+                  className="border-b text-[12px] md:text-base"
+                >
+                  <td className="md:px-4 py-2">{student.name}</td>
+                  <td className="md:px-4 py-2  hidden md:table-cell">
+                    {student.grade}
+                  </td>
+                  <td className="md:px-4 py-2 text-center">{student.class}</td>
+                  <td className="md:px-4 py-2  hidden md:table-cell">
+                    {student.group || "N/A"}
+                  </td>
+                  <td className="md:px-4 py-2 text-center">
+                    {student.averageScore}
+                  </td>
+                  <td className="md:px-4 py-2">
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="outline" size="sm">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-[11px] md:text-sm px-1"
+                        >
                           View Details
                         </Button>
                       </DialogTrigger>
