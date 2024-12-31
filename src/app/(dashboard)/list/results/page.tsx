@@ -350,7 +350,6 @@ const growthPercentage =
 
 const ResultPage = () => {
   const [dateRange, setDateRange] = useState("This Month");
-  const [chartType, setChartType] = useState("bar");
   const handleDownload = (format: string) => {
     // Placeholder for download functionality
     console.log(`Downloading report in ${format} format`);
@@ -358,7 +357,7 @@ const ResultPage = () => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="bg-white md:p-4 rounded-md flex-1 m-2 md:m-4 mt-0">
       <Header
         dateRange={dateRange}
         setDateRange={setDateRange}

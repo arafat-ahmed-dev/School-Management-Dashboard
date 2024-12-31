@@ -155,7 +155,7 @@ export function AverageMarksChart({ data }: AverageMarksChartProps) {
   return (
     <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300">
       <CardHeader>
-        <div className=" flex justify-between items-center">
+        <div className=" flex justify-between items-center flex-col md:flex-row gap-4">
           <div>
             <CardTitle className="text-xl font-semibold">
               Average Marks Comparison
@@ -167,7 +167,7 @@ export function AverageMarksChart({ data }: AverageMarksChartProps) {
               value={classSelection}
               onValueChange={(value) => handleClassChange(value as ClassKey)}
             >
-              <SelectTrigger className="w-[150px]">
+              <SelectTrigger className="md:w-[150px]">
                 <SelectValue placeholder="Select Class" />
               </SelectTrigger>
               <SelectContent>
@@ -201,7 +201,7 @@ export function AverageMarksChart({ data }: AverageMarksChartProps) {
         </div>
       </CardHeader>
       <div className="w-full h-full">
-        <CardContent>
+        <CardContent className="md:-left-3 -left-5 relative p-0">
           {filterDataByClassAndGroup().length > 0 ? (
             <ChartContainer
               config={{
