@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -5,8 +6,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 
 interface ClassData {
@@ -22,6 +28,8 @@ interface ClassLevelOverviewProps {
 }
 
 export function ClassLevelOverview({ classData }: ClassLevelOverviewProps) {
+  const [selectedClass, setSelectedClass] = useState<string>("7");
+
   return (
     <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 mb-6">
       <CardHeader>
@@ -31,57 +39,65 @@ export function ClassLevelOverview({ classData }: ClassLevelOverviewProps) {
         <CardDescription>Performance summary for each class</CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="7" className="w-full">
-          <ScrollArea className="w-full whitespace-nowrap">
-            <TabsList className="inline-flex w-full justify-start">
+        {/* Class Selection Dropdown */}
+        <div className="mb-4">
+          <Select value={selectedClass} onValueChange={setSelectedClass}>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Select Class" />
+            </SelectTrigger>
+            <SelectContent>
               {Object.keys(classData).map((classNum) => (
-                <TabsTrigger key={classNum} value={classNum}>
+                <SelectItem key={classNum} value={classNum}>
                   Class {classNum}
-                </TabsTrigger>
+                </SelectItem>
               ))}
-            </TabsList>
-          </ScrollArea>
-          {Object.entries(classData).map(([classNum, data]) => (
-            <TabsContent key={classNum} value={classNum}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Total Students</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-bold">{data.students}</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Average Score</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-2xl font-bold">{data.averageScore}%</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Groups</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {data.groups ? (
-                        data.groups.map((group) => (
-                          <Badge key={group} variant="secondary">
-                            {group}
-                          </Badge>
-                        ))
-                      ) : (
-                        <p>No groups for this class</p>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          ))}
-        </Tabs>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Class Data Content */}
+        {classData[selectedClass] && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Total Students</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">
+                  {classData[selectedClass].students}
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Average Score</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-bold">
+                  {classData[selectedClass].averageScore}%
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Groups</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {classData[selectedClass].groups ? (
+                    classData[selectedClass].groups.map((group) => (
+                      <Badge key={group} variant="secondary">
+                        {group}
+                      </Badge>
+                    ))
+                  ) : (
+                    <p>No groups for this class</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
