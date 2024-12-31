@@ -90,7 +90,7 @@ export default function StudentPerformanceTable({
         </CardTitle>
         <CardDescription>Individual student results</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="py-0 px-2 md:px-6">
         <div className="flex flex-wrap gap-4 mb-4 justify-center md:justify-start md:flex-row">
           <div className="flex-1 min-w-[200px]">
             <Input
