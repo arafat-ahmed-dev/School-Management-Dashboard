@@ -1,4 +1,5 @@
 "use client";
+
 import { AverageMarksChart } from "@/components/result/AverageMarksChart";
 import { ClassAndGroupPerformance } from "@/components/result/ClassAndGroupPerformance";
 import { ClassLevelOverview } from "@/components/result/ClassLevelOverview";
@@ -103,13 +104,162 @@ const studentGrowthData = [
   { month: "Jun", growth: 6 },
 ];
 
-const averageMarksData = [
-  { subject: "Math", current: 85, previous: 82 },
-  { subject: "Science", current: 78, previous: 80 },
-  { subject: "English", current: 82, previous: 79 },
-  { subject: "History", current: 76, previous: 75 },
-  { subject: "Art", current: 90, previous: 88 },
-];
+const averageMarksData = {
+  // Class 7
+  class7: [
+    { subject: "Bang-1", current: 85, previous: 82 },
+    { subject: "Bang-2", current: 82, previous: 79 },
+    { subject: "Eng-1", current: 78, previous: 80 },
+    { subject: "Eng-2", current: 84, previous: 82 },
+    { subject: "Math", current: 88, previous: 85 },
+    { subject: "GenSci", current: 86, previous: 84 },
+    { subject: "BGSt", current: 79, previous: 77 },
+    { subject: "ICT", current: 88, previous: 85 },
+    { subject: "Rel&MorEd", current: 80, previous: 78 },
+  ],
+
+  // Class 8
+  class8: [
+    { subject: "Bang-1", current: 85, previous: 82 },
+    { subject: "Bang-2", current: 82, previous: 79 },
+    { subject: "Eng-1", current: 78, previous: 80 },
+    { subject: "Eng-2", current: 84, previous: 82 },
+    { subject: "Math", current: 88, previous: 85 },
+    { subject: "GenSci", current: 86, previous: 84 },
+    { subject: "BGSt", current: 79, previous: 77 },
+    { subject: "ICT", current: 88, previous: 85 },
+    { subject: "Rel&MorEd", current: 80, previous: 78 },
+  ],
+
+  // Class 9 (SSC Start)
+  class9: {
+    generalSubjects: [
+      { subject: "Bang-1", current: 85, previous: 82 },
+      { subject: "Bang-2", current: 82, previous: 79 },
+      { subject: "Eng-1", current: 78, previous: 80 },
+      { subject: "Eng-2", current: 84, previous: 82 },
+      { subject: "Math", current: 88, previous: 85 },
+      { subject: "GenSci", current: 86, previous: 84 },
+      { subject: "BGSt", current: 79, previous: 77 },
+      { subject: "ICT", current: 88, previous: 85 },
+      { subject: "Rel&MorEd", current: 80, previous: 78 },
+    ],
+    electiveSubjects: {
+      scienceGroup: [
+        { subject: "Phy", current: 86, previous: 84 },
+        { subject: "Chem", current: 79, previous: 77 },
+        { subject: "Bio", current: 82, previous: 80 },
+        { subject: "HM", current: 85, previous: 83 },
+      ],
+      commerceGroup: [
+        { subject: "Acc", current: 82, previous: 80 },
+        { subject: "BOM", current: 85, previous: 83 },
+        { subject: "Eco", current: 79, previous: 78 },
+        { subject: "Stat", current: 83, previous: 81 },
+      ],
+      artsGroup: [
+        { subject: "Hist", current: 77, previous: 75 },
+        { subject: "Civ", current: 78, previous: 76 },
+        { subject: "IHC", current: 80, previous: 78 },
+      ],
+    },
+  },
+
+  // Class 10 (SSC)
+  class10: {
+    generalSubjects: [
+      { subject: "Bang-1", current: 85, previous: 82 },
+      { subject: "Bang-2", current: 82, previous: 79 },
+      { subject: "Eng-1", current: 78, previous: 80 },
+      { subject: "Eng-2", current: 84, previous: 82 },
+      { subject: "Math", current: 88, previous: 85 },
+      { subject: "GenSci", current: 86, previous: 84 },
+      { subject: "BGSt", current: 79, previous: 77 },
+      { subject: "ICT", current: 88, previous: 85 },
+      { subject: "Rel&MorEd", current: 80, previous: 78 },
+    ],
+    electiveSubjects: {
+      scienceGroup: [
+        { subject: "Phy", current: 86, previous: 84 },
+        { subject: "Chem", current: 79, previous: 77 },
+        { subject: "Bio", current: 82, previous: 80 },
+        { subject: "HM", current: 85, previous: 83 },
+      ],
+      commerceGroup: [
+        { subject: "Acc", current: 82, previous: 80 },
+        { subject: "BOM", current: 85, previous: 83 },
+        { subject: "Eco", current: 79, previous: 78 },
+        { subject: "Stat", current: 83, previous: 81 },
+      ],
+      artsGroup: [
+        { subject: "Hist", current: 77, previous: 75 },
+        { subject: "Civ", current: 78, previous: 76 },
+        { subject: "IHC", current: 80, previous: 78 },
+      ],
+    },
+  },
+
+  // Class 11 (HSC Start)
+  class11: {
+    generalSubjects: [
+      { subject: "Bang-1", current: 85, previous: 82 },
+      { subject: "Bang-2", current: 82, previous: 79 },
+      { subject: "Eng-1", current: 78, previous: 80 },
+      { subject: "Eng-2", current: 84, previous: 82 },
+      { subject: "ICT", current: 88, previous: 85 },
+    ],
+    electiveSubjects: {
+      scienceGroup: [
+        { subject: "Phy-1", current: 86, previous: 84 },
+        { subject: "Chem-1", current: 79, previous: 77 },
+        { subject: "Bio-1", current: 82, previous: 80 },
+        { subject: "HM-1", current: 85, previous: 83 },
+      ],
+      commerceGroup: [
+        { subject: "Acc-1", current: 82, previous: 80 },
+        { subject: "BOM-1", current: 85, previous: 83 },
+        { subject: "Eco-1", current: 79, previous: 78 },
+        { subject: "Stat", current: 83, previous: 81 },
+      ],
+      artsGroup: [
+        { subject: "Hist-1", current: 77, previous: 75 },
+        { subject: "Civ-1", current: 78, previous: 76 },
+        { subject: "IHC-1", current: 80, previous: 78 },
+      ],
+    },
+  },
+
+  // Class 12 (HSC)
+  class12: {
+    generalSubjects: [
+      { subject: "Bang-1", current: 85, previous: 82 },
+      { subject: "Bang-2", current: 82, previous: 79 },
+      { subject: "Eng-1", current: 78, previous: 80 },
+      { subject: "Eng-2", current: 84, previous: 82 },
+      { subject: "ICT", current: 88, previous: 85 },
+    ],
+    electiveSubjects: {
+      scienceGroup: [
+        { subject: "Phy-2", current: 86, previous: 84 },
+        { subject: "Chem-2", current: 79, previous: 77 },
+        { subject: "Bio-2", current: 82, previous: 80 },
+        { subject: "HM-2", current: 85, previous: 83 },
+      ],
+      commerceGroup: [
+        { subject: "Acc-2", current: 82, previous: 80 },
+        { subject: "BOM-2", current: 85, previous: 83 },
+        { subject: "Eco-2", current: 79, previous: 78 },
+        { subject: "Stat", current: 83, previous: 81 },
+      ],
+      artsGroup: [
+        { subject: "Hist-2", current: 77, previous: 75 },
+        { subject: "Civ-2", current: 78, previous: 76 },
+        { subject: "IHC-2", current: 80, previous: 78 },
+      ],
+    },
+  },
+};
+
 
 const mockStudents = [
   {
@@ -165,13 +315,38 @@ const performanceInsights = [
 
 
 const currentAverage =
-  averageMarksData.reduce((sum, subject) => sum + subject.current, 0) /
-  averageMarksData.length;
+  Object.values(averageMarksData)
+    .flatMap(
+      (classData: any) =>
+        classData.generalSubjects
+          ? classData.generalSubjects // For classes with generalSubjects
+          : classData.subjects || [] // Fallback for classes with flat structure
+    )
+    .reduce((sum, subject: any) => sum + subject.current, 0) /
+  Object.values(averageMarksData).flatMap((classData: any) =>
+    classData.generalSubjects
+      ? classData.generalSubjects
+      : classData.subjects || []
+  ).length;
+
 const previousAverage =
-  averageMarksData.reduce((sum, subject) => sum + subject.previous, 0) /
-  averageMarksData.length;
+  Object.values(averageMarksData)
+    .flatMap((classData: any) =>
+      classData.generalSubjects
+        ? classData.generalSubjects
+        : classData.subjects || []
+    )
+    .reduce((sum, subject: any) => sum + subject.previous, 0) /
+  Object.values(averageMarksData).flatMap((classData: any) =>
+    classData.generalSubjects
+      ? classData.generalSubjects
+      : classData.subjects || []
+  ).length;
+
 const growthPercentage =
   ((currentAverage - previousAverage) / previousAverage) * 100;
+
+
 
 const ResultPage = () => {
   const [dateRange, setDateRange] = useState("This Month");
@@ -196,12 +371,10 @@ const ResultPage = () => {
         topSubject="Art"
         topSubjectScore={90}
       />
-      <div className="grid grid-cols-1 gap-6 mb-6">
+      <div className="grid grid-cols-1 gap-6 mb-6 w-full">
         <StudentGrowthChart data={studentGrowthData} />
         <AverageMarksChart
           data={averageMarksData}
-          chartType={chartType}
-          setChartType={setChartType}
         />
       </div>
 
