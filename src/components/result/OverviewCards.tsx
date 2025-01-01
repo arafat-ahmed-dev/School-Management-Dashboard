@@ -34,12 +34,12 @@ export function OverviewCards({
         <CardHeader className="flex flex-row items-center space-x-2">
           <BookOpenIcon className="w-8 h-8 text-blue-500" />
           <div>
-            <CardTitle>Average Marks</CardTitle>
-            <CardDescription>Current vs Previous Month</CardDescription>
+            <CardTitle className="text-lg sm:text-xl">Average Marks</CardTitle>
+            <CardDescription className="text-sm sm:text-base">Current vs Previous Month</CardDescription>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold text-blue-600">
+          <div className="text-2xl sm:text-3xl font-bold text-blue-600">
             {currentAverage.toFixed(1)}%
           </div>
           <p className="text-sm mt-2">
@@ -61,12 +61,12 @@ export function OverviewCards({
         <CardHeader className="flex flex-row items-center space-x-2">
           <GraduationCapIcon className="w-8 h-8 text-green-500" />
           <div>
-            <CardTitle>Total Students</CardTitle>
-            <CardDescription>Enrolled this month</CardDescription>
+            <CardTitle className="text-lg sm:text-xl">Total Students</CardTitle>
+            <CardDescription className="text-sm sm:text-base">Enrolled this month</CardDescription>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold text-green-600">
+          <div className="text-2xl sm:text-3xl font-bold text-green-600">
             {totalStudents}
           </div>
           <p className="text-sm mt-2">
@@ -81,12 +81,12 @@ export function OverviewCards({
         <CardHeader className="flex flex-row items-center space-x-2">
           <TrendingUpIcon className="w-8 h-8 text-purple-500" />
           <div>
-            <CardTitle>Top Performing Subject</CardTitle>
-            <CardDescription>Based on average scores</CardDescription>
+            <CardTitle className="text-lg sm:text-xl">Top Performing Subject</CardTitle>
+            <CardDescription className="text-sm sm:text-base">Based on average scores</CardDescription>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold text-purple-600">{topSubject}</div>
+          <div className="text-2xl sm:text-3xl font-bold text-purple-600">{topSubject}</div>
           <p className="text-sm mt-2">{topSubjectScore}% average score</p>
         </CardContent>
       </Card>

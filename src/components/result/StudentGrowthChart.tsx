@@ -26,7 +26,7 @@ export function StudentGrowthChart({ data }: StudentGrowthChartProps) {
         </CardTitle>
         <CardDescription>Performance improvement over time</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0 relative -left-5 md:-left-3">
         <ChartContainer
           config={{
             growth: {
@@ -39,7 +39,7 @@ export function StudentGrowthChart({ data }: StudentGrowthChartProps) {
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
               <XAxis dataKey="month" stroke="#888888" />
-              <YAxis stroke="#888888" />
+              <YAxis stroke="#888888"/>
               <ChartTooltip content={<ChartTooltipContent />} />
               <Area
                 type="monotone"

@@ -22,7 +22,7 @@ export function Header({
 }: HeaderProps) {
   return (
     <div className="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
-      <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white">
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 dark:text-white text-center md:text-left">
         Student Results Dashboard
       </h1>
       <div className="flex space-x-2">

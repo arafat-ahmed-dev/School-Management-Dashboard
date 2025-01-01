@@ -16,7 +16,7 @@ export function PerformanceInsights({ insights }: PerformanceInsightsProps) {
   return (
     <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 mb-6">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">
+        <CardTitle className="text-lg sm:text-xl font-semibold">
           Performance Insights
         </CardTitle>
         <CardDescription>
@@ -27,8 +27,8 @@ export function PerformanceInsights({ insights }: PerformanceInsightsProps) {
         <div className="space-y-2">
           {insights.map((insight, index) => (
             <Alert key={index}>
-              <AlertTitle>Insight {index + 1}</AlertTitle>
-              <AlertDescription>{insight}</AlertDescription>
+              <AlertTitle className="text-base sm:text-lg">Insight {index + 1}</AlertTitle>
+              <AlertDescription className="text-sm sm:text-base">{insight}</AlertDescription>
             </Alert>
           ))}
         </div>

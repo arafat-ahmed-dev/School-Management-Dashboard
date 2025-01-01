@@ -33,7 +33,7 @@ export function ClassLevelOverview({ classData }: ClassLevelOverviewProps) {
   return (
     <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 mb-6">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">
+        <CardTitle className="text-lg sm:text-xl font-semibold">
           Class-Level Overview
         </CardTitle>
         <CardDescription>Performance summary for each class</CardDescription>
@@ -63,7 +63,7 @@ export function ClassLevelOverview({ classData }: ClassLevelOverviewProps) {
                 <CardTitle>Total Students</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold">
+                <p className="text-xl sm:text-2xl font-bold">
                   {classData[selectedClass].students}
                 </p>
               </CardContent>
@@ -73,7 +73,7 @@ export function ClassLevelOverview({ classData }: ClassLevelOverviewProps) {
                 <CardTitle>Average Score</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold">
+                <p className="text-xl sm:text-2xl font-bold">
                   {classData[selectedClass].averageScore}%
                 </p>
               </CardContent>

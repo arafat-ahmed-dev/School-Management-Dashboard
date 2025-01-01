@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartContainer } from "@/components/ui/chart";
 import {
   Select,
   SelectContent,
@@ -157,7 +157,7 @@ export function AverageMarksChart({ data }: AverageMarksChartProps) {
       <CardHeader>
         <div className=" flex justify-between items-center flex-col md:flex-row gap-4">
           <div>
-            <CardTitle className="text-xl font-semibold">
+            <CardTitle className="text-lg sm:text-xl font-semibold">
               Average Marks Comparison
             </CardTitle>
             <CardDescription>Current vs Previous Month</CardDescription>
@@ -219,7 +219,7 @@ export function AverageMarksChart({ data }: AverageMarksChartProps) {
               {renderChart()}
             </ChartContainer>
           ) : (
-            <div className="flex justify-center items-center h-[300px]">
+            <div className="flex justify-center items-center h-[300px] text-sm sm:text-base">
               No data available
             </div>
           )}

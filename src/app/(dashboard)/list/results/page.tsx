@@ -115,7 +115,7 @@ const averageMarksData = {
     { subject: "GenSci", current: 86, previous: 84 },
     { subject: "BGSt", current: 79, previous: 77 },
     { subject: "ICT", current: 88, previous: 85 },
-    { subject: "Rel&MorEd", current: 80, previous: 78 },
+    { subject: "Rel", current: 80, previous: 78 },
   ],
 
   // Class 8
@@ -128,7 +128,7 @@ const averageMarksData = {
     { subject: "GenSci", current: 86, previous: 84 },
     { subject: "BGSt", current: 79, previous: 77 },
     { subject: "ICT", current: 88, previous: 85 },
-    { subject: "Rel&MorEd", current: 80, previous: 78 },
+    { subject: "Rel", current: 80, previous: 78 },
   ],
 
   // Class 9 (SSC Start)
@@ -142,7 +142,7 @@ const averageMarksData = {
       { subject: "GenSci", current: 86, previous: 84 },
       { subject: "BGSt", current: 79, previous: 77 },
       { subject: "ICT", current: 88, previous: 85 },
-      { subject: "Rel&MorEd", current: 80, previous: 78 },
+      { subject: "Rel", current: 80, previous: 78 },
     ],
     electiveSubjects: {
       scienceGroup: [
@@ -176,7 +176,7 @@ const averageMarksData = {
       { subject: "GenSci", current: 86, previous: 84 },
       { subject: "BGSt", current: 79, previous: 77 },
       { subject: "ICT", current: 88, previous: 85 },
-      { subject: "Rel&MorEd", current: 80, previous: 78 },
+      { subject: "Rel", current: 80, previous: 78 },
     ],
     electiveSubjects: {
       scienceGroup: [
@@ -510,7 +510,7 @@ const ResultPage = () => {
   };
 
   return (
-    <div className="bg-white md:p-4 rounded-md flex-1 m-2 md:m-4 mt-0">
+    <div className="bg-white md:p-4 rounded-md flex-1 m-2 md:m-4 mt-0 text-base md:text-lg">
       <Header
         dateRange={dateRange}
         setDateRange={setDateRange}

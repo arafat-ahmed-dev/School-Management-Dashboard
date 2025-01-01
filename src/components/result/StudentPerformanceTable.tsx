@@ -74,18 +74,25 @@ export default function StudentPerformanceTable({
         student.averageScore >= scoreRange[0] &&
         student.averageScore <= scoreRange[1]
     );
-    
-    return filtered.sort((a, b) => 
-      sortOrder === "desc" 
-        ? b.averageScore - a.averageScore 
+
+    return filtered.sort((a, b) =>
+      sortOrder === "desc"
+        ? b.averageScore - a.averageScore
         : a.averageScore - b.averageScore
     );
-  }, [searchTerm, gradeFilter, classFilter, groupFilter, scoreRange, sortOrder]);
+  }, [
+    searchTerm,
+    gradeFilter,
+    classFilter,
+    groupFilter,
+    scoreRange,
+    sortOrder,
+  ]);
 
   return (
     <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">
+        <CardTitle className="text-lg sm:text-xl font-semibold">
           Student Performance
         </CardTitle>
         <CardDescription>Individual student results</CardDescription>
@@ -168,7 +175,7 @@ export default function StudentPerformanceTable({
         <ScrollArea className="h-[400px] w-full">
           <table className="w-full">
             <thead>
-              <tr className="border-b text-[12px] md:text-base">
+            <tr className="border-b text-xs sm:text-sm md:text-base">
                 <th className="md:px-4 py-2 text-left">Name</th>
                 <th className="md:px-4 py-2 text-left  hidden md:table-cell">
                   Grade
@@ -201,11 +208,13 @@ export default function StudentPerformanceTable({
                   <td className="md:px-4 py-2  hidden md:table-cell">
                     {student.grade}
                   </td>
-                  <td className="md:px-4 py-2 text-center">{student.class}</td>
+                  <td className="md:px-4 py-2 text-center md:text-left">
+                    {student.class}
+                  </td>
                   <td className="md:px-4 py-2  hidden md:table-cell">
                     {student.group || "N/A"}
                   </td>
-                  <td className="md:px-4 py-2 text-center">
+                  <td className="md:px-4 py-2 text-center md:text-left">
                     {student.averageScore}
                   </td>
                   <td className="md:px-4 py-2">
@@ -214,22 +223,22 @@ export default function StudentPerformanceTable({
                         <Button
                           variant="outline"
                           size="sm"
-                          className="text-[11px] md:text-sm px-1"
+                  className="text-xs sm:text-sm px-1"
                         >
                           View Details
                         </Button>
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
-                          <DialogTitle>
+                          <DialogTitle className="text-lg sm:text-xl">
                             {student.name}'s Performance
                           </DialogTitle>
-                          <DialogDescription>
+                          <DialogDescription className="text-sm sm:text-base">
                             Detailed view of student's scores
                           </DialogDescription>
                         </DialogHeader>
                         <div className="mt-4">
-                          <h4 className="font-semibold mb-2">
+                          <h4 className="text-base sm:text-lg font-semibold mb-2">
                             Subject Scores:
                           </h4>
                           {Object.entries(student.subjects).map(
