@@ -11,7 +11,7 @@ export default function DashboardLayout({
   return (
     <div className="h-screen flex">
       {/* LEFT: Fixed Sidebar */}
-      <div className="w-[14%] md:w-[8%] lg:w-[16%] sm:p-[5px] p-2 fixed top-0 left-0 h-full bg-white">
+      <div className="w-[14%] md:w-[8%] lg:w-[16%] sm:p-4 p-2 fixed top-0 left-0 h-full bg-white">
         <Link
           href={"/"}
           className="flex flex-1 items-center justify-center lg:justify-start gap-2"

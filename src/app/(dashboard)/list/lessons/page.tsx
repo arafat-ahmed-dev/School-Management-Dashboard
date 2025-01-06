@@ -24,7 +24,7 @@ const columns = [
   {
     header: "Teacher",
     accessor: "teacher",
-    className: "hidden md:table-cell",
+    className: "hidden md:table-cell p-2",
   },
   {
     header: "Actions",
@@ -38,9 +38,9 @@ const LessonListPage = () => {
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
     >
-      <td className="flex items-center gap-4 p-4">{item.subject}</td>
+      <td className="flex items-center gap-4 p-4 px-2">{item.subject}</td>
       <td>{item.class}</td>
-      <td className="hidden md:table-cell">{item.teacher}</td>
+      <td className="hidden md:table-cell p-2">{item.teacher}</td>
       <td>
         <div className="flex items-center gap-2">
           {role === "admin" && (
@@ -61,14 +61,19 @@ const LessonListPage = () => {
         <h1 className="hidden md:block text-lg font-semibold">All Lessons</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
-          <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
-              <Image src="/sort.png" alt="" width={14} height={14} />
-            </button>
-            {role === "admin" && <FormModel table="lesson" type="create" />}
+          <div className="flex items-center gap-4 justify-between md:self-end w-full">
+            <h1 className="md:hidden block text-sm font-semibold">
+              All Lessons
+            </h1>
+            <div className="flex items-center gap-4 self-end">
+              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
+                <Image src="/filter.png" alt="" width={14} height={14} />
+              </button>
+              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
+                <Image src="/sort.png" alt="" width={14} height={14} />
+              </button>
+              {role === "admin" && <FormModel table="lesson" type="create" />}
+            </div>
           </div>
         </div>
       </div>

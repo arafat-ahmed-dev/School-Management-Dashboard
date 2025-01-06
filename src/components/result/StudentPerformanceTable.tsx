@@ -175,13 +175,13 @@ export default function StudentPerformanceTable({
         <ScrollArea className="h-[400px] w-full">
           <table className="w-full">
             <thead>
-            <tr className="border-b text-xs sm:text-sm md:text-base">
+              <tr className="border-b text-xs sm:text-sm md:text-base">
                 <th className="md:px-4 py-2 text-left">Name</th>
-                <th className="md:px-4 py-2 text-left  hidden md:table-cell">
+                <th className="md:px-4 py-2 text-left  hidden md:table-cell p-2">
                   Grade
                 </th>
                 <th className="md:px-4 py-2 text-left">Class</th>
-                <th className="md:px-4 py-2 text-left hidden md:table-cell">
+                <th className="md:px-4 py-2 text-left hidden md:table-cell p-2">
                   Group
                 </th>
                 <th className="md:px-4 py-2 text-left">
@@ -205,13 +205,13 @@ export default function StudentPerformanceTable({
                   className="border-b text-[12px] md:text-base"
                 >
                   <td className="md:px-4 py-2">{student.name}</td>
-                  <td className="md:px-4 py-2  hidden md:table-cell">
+                  <td className="md:px-4 py-2  hidden md:table-cell p-2">
                     {student.grade}
                   </td>
                   <td className="md:px-4 py-2 text-center md:text-left">
                     {student.class}
                   </td>
-                  <td className="md:px-4 py-2  hidden md:table-cell">
+                  <td className="md:px-4 py-2  hidden md:table-cell p-2">
                     {student.group || "N/A"}
                   </td>
                   <td className="md:px-4 py-2 text-center md:text-left">
@@ -223,7 +223,7 @@ export default function StudentPerformanceTable({
                         <Button
                           variant="outline"
                           size="sm"
-                  className="text-xs sm:text-sm px-1"
+                          className="text-xs sm:text-sm px-1"
                         >
                           View Details
                         </Button>

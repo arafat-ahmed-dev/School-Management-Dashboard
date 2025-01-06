@@ -29,6 +29,7 @@ const FormModal = ({
     | "result"
     | "attendance"
     | "event"
+    | "message"
     | "announcement";
   type: "create" | "update" | "delete";
   data?: any;
