@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -5,24 +6,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Bar,
-  BarChart,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-} from "recharts";
+import Image from "next/image";
+import { RadialBarChart, RadialBar, ResponsiveContainer, BarChart, Bar, YAxis, XAxis } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
 
 interface ClassAndGroupPerformanceProps {
-  classTrendData: Array<{ month: string } & Record<string, number | string>>;
+  classTrendData: Array<{ name: string } & Record<string, number | string>>;
   groupPerformanceData: Array<
     { group: string } & Record<string, number | string>
   >;
@@ -42,73 +32,41 @@ export function ClassAndGroupPerformance({
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="classTrend" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-2 ">
             <TabsTrigger value="classTrend">Class Trend</TabsTrigger>
             <TabsTrigger value="groupComparison">Group Comparison</TabsTrigger>
           </TabsList>
           <TabsContent value="classTrend">
-            <ChartContainer
-              config={{
-                class7: { label: "Class 7", color: "hsl(var(--chart-1))" },
-                class8: { label: "Class 8", color: "hsl(var(--chart-2))" },
-                class9: { label: "Class 9", color: "hsl(var(--chart-3))" },
-                class10: { label: "Class 10", color: "hsl(var(--chart-4))" },
-                class11: { label: "Class 11", color: "hsl(var(--chart-5))" },
-                class12: { label: "Class 12", color: "hsl(var(--chart-6))" },
-              }}
-              className="h-[300px]"
-            >
+            {/* RadialBarChart */}
+            <div className="w-full h-[300px] relative">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={classTrendData}>
-                  <XAxis dataKey="month" stroke="#888888" />
-                  <YAxis stroke="#888888" />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <Line
-                    type="monotone"
-                    dataKey="class7"
-                    stroke="var(--color-class7)"
-                    strokeWidth={2}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="class8"
-                    stroke="var(--color-class8)"
-                    strokeWidth={2}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="class9"
-                    stroke="var(--color-class9)"
-                    strokeWidth={2}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="class10"
-                    stroke="var(--color-class10)"
-                    strokeWidth={2}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="class11"
-                    stroke="var(--color-class11)"
-                    strokeWidth={2}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="class12"
-                    stroke="var(--color-class12)"
-                    strokeWidth={2}
-                  />
-                </LineChart>
+                <RadialBarChart
+                  cx="50%"
+                  cy="50%"
+                  innerRadius="40%"
+                  outerRadius="100%"
+                  barSize={32}
+                  data={classTrendData}
+                >
+                  <RadialBar background dataKey="count" />
+                </RadialBarChart>
               </ResponsiveContainer>
-            </ChartContainer>
+              <Image
+                src="/maleFemale.png"
+                alt="Male and Female chart icon"
+                width={50}
+                height={50}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              />
+            </div>
           </TabsContent>
           <TabsContent value="groupComparison">
             <ChartContainer
               config={{
-                class10: { label: "Class 10", color: "hsl(var(--chart-1))" },
-                class11: { label: "Class 11", color: "hsl(var(--chart-2))" },
-                class12: { label: "Class 12", color: "hsl(var(--chart-3))" },
+                class9: { label: "Class 10", color: "hsl(var(--chart-1))" },
+                class10: { label: "Class 10", color: "hsl(var(--chart-2))" },
+                class11: { label: "Class 11", color: "hsl(var(--chart-3))" },
+                class12: { label: "Class 12", color: "hsl(var(--chart-4))" },
               }}
               className="h-[300px]"
             >
@@ -117,6 +75,7 @@ export function ClassAndGroupPerformance({
                   <XAxis dataKey="group" stroke="#888888" />
                   <YAxis stroke="#888888" />
                   <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="class9" fill="var(--color-class9)" />
                   <Bar dataKey="class10" fill="var(--color-class10)" />
                   <Bar dataKey="class11" fill="var(--color-class11)" />
                   <Bar dataKey="class12" fill="var(--color-class12)" />

@@ -33,66 +33,82 @@ const classData = {
 };
 
 const groupPerformanceData = [
-  { group: "Science", class10: 85, class11: 82, class12: 88 },
-  { group: "Commerce", class10: 80, class11: 78, class12: 83 },
-  { group: "Arts", class10: 82, class11: 77, class12: 84 }
+  { group: "Science", class9: 90 , class10: 85, class11: 82, class12: 88 },
+  { group: "Commerce", class9: 90 , class10: 80, class11: 78, class12: 83 },
+  { group: "Arts", class9: 90 , class10: 82, class11: 77, class12: 84 }
 ];
 
 const classTrendData = [
   {
-    month: "Jan",
+    name: "Jan",
     class7: 75,
     class8: 76,
     class9: 77,
     class10: 78,
     class11: 75,
     class12: 82,
+    fill: "white",
   },
   {
-    month: "Feb",
+    name: "Jan",
+    class7: 75,
+    class8: 76,
+    class9: 77,
+    class10: 78,
+    class11: 75,
+    class12: 82,
+    fill: "#C3EBFA",
+  },
+  {
+    name: "Feb",
     class7: 76,
     class8: 77,
     class9: 78,
     class10: 80,
     class11: 76,
     class12: 83,
+    fill: "#FAE27C",
   },
   {
-    month: "Mar",
+    name: "Mar",
     class7: 77,
     class8: 78,
     class9: 79,
     class10: 82,
     class11: 78,
     class12: 85,
+    fill: "#C3EBFA",
   },
   {
-    month: "Apr",
+    name: "Apr",
     class7: 76,
     class8: 77,
     class9: 78,
     class10: 81,
     class11: 77,
     class12: 84,
+    fill: "#FAE27C",
   },
   {
-    month: "May",
+    name: "May",
     class7: 78,
     class8: 79,
     class9: 80,
     class10: 83,
     class11: 79,
     class12: 86,
+    fill: "#C3EBFA",
   },
   {
-    month: "Jun",
+    name: "Jun",
     class7: 79,
     class8: 80,
     class9: 81,
     class10: 85,
     class11: 80,
     class12: 88,
-  }
+    fill: "#FAE27C",
+  },
 ];
 
 const studentGrowthData = [
