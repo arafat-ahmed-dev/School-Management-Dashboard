@@ -33,9 +33,9 @@ const classData = {
 };
 
 const groupPerformanceData = [
-  { group: "Science", class9: 90 , class10: 85, class11: 82, class12: 88 },
-  { group: "Commerce", class9: 90 , class10: 80, class11: 78, class12: 83 },
-  { group: "Arts", class9: 90 , class10: 82, class11: 77, class12: 84 }
+  { group: "Science", class9: 90, class10: 85, class11: 82, class12: 88 },
+  { group: "Commerce", class9: 90, class10: 80, class11: 78, class12: 83 },
+  { group: "Arts", class9: 90, class10: 82, class11: 77, class12: 84 },
 ];
 
 const classTrendData = [
@@ -47,17 +47,6 @@ const classTrendData = [
     class10: 78,
     class11: 75,
     class12: 82,
-    fill: "white",
-  },
-  {
-    name: "Jan",
-    class7: 75,
-    class8: 76,
-    class9: 77,
-    class10: 78,
-    class11: 75,
-    class12: 82,
-    fill: "#C3EBFA",
   },
   {
     name: "Feb",
@@ -67,7 +56,6 @@ const classTrendData = [
     class10: 80,
     class11: 76,
     class12: 83,
-    fill: "#FAE27C",
   },
   {
     name: "Mar",
@@ -77,7 +65,6 @@ const classTrendData = [
     class10: 82,
     class11: 78,
     class12: 85,
-    fill: "#C3EBFA",
   },
   {
     name: "Apr",
@@ -87,7 +74,6 @@ const classTrendData = [
     class10: 81,
     class11: 77,
     class12: 84,
-    fill: "#FAE27C",
   },
   {
     name: "May",
@@ -97,7 +83,6 @@ const classTrendData = [
     class10: 83,
     class11: 79,
     class12: 86,
-    fill: "#C3EBFA",
   },
   {
     name: "Jun",
@@ -107,7 +92,6 @@ const classTrendData = [
     class10: 85,
     class11: 80,
     class12: 88,
-    fill: "#FAE27C",
   },
 ];
 
@@ -123,8 +107,8 @@ const studentGrowthData = [
 const averageMarksData = {
   // Class 7
   class7: [
-    { subject: "Bang-1", current: 85, previous: 82 },
-    { subject: "Bang-2", current: 82, previous: 79 },
+    { subject: "Ban-1", current: 85, previous: 82 },
+    { subject: "Ban-2", current: 82, previous: 79 },
     { subject: "Eng-1", current: 78, previous: 80 },
     { subject: "Eng-2", current: 84, previous: 82 },
     { subject: "Math", current: 88, previous: 85 },
@@ -136,8 +120,8 @@ const averageMarksData = {
 
   // Class 8
   class8: [
-    { subject: "Bang-1", current: 85, previous: 82 },
-    { subject: "Bang-2", current: 82, previous: 79 },
+    { subject: "Ban-1", current: 85, previous: 82 },
+    { subject: "Ban-2", current: 82, previous: 79 },
     { subject: "Eng-1", current: 78, previous: 80 },
     { subject: "Eng-2", current: 84, previous: 82 },
     { subject: "Math", current: 88, previous: 85 },
@@ -150,8 +134,8 @@ const averageMarksData = {
   // Class 9 (SSC Start)
   class9: {
     generalSubjects: [
-      { subject: "Bang-1", current: 85, previous: 82 },
-      { subject: "Bang-2", current: 82, previous: 79 },
+      { subject: "Ban-1", current: 85, previous: 82 },
+      { subject: "Ban-2", current: 82, previous: 79 },
       { subject: "Eng-1", current: 78, previous: 80 },
       { subject: "Eng-2", current: 84, previous: 82 },
       { subject: "Math", current: 88, previous: 85 },
@@ -184,8 +168,8 @@ const averageMarksData = {
   // Class 10 (SSC)
   class10: {
     generalSubjects: [
-      { subject: "Bang-1", current: 85, previous: 82 },
-      { subject: "Bang-2", current: 82, previous: 79 },
+      { subject: "Ban-1", current: 85, previous: 82 },
+      { subject: "Ban-2", current: 82, previous: 79 },
       { subject: "Eng-1", current: 78, previous: 80 },
       { subject: "Eng-2", current: 84, previous: 82 },
       { subject: "Math", current: 88, previous: 85 },
@@ -218,8 +202,8 @@ const averageMarksData = {
   // Class 11 (HSC Start)
   class11: {
     generalSubjects: [
-      { subject: "Bang-1", current: 85, previous: 82 },
-      { subject: "Bang-2", current: 82, previous: 79 },
+      { subject: "Ban-1", current: 85, previous: 82 },
+      { subject: "Ban-2", current: 82, previous: 79 },
       { subject: "Eng-1", current: 78, previous: 80 },
       { subject: "Eng-2", current: 84, previous: 82 },
       { subject: "ICT", current: 88, previous: 85 },
@@ -248,8 +232,8 @@ const averageMarksData = {
   // Class 12 (HSC)
   class12: {
     generalSubjects: [
-      { subject: "Bang-1", current: 85, previous: 82 },
-      { subject: "Bang-2", current: 82, previous: 79 },
+      { subject: "Ban-1", current: 85, previous: 82 },
+      { subject: "Ban-2", current: 82, previous: 79 },
       { subject: "Eng-1", current: 78, previous: 80 },
       { subject: "Eng-2", current: 84, previous: 82 },
       { subject: "ICT", current: 88, previous: 85 },
@@ -276,17 +260,20 @@ const averageMarksData = {
   },
 };
 
-
 // Type guard to validate student grades
-const isValidGrade = (grade: string): grade is "A+" | "A" | "B" | "C" | "D" | "F" => {
+const isValidGrade = (
+  grade: string
+): grade is "A+" | "A" | "B" | "C" | "D" | "F" => {
   return ["A+", "A", "B", "C", "D", "F"].includes(grade);
 };
 
 // Validate and transform student data
 const validateStudents = (students: any[]) => {
-  return students.map(student => {
+  return students.map((student) => {
     if (!isValidGrade(student.grade)) {
-      console.warn(`Invalid grade found for student ${student.id}: ${student.grade}`);
+      console.warn(
+        `Invalid grade found for student ${student.id}: ${student.grade}`
+      );
       // Default to 'F' for invalid grades
       return { ...student, grade: "F" };
     }
@@ -482,7 +469,6 @@ const performanceInsights = [
   "Attention needed: Science scores have slightly declined for grade B students.",
 ];
 
-
 const currentAverage =
   Object.values(averageMarksData)
     .flatMap(
@@ -515,8 +501,6 @@ const previousAverage =
 const growthPercentage =
   ((currentAverage - previousAverage) / previousAverage) * 100;
 
-
-
 const ResultPage = () => {
   const [dateRange, setDateRange] = useState("This Month");
   const handleDownload = (format: string) => {
@@ -541,9 +525,7 @@ const ResultPage = () => {
       />
       <div className="grid grid-cols-1 gap-6 mb-6 w-full">
         <StudentGrowthChart data={studentGrowthData} />
-        <AverageMarksChart
-          data={averageMarksData}
-        />
+        <AverageMarksChart data={averageMarksData} />
       </div>
 
       <PerformanceInsights insights={performanceInsights} />

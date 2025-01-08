@@ -118,7 +118,7 @@ export function AverageMarksChart({ data }: AverageMarksChartProps) {
     const filteredData = filterDataByClassAndGroup();
 
     return (
-      <BarChart data={filteredData} barSize={12} width={800} height={400}>
+      <BarChart data={filteredData} barSize={window.innerWidth < 600 ? 9 : 12} width={800} height={400}>
         <CartesianGrid
           strokeDasharray="3 3"
           vertical={false}
@@ -127,7 +127,7 @@ export function AverageMarksChart({ data }: AverageMarksChartProps) {
         <XAxis
           dataKey="subject"
           axisLine={false}
-          tick={{ fill: "#d1d5db", fontSize: 12 }}
+          tick={{ fill: "#d1d5db", fontSize: 9 }}
           tickLine={false}
         />
         <YAxis
