@@ -81,6 +81,7 @@ export default function StudentPerformanceTable({
         : a.averageScore - b.averageScore
     );
   }, [
+    mockStudents, // Added mockStudents to the dependency array
     searchTerm,
     gradeFilter,
     classFilter,
@@ -231,7 +232,7 @@ export default function StudentPerformanceTable({
                       <DialogContent>
                         <DialogHeader>
                           <DialogTitle className="text-lg sm:text-xl">
-                            {student.name}'s Performance
+                            {student.name}&apos;s Performance
                           </DialogTitle>
                           <DialogDescription className="text-sm sm:text-base">
                             Detailed view of student's scores
