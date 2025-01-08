@@ -52,12 +52,16 @@ export function AverageMarksChart({ data }: AverageMarksChartProps) {
   const [classSelection, setClassSelection] = useState<ClassKey>("class7");
   const [groupSelection, setGroupSelection] = useState<string>("general");
 
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth); // State for window width
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 0
+  ); // State for window width
 
   useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth); // Update state on resize
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize); // Cleanup listener
+    if (typeof window !== "undefined") {
+      const handleResize = () => setWindowWidth(window.innerWidth); // Update state on resize
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize); // Cleanup listener
+    }
   }, []);
 
   const handleClassChange = (value: ClassKey) => {
