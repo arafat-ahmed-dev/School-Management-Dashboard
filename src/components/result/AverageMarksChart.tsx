@@ -1,5 +1,7 @@
 "use client";
 
+import React, { useEffect, useState } from "react"; // Import useEffect and useState
+
 import {
   Card,
   CardContent,
@@ -16,7 +18,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
-import { useState } from "react";
 
 interface SubjectMarks {
   subject: string;
@@ -50,6 +51,14 @@ export function AverageMarksChart({ data }: AverageMarksChartProps) {
   type ClassKey = keyof typeof data;
   const [classSelection, setClassSelection] = useState<ClassKey>("class7");
   const [groupSelection, setGroupSelection] = useState<string>("general");
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth); // State for window width
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth); // Update state on resize
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize); // Cleanup listener
+  }, []);
 
   const handleClassChange = (value: ClassKey) => {
     setClassSelection(value);

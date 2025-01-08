@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -28,6 +28,14 @@ export function ClassAndGroupPerformance({
   classTrendData,
   groupPerformanceData,
 }: ClassAndGroupPerformanceProps) {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth); // State for window width
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth); // Update state on resize
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize); // Cleanup listener
+  }, []);
+
   return (
     <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 mb-6">
       <CardHeader>
@@ -90,7 +98,7 @@ export function ClassAndGroupPerformance({
             >
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
-                  barSize={window.innerWidth < 600 ? 9 : 12}
+                  barSize={windowWidth < 600 ? 9 : 12} // Use state variable
                   width={800}
                   height={400}
                   data={groupPerformanceData}
