@@ -12,6 +12,7 @@ A modern, full-stack dashboard application built with Next.js, TypeScript, and T
 - **Dark Mode Support**: Built-in dark theme support
 - **Form Management**: Comprehensive form handling with validation
 - **Data Tables**: Advanced data tables with sorting, filtering, and pagination
+- **User Roles and Permissions**: Fine-grained access control for different user roles
 
 ## Technology Stack
 
