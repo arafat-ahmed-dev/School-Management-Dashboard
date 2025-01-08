@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Lama Dev School Management Dashboard",
+  title: "School Management Dashboard BY - AAM",
   description: "Next.js School Management System",
 };
 
@@ -16,6 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="shortcut icon" href="/school.png"/>
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   );
