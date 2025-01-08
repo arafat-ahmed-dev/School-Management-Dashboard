@@ -1,4 +1,50 @@
-"use client";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@radix-ui/react-accordion";
+
+export function FAQSection() {
+  return (
+    <section className="w-full py-12 md:py-24 lg:py-32 bg-primary text-primary-foreground">
+      <div className="container px-4 md:px-6">
+        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+          Frequently Asked Questions
+        </h2>
+        <Accordion
+          type="single"
+          collapsible
+          className="w-full max-w-3xl mx-auto"
+        >
+          <AccordionItem value="item-1">
+            <AccordionTrigger>
+              What is the student-to-teacher ratio?
+            </AccordionTrigger>
+            <AccordionContent>
+              Our average student-to-teacher ratio is 15:1, ensuring
+              personalized attention for each student.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger>Do you offer financial aid?</AccordionTrigger>
+            <AccordionContent>
+              Yes, we offer various financial aid options and scholarships based
+              on merit and need. Please contact our admissions office for more
+              information.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-3">
+            <AccordionTrigger>
+              What extracurricular activities are available?
+            </AccordionTrigger>
+            <AccordionContent>
+              We offer a wide range of extracurricular activities including
+              sports, arts, music, debate club, robotics, and community service
+              opportunities.
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
+    </section>
+  );
+}
+/* "use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -33,7 +79,6 @@ import {
   Moon,
   Sun,
 } from "lucide-react";
-import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 
 export default function EnhancedSchoolLandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -55,37 +100,7 @@ export default function EnhancedSchoolLandingPage() {
 
     return () => clearInterval(interval);
   }, []);
-  const testimonials = [
-    {
-      quote:
-        "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.",
-      name: "Charles Dickens",
-      title: "A Tale of Two Cities",
-    },
-    {
-      quote:
-        "To be, or not to be, that is the question: Whether 'tis nobler in the mind to suffer The slings and arrows of outrageous fortune, Or to take Arms against a Sea of troubles, And by opposing end them: to die, to sleep.",
-      name: "William Shakespeare",
-      title: "Hamlet",
-    },
-    {
-      quote: "All that we see or seem is but a dream within a dream.",
-      name: "Edgar Allan Poe",
-      title: "A Dream Within a Dream",
-    },
-    {
-      quote:
-        "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
-      name: "Jane Austen",
-      title: "Pride and Prejudice",
-    },
-    {
-      quote:
-        "Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.",
-      name: "Herman Melville",
-      title: "Moby-Dick",
-    },
-  ];
+
   useEffect(() => {
     document.body.classList.toggle("dark", isDarkMode);
   }, [isDarkMode]);
@@ -93,19 +108,15 @@ export default function EnhancedSchoolLandingPage() {
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
 
   return (
-    <div
-      className={`flex flex-col min-h-screen w-full relative ${
-        isDarkMode ? "dark" : ""
-      }`}
-    >
+    <div className={`flex flex-col min-h-screen ${isDarkMode ? "dark" : ""}`}>
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-14 items-center justify-between">
+        <div className="container flex h-14 items-center">
           <Link className="flex items-center justify-center mr-6" href="#">
             <GraduationCap className="h-6 w-6 text-primary" />
             <span className="ml-2 text-xl font-bold">Acme School</span>
           </Link>
-          <div className="flex items-center space-x-2">
-            <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+          <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+            <nav className="flex items-center space-x-6 text-sm font-medium hidden md:flex">
               <Link
                 className="transition-colors hover:text-primary"
                 href="#programs"
@@ -142,6 +153,7 @@ export default function EnhancedSchoolLandingPage() {
               variant="ghost"
               size="icon"
               aria-label="Toggle Dark Mode"
+              className="mr-6"
               onClick={toggleDarkMode}
             >
               {isDarkMode ? (
@@ -164,7 +176,7 @@ export default function EnhancedSchoolLandingPage() {
           </div>
         </div>
         {isMenuOpen && (
-          <nav className="py-4 md:hidden">
+          <nav className="container py-4 md:hidden">
             <Link
               className="block py-2 transition-colors hover:text-primary"
               href="#programs"
@@ -210,7 +222,7 @@ export default function EnhancedSchoolLandingPage() {
             <source src="/placeholder.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
-          <div className="relative z-10 text-center text-white px-4">
+          <div className="relative z-10 text-center text-white">
             <h1 className="text-4xl md:text-6xl font-bold mb-4">
               Welcome to Acme School
             </h1>
@@ -227,7 +239,7 @@ export default function EnhancedSchoolLandingPage() {
         </section>
 
         <section id="features" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="px-4 md:px-6">
+          <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Why Choose Acme School?
             </h2>
@@ -273,7 +285,7 @@ export default function EnhancedSchoolLandingPage() {
         </section>
 
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
-          <div className="px-4 md:px-6">
+          <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Our Impact
             </h2>
@@ -301,7 +313,7 @@ export default function EnhancedSchoolLandingPage() {
         </section>
 
         <section id="programs" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="px-4 md:px-6">
+          <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Our Programs
             </h2>
@@ -378,7 +390,7 @@ export default function EnhancedSchoolLandingPage() {
         </section>
 
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
-          <div className="px-4 md:px-6">
+          <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Our History
             </h2>
@@ -445,16 +457,53 @@ export default function EnhancedSchoolLandingPage() {
         </section>
 
         <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="px-4 md:px-6">
+          <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               What Our Community Says
             </h2>
-            <div className="h-[40rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
-              <InfiniteMovingCards
-                items={testimonials}
-                direction="right"
-                speed="slow"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Parent Testimonial</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center mb-4">
+                    <Star className="w-5 h-5 text-yellow-400" />
+                    <Star className="w-5 h-5 text-yellow-400" />
+                    <Star className="w-5 h-5 text-yellow-400" />
+                    <Star className="w-5 h-5 text-yellow-400" />
+                    <Star className="w-5 h-5 text-yellow-400" />
+                  </div>
+                  <p className="italic">
+                    "Acme School has been a transformative experience for my
+                    child. The teachers are dedicated and the curriculum is
+                    challenging yet engaging."
+                  </p>
+                  <p className="mt-2 font-semibold">- Sarah Johnson, Parent</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Student Testimonial</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center mb-4">
+                    <Star className="w-5 h-5 text-yellow-400" />
+                    <Star className="w-5 h-5 text-yellow-400" />
+                    <Star className="w-5 h-5 text-yellow-400" />
+                    <Star className="w-5 h-5 text-yellow-400" />
+                    <Star className="w-5 h-5 text-yellow-400" />
+                  </div>
+                  <p className="italic">
+                    "I love the diverse range of activities and the supportive
+                    environment at Acme School. It's helped me discover my
+                    passions and grow as a person."
+                  </p>
+                  <p className="mt-2 font-semibold">
+                    - Michael Lee, 11th Grade Student
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
@@ -463,7 +512,7 @@ export default function EnhancedSchoolLandingPage() {
           id="events"
           className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800"
         >
-          <div className="px-4 md:px-6">
+          <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Upcoming Events
             </h2>
@@ -511,7 +560,7 @@ export default function EnhancedSchoolLandingPage() {
         </section>
 
         <section id="gallery" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="px-4 md:px-6">
+          <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               School Gallery
             </h2>
@@ -563,7 +612,7 @@ export default function EnhancedSchoolLandingPage() {
         </section>
 
         <section className="w-full py-12 md:py-24 lg:py-32 bg-primary text-primary-foreground">
-          <div className="px-4 md:px-6">
+          <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Frequently Asked Questions
             </h2>
@@ -604,7 +653,7 @@ export default function EnhancedSchoolLandingPage() {
         </section>
 
         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="px-4 md:px-6">
+          <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
@@ -640,7 +689,7 @@ export default function EnhancedSchoolLandingPage() {
         </section>
 
         <section className="w-full py-12 md:py-24 lg:py-32 bg-primary">
-          <div className="px-4 md:px-6">
+          <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-white">
@@ -668,7 +717,7 @@ export default function EnhancedSchoolLandingPage() {
         </section>
       </main>
       <footer className="border-t bg-background">
-        <div className="flex flex-col gap-4 py-10 md:flex-row md:justify-between">
+        <div className="container flex flex-col gap-4 py-10 md:flex-row md:justify-between">
           <div className="flex flex-col gap-2">
             <Link href="#" className="flex items-center">
               <GraduationCap className="h-6 w-6 text-primary" />
@@ -703,3 +752,5 @@ export default function EnhancedSchoolLandingPage() {
     </div>
   );
 }
+
+ */
