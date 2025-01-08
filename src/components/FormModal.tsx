@@ -38,10 +38,10 @@ const FormModal = ({
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const bgColor =
     type === "create"
-      ? "bg-lamaYellow"
+      ? "bg-aamYellow"
       : type === "update"
-      ? "bg-lamaSky"
-      : "bg-lamaPurple";
+      ? "bg-aamSky"
+      : "bg-aamPurple";
 
   const forms: {
     [key: string]: (type: "create" | "update", data?: any) => JSX.Element;

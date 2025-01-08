@@ -32,7 +32,7 @@ const SubjectListPage = () => {
   const renderRow = (item: Subject) => (
     <tr
       key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
     >
       <td className="flex items-center gap-4 p-4 px-2">
         <h3 className="font-semibold">{item.name}</h3>
@@ -41,12 +41,12 @@ const SubjectListPage = () => {
       <td>
         <div className="flex items-center gap-2">
           <Link href={`/list/teachers/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky">
+            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-aamSky">
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
           </Link>
           {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple">
+            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-aamPurple">
               <Image src="/delete.png" alt="" width={16} height={16} />
             </button>
           )}
@@ -67,10 +67,10 @@ const SubjectListPage = () => {
               All Subjects
             </h1>
             <div className="flex items-center gap-4 self-end">
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
+              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/filter.png" alt="" width={14} height={14} />
               </button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
+              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/sort.png" alt="" width={14} height={14} />
               </button>
               {role === "admin" && <FormModel table="subject" type="create" />}
