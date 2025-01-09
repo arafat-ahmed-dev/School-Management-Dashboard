@@ -13,6 +13,10 @@ A modern, full-stack dashboard application built with Next.js, TypeScript, and T
 - **Form Management**: Comprehensive form handling with validation
 - **Data Tables**: Advanced data tables with sorting, filtering, and pagination
 - **User Roles and Permissions**: Fine-grained access control for different user roles
+- **Attendance Tracking**: Visual representation of attendance data with charts
+- **Event Management**: Manage and display events with dedicated components
+- **Performance Insights**: Detailed performance analytics for students and classes
+- **Dynamic Forms**: Forms for student and teacher registration with validation
 
 ## Technology Stack
 
