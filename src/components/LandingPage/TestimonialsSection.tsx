@@ -1,7 +1,4 @@
-"use client";
-
-import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
-import React from "react";
+import { InfiniteMovingCards } from "../ui/infinite-moving-cards";
 
 const testimonials = [
   {
@@ -35,11 +32,19 @@ const testimonials = [
   },
 ];
 
-export const TestimonialsSection: React.FC = () => {
+const TestimonialsSection = ({ isDarkMode }: { isDarkMode: boolean }) => {
   return (
-    <section className="testimonials bg-gray-100 p-8">
-      <h2 className="text-2xl">Testimonials</h2>
-      <InfiniteMovingCards items={testimonials} />
+<section id="testimonials" className={`w-full py-12 md:py-24 lg:py-32 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+      <div className="px-4 md:px-6">
+        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+          What Our Community Says
+        </h2>
+        <div className="h-[40rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
+          <InfiniteMovingCards items={testimonials} direction="left" speed="slow" />
+        </div>
+      </div>
     </section>
   );
 };
+
+export default TestimonialsSection;

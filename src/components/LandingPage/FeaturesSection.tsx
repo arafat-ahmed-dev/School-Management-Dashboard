@@ -8,9 +8,13 @@ interface FeaturesSectionProps {
   isDarkMode: boolean;
 }
 
-export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ isDarkMode }) => {
+export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
+  isDarkMode,
+}) => {
   return (
-    <section className={`features ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'} p-8`}>
+    <section
+      className={`features ${isDarkMode ? "bg-gray-800" : "bg-gray-100"} p-8`}
+    >
       <h2 className="text-2xl">Our Features</h2>
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
