@@ -15,7 +15,9 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({
     <section
       className={`features ${isDarkMode ? "bg-gray-800" : "bg-gray-100"} p-8`}
     >
-      <h2 className="text-2xl">Our Features</h2>
+      <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+        Our Features
+      </h2>
       <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader>

@@ -40,7 +40,9 @@ export default function EnhancedSchoolLandingPage() {
       <HeroSection isDarkMode={isDarkMode} />
       <FeaturesSection isDarkMode={isDarkMode} />
       <ImpactSection isDarkMode={isDarkMode} />
-      <ProgramsSection isDarkMode={isDarkMode} />
+      <ProgramsSection
+        isDarkMode={isDarkMode}
+      />
       <HistorySection isDarkMode={isDarkMode} />
       <TestimonialsSection isDarkMode={isDarkMode} />
       <EventsSection isDarkMode={isDarkMode} />
