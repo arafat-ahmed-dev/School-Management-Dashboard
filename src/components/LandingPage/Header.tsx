@@ -3,6 +3,7 @@ import { GraduationCap } from "lucide-react";
 import { Button } from "../ui/button";
 
 import { Sun, Moon, ChevronUp, ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 interface HeaderProps {
   isMenuOpen: boolean;
@@ -12,6 +13,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, toggleDarkMode, isDarkMode }) => {
+  const [user, setUser] = useState(true)
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-3 md:px-5 py-2 md:py-4">
       <div className="flex h-14 items-center justify-between">
@@ -21,29 +23,103 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, toggleDarkMo
         </Link>
         <div className="flex items-center space-x-2">
           <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-            <Link className="transition-colors hover:text-primary" href="#programs">Programs</Link>
-            <Link className="transition-colors hover:text-primary" href="#features">Features</Link>
-            <Link className="transition-colors hover:text-primary" href="#testimonials">Testimonials</Link>
-            <Link className="transition-colors hover:text-primary" href="#events">Events</Link>
-            <Link className="transition-colors hover:text-primary" href="#gallery">Gallery</Link>
+            <Link
+              className="transition-colors hover:text-primary"
+              href="#programs"
+            >
+              Programs
+            </Link>
+            <Link
+              className="transition-colors hover:text-primary"
+              href="#features"
+            >
+              Features
+            </Link>
+            <Link
+              className="transition-colors hover:text-primary"
+              href="#testimonials"
+            >
+              Testimonials
+            </Link>
+            <Link
+              className="transition-colors hover:text-primary"
+              href="#events"
+            >
+              Events
+            </Link>
+            <Link
+              className="transition-colors hover:text-primary"
+              href="#gallery"
+            >
+              Gallery
+            </Link>
           </nav>
           <Button className="hidden md:flex">Apply Now</Button>
-          <Button variant="ghost" size="icon" aria-label="Toggle Dark Mode" onClick={toggleDarkMode}>
-            {isDarkMode ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Toggle Dark Mode"
+            onClick={toggleDarkMode}
+          >
+            {isDarkMode ? (
+              <Sun className="h-6 w-6" />
+            ) : (
+              <Moon className="h-6 w-6" />
+            )}
           </Button>
-          <Button variant="ghost" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            {isMenuOpen ? <ChevronUp className="h-6 w-6" /> : <ChevronDown className="h-6 w-6" />}
+          <Button
+            variant="ghost"
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? (
+              <ChevronUp className="h-6 w-6" />
+            ) : (
+              <ChevronDown className="h-6 w-6" />
+            )}
           </Button>
         </div>
       </div>
       {isMenuOpen && (
         <nav className="py-4 md:hidden">
-          <Link className="block py-2 transition-colors hover:text-primary" href="#programs">Programs</Link>
-          <Link className="block py-2 transition-colors hover:text-primary" href="#features">Features</Link>
-          <Link className="block py-2 transition-colors hover:text-primary" href="#testimonials">Testimonials</Link>
-          <Link className="block py-2 transition-colors hover:text-primary" href="#events">Events</Link>
-          <Link className="block py-2 transition-colors hover:text-primary" href="#gallery">Gallery</Link>
-          <Button className="mt-4 w-full">Apply Now</Button>
+          <Link
+            className="block py-2 transition-colors hover:text-primary"
+            href="#programs"
+          >
+            Programs
+          </Link>
+          <Link
+            className="block py-2 transition-colors hover:text-primary"
+            href="#features"
+          >
+            Features
+          </Link>
+          <Link
+            className="block py-2 transition-colors hover:text-primary"
+            href="#testimonials"
+          >
+            Testimonials
+          </Link>
+          <Link
+            className="block py-2 transition-colors hover:text-primary"
+            href="#events"
+          >
+            Events
+          </Link>
+          <Link
+            className="block py-2 transition-colors hover:text-primary"
+            href="#gallery"
+          >
+            Gallery
+          </Link>
+          {user ? (
+            <Link href={"/profile"}>
+              {" "}
+              <Button className="mt-4 w-full">Profile</Button>
+            </Link>
+          ) : (
+            <Button className="mt-4 w-full">Apply Now</Button>
+          )}
         </nav>
       )}
     </header>

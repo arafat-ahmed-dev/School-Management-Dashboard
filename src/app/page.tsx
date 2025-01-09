@@ -14,6 +14,7 @@ import FAQSection from "@/components/LandingPage/FAQSection";
 import StayConnectedSection from "@/components/LandingPage/StayConnectedSection";
 import CallToActionSection from "@/components/LandingPage/CallToActionSection";
 import { FeaturesSection } from "@/components/LandingPage/FeaturesSection";
+import ContactSection from "@/components/LandingPage/ContactSection";
 
 export default function EnhancedSchoolLandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -49,6 +50,7 @@ export default function EnhancedSchoolLandingPage() {
       <GallerySection isDarkMode={isDarkMode} />
       <FAQSection isDarkMode={isDarkMode} />
       <StayConnectedSection isDarkMode={isDarkMode} />
+      <ContactSection/>
       <CallToActionSection isDarkMode={isDarkMode} />
       <Footer isDarkMode={isDarkMode} />
     </div>
