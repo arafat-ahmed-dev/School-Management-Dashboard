@@ -2,7 +2,9 @@ import { Button } from "../ui/button";
 
 const CallToActionSection = ({ isDarkMode }: { isDarkMode: boolean }) => {
   return (
-    <section className={`w-full py-12 md:py-24 lg:py-32 ${isDarkMode ? 'bg-gray-800' : 'bg-primary'}`}>
+    <section
+      className={`w-full py-12 ${isDarkMode ? "bg-gray-800" : "bg-primary"}`}
+    >
       <div className="px-4 md:px-6">
         <div className="flex flex-col items-center space-y-4 text-center">
           <div className="space-y-2">
@@ -10,7 +12,8 @@ const CallToActionSection = ({ isDarkMode }: { isDarkMode: boolean }) => {
               Ready to Join Our Community?
             </h2>
             <p className="mx-auto max-w-[700px] text-gray-200 md:text-xl">
-              Take the first step towards an exceptional education. Apply now or schedule a visit to learn more about Acme School.
+              Take the first step towards an exceptional education. Apply now or
+              schedule a visit to learn more about Acme School.
             </p>
           </div>
           <div className="space-x-4">

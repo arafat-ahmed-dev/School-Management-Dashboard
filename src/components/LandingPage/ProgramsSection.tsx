@@ -14,7 +14,7 @@ const ProgramsSection = ({ isDarkMode }: { isDarkMode: boolean }) => {
   return (
     <section
       id="programs"
-      className={`w-full py-12 md:py-24 lg:py-32 ${
+      className={`w-full py-12 ${
         isDarkMode ? "bg-gray-800" : "bg-white"
       }`}
     >

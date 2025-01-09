@@ -1,9 +1,7 @@
 const HistorySection = ({ isDarkMode }: { isDarkMode: boolean }) => {
   return (
     <section
-      className={`w-full py-12 md:py-24 lg:py-32 ${
-        isDarkMode ? "bg-gray-800" : "bg-white"
-      }`}
+      className={`w-full py-12 ${isDarkMode ? "bg-gray-800" : "bg-white"}`}
     >
       <div className="px-4 md:px-6">
         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
