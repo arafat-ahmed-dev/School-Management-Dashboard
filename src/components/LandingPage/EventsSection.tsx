@@ -1,10 +1,21 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "../ui/card";
 import { Calendar, Bell, Trophy } from "lucide-react";
 import { Button } from "../ui/button";
 
 const EventsSection = ({ isDarkMode }: { isDarkMode: boolean }) => {
   return (
-<section id="events" className={`w-full py-12 md:py-24 lg:py-32 ${isDarkMode ? 'bg-gray-800' : 'bg-gray-100'}`}>
+    <section
+      id="events"
+      className={`w-full py-12 md:py-24 lg:py-32 ${
+        isDarkMode ? "bg-gray-800" : "bg-gray-100"
+      }`}
+    >
       <div className="px-4 md:px-6">
         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
           Upcoming Events
@@ -28,7 +39,10 @@ const EventsSection = ({ isDarkMode }: { isDarkMode: boolean }) => {
               <CardDescription>September 5, 2023</CardDescription>
             </CardHeader>
             <CardContent>
-              <p>Welcome back students! Let's start an exciting new academic year.</p>
+              <p>
+                Welcome back students! Let&apos;s start an exciting new academic
+                year.
+              </p>
               <Button className="mt-4 w-full">Add to Calendar</Button>
             </CardContent>
           </Card>

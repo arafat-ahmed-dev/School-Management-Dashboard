@@ -1,6 +1,10 @@
 const HistorySection = ({ isDarkMode }: { isDarkMode: boolean }) => {
   return (
-    <section className={`w-full py-12 md:py-24 lg:py-32 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+    <section
+      className={`w-full py-12 md:py-24 lg:py-32 ${
+        isDarkMode ? "bg-gray-800" : "bg-white"
+      }`}
+    >
       <div className="px-4 md:px-6">
         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
           Our History
@@ -32,7 +36,8 @@ const HistorySection = ({ isDarkMode }: { isDarkMode: boolean }) => {
               Founded on January 13, 2022
             </time>
             <p className="mb-4 text-base font-normal text-gray-500 dark:text-gray-400">
-              Acme School was established with a vision to provide innovative and personalized education.
+              Acme School was established with a vision to provide innovative
+              and personalized education.
             </p>
           </div>
           <div className="mb-10 ml-6">
@@ -58,7 +63,8 @@ const HistorySection = ({ isDarkMode }: { isDarkMode: boolean }) => {
               June 15, 2023
             </time>
             <p className="text-base font-normal text-gray-500 dark:text-gray-400">
-              Our first cohort of students graduated, marking a significant milestone in our school's history.
+              Our first cohort of students graduated, marking a significant
+              milestone in our school&apos;s history.
             </p>
           </div>
         </div>
