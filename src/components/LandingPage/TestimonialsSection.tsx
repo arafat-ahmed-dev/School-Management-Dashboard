@@ -42,7 +42,7 @@ const TestimonialsSection = ({ isDarkMode }: { isDarkMode: boolean }) => {
         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
           What Our Community Says
         </h2>
-        <div className="h-[40rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
+        <div className="max-h-[40rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
           <InfiniteMovingCards
             items={testimonials}
             direction="left"
