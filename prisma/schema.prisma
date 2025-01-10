@@ -9,6 +9,206 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  username String    @unique
+  password String
+  Student  Student[]
+}
+
+model Student {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  username    String       @unique
+  name        String
+  parentId    String       @db.ObjectId
+  parent      Admin        @relation(fields: [parentId], references: [id])
+  email       String       @unique
+  phone       Boolean      @unique
+  address     String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  img         String
+  bloodType   String
+  sex         UserSex
+  birthDate   DateTime
+  gradeId     String       @db.ObjectId
+  grade       Grade        @relation(fields: [gradeId], references: [id])
+  classId     String       @db.ObjectId
+  class       Class        @relation(fields: [classId], references: [id])
+  subjectId   String       @db.ObjectId
+  subject     Subject      @relation(fields: [subjectId], references: [id])
+  attendances Attendance[]
+  result      Result[]
+  Parent      Parent       @relation(fields: [parentId], references: [id])
+}
+
+model Teacher {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  username   String    @unique
+  name       String
+  email      String    @unique
+  phone      Boolean   @unique
+  address    String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  img        String
+  subjectsId String[]  @db.ObjectId
+  subjects   Subject[] @relation(fields: [subjectsId], references: [id])
+  lessons    Lesson[]
+  bloodType  String
+  birthday   DateTime?
+  classes    Class[]
+  sex        UserSex
+}
+
+model Parent {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  username  String     @unique
+  name      String
+  email     String     @unique
+  phone     Boolean    @unique
+  address   String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  img       String?
+  students  Student[]
+  type      ParentType
+}
+
+model Class {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  gradeId       String         @db.ObjectId
+  grade         Grade          @relation(fields: [gradeId], references: [id])
+  supervisorId  String?        @db.ObjectId
+  supervisor    Teacher?       @relation(fields: [supervisorId], references: [id])
+  students      Student[]
+  lessons       Lesson[]
+  capacity      Int
+  events        Event[]
+  announcements Announcement[]
+}
+
+model Subject {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  code       String
+  teachersId String[]  @db.ObjectId
+  teachers   Teacher[] @relation(fields: [teachersId], references: [id])
+  lessons    Lesson[]
+  Student    Student[]
+}
+
+model Lesson {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  day         Day
+  startTime   DateTime
+  endTime     DateTime
+  subjectId   String       @db.ObjectId
+  subject     Subject      @relation(fields: [subjectId], references: [id])
+  classId     String       @db.ObjectId
+  class       Class        @relation(fields: [classId], references: [id])
+  teacherId   String       @db.ObjectId
+  teacher     Teacher      @relation(fields: [teacherId], references: [id])
+  exams       Exam[]
+  assignments Assignment[]
+  attendances Attendance[]
+}
+
+model Exam {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  startTime DateTime
+  endTime   DateTime
+
+  lessonId String   @db.ObjectId
+  lesson   Lesson   @relation(fields: [lessonId], references: [id])
+  results  Result[]
+}
+
+model Grade {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  level    Int       @unique
+  students Student[]
+  classes  Class[]
+}
+
+model Assignment {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  startDate DateTime
+  dueDate   DateTime
+
+  lessonId String   @db.ObjectId
+  lesson   Lesson   @relation(fields: [lessonId], references: [id])
+  results  Result[]
+}
+
+model Result {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  score        Int
+  examId       String?     @db.ObjectId
+  exam         Exam?       @relation(fields: [examId], references: [id])
+  assignmentId String?     @db.ObjectId
+  assignment   Assignment? @relation(fields: [assignmentId], references: [id])
+  studentId    String      @db.ObjectId
+  student      Student     @relation(fields: [studentId], references: [id])
+}
+
+model Attendance {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  date    DateTime
+  present Boolean
+
+  studentId String  @db.ObjectId
+  student   Student @relation(fields: [studentId], references: [id])
+  lessonId  String  @db.ObjectId
+  lesson    Lesson  @relation(fields: [lessonId], references: [id])
+}
+
+model Event {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  startTime   DateTime
+  endTime     DateTime
+
+  classId String? @db.ObjectId
+  class   Class?  @relation(fields: [classId], references: [id])
+}
+
+model Announcement {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  date        DateTime
+
+  classId String? @db.ObjectId
+  class   Class?  @relation(fields: [classId], references: [id])
+}
+
+enum Day {
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+}
+
+enum UserSex {
+  MALE
+  FEMALE
+}
+
+enum ParentType {
+  FATHER
+  MOTHER
+  OTHER
 }
