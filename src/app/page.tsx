@@ -15,6 +15,7 @@ import StayConnectedSection from "@/components/LandingPage/StayConnectedSection"
 import CallToActionSection from "@/components/LandingPage/CallToActionSection";
 import { FeaturesSection } from "@/components/LandingPage/FeaturesSection";
 import ContactSection from "@/components/LandingPage/ContactSection";
+import { MentorSection } from "@/components/LandingPage/MentorSection";
 
 export default function EnhancedSchoolLandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,16 +42,15 @@ export default function EnhancedSchoolLandingPage() {
       <HeroSection isDarkMode={isDarkMode} />
       <FeaturesSection isDarkMode={isDarkMode} />
       <ImpactSection isDarkMode={isDarkMode} />
-      <ProgramsSection
-        isDarkMode={isDarkMode}
-      />
+      <ProgramsSection isDarkMode={isDarkMode} />
       <HistorySection isDarkMode={isDarkMode} />
       <TestimonialsSection isDarkMode={isDarkMode} />
       <EventsSection isDarkMode={isDarkMode} />
       <GallerySection isDarkMode={isDarkMode} />
+      <MentorSection isDarkMode={isDarkMode} />
       <FAQSection isDarkMode={isDarkMode} />
       <StayConnectedSection isDarkMode={isDarkMode} />
-      <ContactSection/>
+      <ContactSection />
       <CallToActionSection isDarkMode={isDarkMode} />
       <Footer isDarkMode={isDarkMode} />
     </div>

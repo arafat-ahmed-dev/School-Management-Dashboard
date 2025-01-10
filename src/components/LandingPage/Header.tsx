@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 
 import { Sun, Moon, ChevronUp, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { role } from "@/lib/data";
 
 interface HeaderProps {
   isMenuOpen: boolean;
@@ -54,7 +55,14 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, toggleDarkMo
               Gallery
             </Link>
           </nav>
-          <Button className="hidden md:flex">Apply Now</Button>
+          {user ? (
+            <Link href={`/dashboard/${role}`}>
+              {" "}
+              <Button className="hidden md:block">Dashboard</Button>
+            </Link>
+          ) : (
+            <Button className="hidden md:block">Apply Now</Button>
+          )}
           <Button
             variant="ghost"
             size="icon"
@@ -113,9 +121,9 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, toggleDarkMo
             Gallery
           </Link>
           {user ? (
-            <Link href={"/profile"}>
+            <Link href={`/dashboard/${role}`}>
               {" "}
-              <Button className="mt-4 w-full">Profile</Button>
+              <Button className="mt-4 w-full">Dashboard</Button>
             </Link>
           ) : (
             <Button className="mt-4 w-full">Apply Now</Button>
