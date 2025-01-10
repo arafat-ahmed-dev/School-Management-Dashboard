@@ -25,7 +25,7 @@ export const InfiniteMovingCards = ({
 
   useEffect(() => {
     addAnimation();
-  }, [addAnimation]); // Added addAnimation to the dependency array
+  }, []); // Added addAnimation to the dependency array
 
   const [start, setStart] = useState(false);
 
