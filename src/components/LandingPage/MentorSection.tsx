@@ -49,7 +49,7 @@ export function MentorSection({ isDarkMode }: { isDarkMode: boolean }) {
         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
           Our Mentors
         </h2>
-        <AnimatedTestimonials testimonials={testimonials} />
+        <AnimatedTestimonials testimonials={testimonials} autoplay={true} />
       </div>
     </section>
   );

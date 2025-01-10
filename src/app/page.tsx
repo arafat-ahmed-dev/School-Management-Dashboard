@@ -16,6 +16,7 @@ import CallToActionSection from "@/components/LandingPage/CallToActionSection";
 import { FeaturesSection } from "@/components/LandingPage/FeaturesSection";
 import ContactSection from "@/components/LandingPage/ContactSection";
 import { MentorSection } from "@/components/LandingPage/MentorSection";
+import { tree } from "next/dist/build/templates/app-page";
 
 export default function EnhancedSchoolLandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -47,7 +48,7 @@ export default function EnhancedSchoolLandingPage() {
       <TestimonialsSection isDarkMode={isDarkMode} />
       <EventsSection isDarkMode={isDarkMode} />
       <GallerySection isDarkMode={isDarkMode} />
-      <MentorSection isDarkMode={isDarkMode} />
+      <MentorSection isDarkMode={isDarkMode}/>
       <FAQSection isDarkMode={isDarkMode} />
       <StayConnectedSection isDarkMode={isDarkMode} />
       <ContactSection />
