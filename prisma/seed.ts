@@ -11,21 +11,12 @@ async function main() {
   });
 
   // Grade
+  const grades = [];
   for (let i = 1; i <= 6; i++) {
-    await prisma.grade.create({
+    const grade = await prisma.grade.create({
       data: { level: i },
     });
-  }
-
-  // Class
-  for (let i = 1; i <= 6; i++) {
-    await prisma.class.create({
-      data: {
-        name: `${i}A`,
-        gradeId: `grade${i}`,
-        capacity: Math.floor(Math.random() * (20 - 15 + 1)) + 15,
-      },
-    });
+    grades.push(grade);
   }
 
   // Subject
@@ -41,37 +32,34 @@ async function main() {
     "Computer Science",
     "Art",
   ];
+  const createdSubjects = [];
   for (let i = 0; i < subjects.length; i++) {
-    await prisma.subject.create({
+    const subject = await prisma.subject.create({
       data: {
         name: subjects[i],
         code: `SUB${i + 1}`,
       },
     });
+    createdSubjects.push(subject);
   }
 
-  // Teacher
-  for (let i = 1; i <= 15; i++) {
-    await prisma.teacher.create({
+  // Class
+  const classes = [];
+  for (let i = 1; i <= 6; i++) {
+    const cls = await prisma.class.create({
       data: {
-        username: `teacher${i}`,
-        password: "password",
-        name: `Teacher ${i}`,
-        email: `teacher${i}@example.com`,
-        phone: `123456789${i}`,
-        bloodType: "A+",
-        sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
-        subjects: { connect: [{ id: `subject${(i % 10) + 1}` }] },
-        classes: { connect: [{ id: `class${(i % 6) + 1}` }] },
-        birthday: new Date(1990, i, 1),
-        img: `https://example.com/img/teacher${i}.jpg`,
+        name: `${i}A`,
+        gradeId: grades[i - 1].id,
+        capacity: Math.floor(Math.random() * (20 - 15 + 1)) + 15,
       },
     });
+    classes.push(cls);
   }
 
   // Parent
+  const parents = [];
   for (let i = 1; i <= 25; i++) {
-    await prisma.parent.create({
+    const parent = await prisma.parent.create({
       data: {
         username: `parent${i}`,
         password: "password",
@@ -82,11 +70,34 @@ async function main() {
         type: i % 2 === 0 ? ParentType.FATHER : ParentType.MOTHER,
       },
     });
+    parents.push(parent);
+  }
+
+  // Teacher
+  const teachers = [];
+  for (let i = 1; i <= 15; i++) {
+    const teacher = await prisma.teacher.create({
+      data: {
+        username: `teacher${i}`,
+        password: "password",
+        name: `Teacher ${i}`,
+        email: `teacher${i}@example.com`,
+        phone: `123456789${i}`,
+        bloodType: "A+",
+        sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
+        subjects: { connect: [{ id: createdSubjects[(i % 10)].id }] },
+        classes: { connect: [{ id: classes[(i % 6)].id }] },
+        birthday: new Date(1990, i, 1),
+        img: `https://example.com/img/teacher${i}.jpg`,
+      },
+    });
+    teachers.push(teacher);
   }
 
   // Student
+  const students = [];
   for (let i = 1; i <= 50; i++) {
-    await prisma.student.create({
+    const student = await prisma.student.create({
       data: {
         username: `student${i}`,
         password: "password",
@@ -95,30 +106,33 @@ async function main() {
         phone: `123456789${i}`,
         bloodType: "O-",
         sex: i % 2 === 0 ? UserSex.MALE : UserSex.FEMALE,
-        parentId: `parent${Math.ceil(i / 2)}`,
-        gradeId: `grade${(i % 6) + 1}`,
-        classId: `class${(i % 6) + 1}`,
+        parentId: parents[Math.ceil(i / 2) - 1].id,
+        gradeId: grades[(i % 6)].id,
+        classId: classes[(i % 6)].id,
         birthDate: new Date(2010, i % 12, 1),
         img: `https://example.com/img/student${i}.jpg`,
         address: `Address ${i}`,
-        subjectId: `subject${(i % 10) + 1}`,
+        subjectId: createdSubjects[(i % 10)].id,
       },
     });
+    students.push(student);
   }
 
   // Lesson
+  const lessons = [];
   for (let i = 1; i <= 30; i++) {
-    await prisma.lesson.create({
+    const lesson = await prisma.lesson.create({
       data: {
         name: `Lesson ${i}`,
         day: Day[Object.keys(Day)[i % 7] as keyof typeof Day],
         startTime: new Date(2025, 0, 10, 8, 0),
         endTime: new Date(2025, 0, 10, 10, 0),
-        subjectId: `subject${(i % 10) + 1}`,
-        classId: `class${(i % 6) + 1}`,
-        teacherId: `teacher${(i % 15) + 1}`,
+        subjectId: createdSubjects[(i % 10)].id,
+        classId: classes[(i % 6)].id,
+        teacherId: teachers[(i % 15)].id,
       },
     });
+    lessons.push(lesson);
   }
 
   // Exam
@@ -128,7 +142,7 @@ async function main() {
         title: `Exam ${i}`,
         startTime: new Date(2025, 0, i, 9, 0),
         endTime: new Date(2025, 0, i, 11, 0),
-        lessonId: `lesson${(i % 30) + 1}`,
+        lessonId: lessons[(i % 30)].id,
       },
     });
   }
@@ -139,8 +153,8 @@ async function main() {
       data: {
         date: new Date(2025, 0, i),
         present: i % 2 === 0,
-        studentId: `student${(i % 50) + 1}`,
-        lessonId: `lesson${(i % 30) + 1}`,
+        studentId: students[(i % 50)].id, // Use the ObjectID of the created student
+        lessonId: lessons[(i % 30)].id,
       },
     });
   }
@@ -153,7 +167,7 @@ async function main() {
         description: `Description for Event ${i}`,
         startTime: new Date(new Date().setHours(new Date().getHours() + 1)),
         endTime: new Date(new Date().setHours(new Date().getHours() + 2)),
-        classId: `class${(i % 6) + 1}`,
+        classId: classes[(i % 6)].id,
       },
     });
   }
@@ -165,7 +179,7 @@ async function main() {
         title: `Announcement ${i}`,
         description: `Description for Announcement ${i}`,
         date: new Date(),
-        classId: `class${(i % 6) + 1}`,
+        classId: classes[(i % 6)].id,
       },
     });
   }
