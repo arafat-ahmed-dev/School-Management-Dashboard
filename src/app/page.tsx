@@ -16,7 +16,6 @@ import CallToActionSection from "@/components/LandingPage/CallToActionSection";
 import { FeaturesSection } from "@/components/LandingPage/FeaturesSection";
 import ContactSection from "@/components/LandingPage/ContactSection";
 import { MentorSection } from "@/components/LandingPage/MentorSection";
-import { tree } from "next/dist/build/templates/app-page";
 
 export default function EnhancedSchoolLandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

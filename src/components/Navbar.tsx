@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link";
 
 const Navbar = () => {
   return (
@@ -21,7 +22,9 @@ const Navbar = () => {
             <span className="text-xs leading-3 font-medium">Arafat Ahmed</span>
             <span className="text-right text-gray-500 text-[10px]">Admin</span>
         </div>
+        <Link href="/profile">
         <Image src="/avatar.png" alt="user" width={36} height={36} className="rounded-full" />
+        </Link>
       </div>
     </div>
   );

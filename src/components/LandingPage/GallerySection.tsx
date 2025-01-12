@@ -17,7 +17,8 @@ const GallerySection = ({ isDarkMode }: { isDarkMode: boolean }) => {
         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
           School Gallery
         </h2>
-        <ImagesSlider className="h-[30rem] md:h-[35rem]" images={images}>
+        <div className="w-full h-full items-center flex justify-center">
+        <ImagesSlider className="h-[30rem] md:w-[80%] w-full md:h-[35rem]" images={images}>
           <motion.div
             initial={{
               opacity: 0,
@@ -33,6 +34,7 @@ const GallerySection = ({ isDarkMode }: { isDarkMode: boolean }) => {
             className="z-50 flex flex-col justify-center items-center"
           ></motion.div>
         </ImagesSlider>
+        </div>
       </div>
     </section>
   );

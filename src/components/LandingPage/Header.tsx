@@ -3,7 +3,7 @@ import { GraduationCap } from "lucide-react";
 import { Button } from "../ui/button";
 
 import { Sun, Moon, ChevronUp, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { role } from "@/lib/data";
 
 interface HeaderProps {
@@ -14,7 +14,12 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, toggleDarkMode, isDarkMode }) => {
-  const [user, setUser] = useState(true)
+  const [user, setUser] = useState(true);
+
+  const handleMenuClick = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-3 md:px-5 py-2 md:py-4">
       <div className="flex h-14 items-center justify-between">
@@ -93,40 +98,47 @@ const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, toggleDarkMo
           <Link
             className="block py-2 transition-colors hover:text-primary"
             href="#programs"
+            onClick={handleMenuClick}
           >
             Programs
           </Link>
           <Link
             className="block py-2 transition-colors hover:text-primary"
             href="#features"
+            onClick={handleMenuClick}
           >
             Features
           </Link>
           <Link
             className="block py-2 transition-colors hover:text-primary"
             href="#testimonials"
+            onClick={handleMenuClick}
           >
             Testimonials
           </Link>
           <Link
             className="block py-2 transition-colors hover:text-primary"
             href="#events"
+            onClick={handleMenuClick}
           >
             Events
           </Link>
           <Link
             className="block py-2 transition-colors hover:text-primary"
             href="#gallery"
+            onClick={handleMenuClick}
           >
             Gallery
           </Link>
           {user ? (
-            <Link href={`/dashboard/${role}`}>
+            <Link href={`/dashboard/${role}`} onClick={handleMenuClick}>
               {" "}
               <Button className="mt-4 w-full">Dashboard</Button>
             </Link>
           ) : (
-            <Button className="mt-4 w-full">Apply Now</Button>
+            <Link href="/login" onClick={handleMenuClick}>
+              <Button className="mt-4 w-full">Apply Now</Button>
+            </Link>
           )}
         </nav>
       )}
