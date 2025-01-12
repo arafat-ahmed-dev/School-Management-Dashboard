@@ -28,7 +28,7 @@ model Student {
   parentId    String       @db.ObjectId
   parent      Admin        @relation(fields: [parentId], references: [id])
   email       String       @unique
-  phone       Boolean      
+  phone       String      
   address     String
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -53,7 +53,7 @@ model Teacher {
   password   String    // Hashed password
   name       String
   email      String    @unique
-  phone      Boolean   @unique
+  phone      String   @unique
   address    String?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
@@ -73,7 +73,7 @@ model Parent {
   password  String     // Hashed password
   name      String
   email     String     @unique
-  phone     Boolean    @unique
+  phone     String    @unique
   address   String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
