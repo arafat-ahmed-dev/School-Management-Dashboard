@@ -9,7 +9,7 @@ const menuItems = [
       {
         icon: "/home.png",
         label: "Home",
-        href: `/${role}`,
+        href: `/dashboard/${role}`,
         visible: ["admin", "teacher", "student", "parent"],
       },
       {
