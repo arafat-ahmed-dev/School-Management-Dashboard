@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { GraduationCap } from "lucide-react";
 import { Button } from "../ui/button";
-
 import { Sun, Moon, ChevronUp, ChevronDown } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { role } from "@/lib/data";
 
 interface HeaderProps {
@@ -13,9 +12,13 @@ interface HeaderProps {
   isDarkMode: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ isMenuOpen, setIsMenuOpen, toggleDarkMode, isDarkMode }) => {
+const Header: React.FC<HeaderProps> = ({
+  isMenuOpen,
+  setIsMenuOpen,
+  toggleDarkMode,
+  isDarkMode,
+}) => {
   const [user, setUser] = useState(true);
-
   const handleMenuClick = () => {
     setIsMenuOpen(false);
   };
