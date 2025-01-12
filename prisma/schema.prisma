@@ -16,18 +16,19 @@ datasource db {
 model Admin {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   username String    @unique
-  password String
+  password String    // Hashed password
   Student  Student[]
 }
 
 model Student {
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
   username    String       @unique
+  password    String       // Hashed password
   name        String
   parentId    String       @db.ObjectId
   parent      Admin        @relation(fields: [parentId], references: [id])
   email       String       @unique
-  phone       Boolean      @unique
+  phone       Boolean      
   address     String
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -49,6 +50,7 @@ model Student {
 model Teacher {
   id         String    @id @default(auto()) @map("_id") @db.ObjectId
   username   String    @unique
+  password   String    // Hashed password
   name       String
   email      String    @unique
   phone      Boolean   @unique
@@ -68,6 +70,7 @@ model Teacher {
 model Parent {
   id        String     @id @default(auto()) @map("_id") @db.ObjectId
   username  String     @unique
+  password  String     // Hashed password
   name      String
   email     String     @unique
   phone     Boolean    @unique
@@ -78,6 +81,7 @@ model Parent {
   students  Student[]
   type      ParentType
 }
+
 
 model Class {
   id            String         @id @default(auto()) @map("_id") @db.ObjectId
