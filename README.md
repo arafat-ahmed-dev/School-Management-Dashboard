@@ -21,7 +21,7 @@ A modern, full-stack dashboard application built with Next.js, TypeScript, and T
 ## Technology Stack
 
 - **Frontend**: 
-  - Next.js 13 (App Router)
+  - Next.js 14 (App Router)
   - TypeScript
   - Tailwind CSS
   - Shadcn UI Components
@@ -29,7 +29,7 @@ A modern, full-stack dashboard application built with Next.js, TypeScript, and T
 - **Backend**:
   - Next.js API Routes
   - Prisma ORM
-  - PostgreSQL Database
+  - MongoDB Database
 - **Tools**:
   - ESLint for code linting
   - Prettier for code formatting
@@ -41,7 +41,7 @@ A modern, full-stack dashboard application built with Next.js, TypeScript, and T
 
 - Node.js (v18 or higher)
 - npm (v9 or higher)
-- PostgreSQL database
+- MongoDB database
 
 ### Installation
 
@@ -63,7 +63,7 @@ A modern, full-stack dashboard application built with Next.js, TypeScript, and T
 4. Set up environment variables:
    Create a `.env` file in the root directory and add the following:
    ```env
-   DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
+   DATABASE_URL="mongodb+srv://<Database-UserName>:<Database-Password>@cluster0.czb6d.mongodb.net/<Database-Name>"
    NEXTAUTH_SECRET="your-secret-key"
    ```
 
