@@ -20,9 +20,16 @@ import { MentorSection } from "@/components/LandingPage/MentorSection";
 export default function EnhancedSchoolLandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     document.body.classList.toggle("dark", isDarkMode);
+    // Simulate data fetching
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000); // Simulate a 2-second loading time
+
+    return () => clearTimeout(timer);
   }, [isDarkMode]);
 
   const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
@@ -38,21 +45,22 @@ export default function EnhancedSchoolLandingPage() {
         isMenuOpen={isMenuOpen}
         setIsMenuOpen={setIsMenuOpen}
         toggleDarkMode={toggleDarkMode}
+        loading={loading} // Pass loading prop to Header
       />
-      <HeroSection isDarkMode={isDarkMode} />
-      <FeaturesSection isDarkMode={isDarkMode} />
-      <ImpactSection isDarkMode={isDarkMode} />
-      <ProgramsSection isDarkMode={isDarkMode} />
-      <HistorySection isDarkMode={isDarkMode} />
-      <TestimonialsSection isDarkMode={isDarkMode} />
-      <EventsSection isDarkMode={isDarkMode} />
-      <GallerySection isDarkMode={isDarkMode} />
-      <MentorSection isDarkMode={isDarkMode}/>
-      <FAQSection isDarkMode={isDarkMode} />
-      <StayConnectedSection isDarkMode={isDarkMode} />
-      <ContactSection />
-      <CallToActionSection isDarkMode={isDarkMode} />
-      <Footer isDarkMode={isDarkMode} />
+      <HeroSection isDarkMode={isDarkMode} loading={loading} />
+      <FeaturesSection isDarkMode={isDarkMode} loading={loading} />
+      <ImpactSection isDarkMode={isDarkMode} loading={loading} />
+      <ProgramsSection isDarkMode={isDarkMode} loading={loading} />
+      <HistorySection isDarkMode={isDarkMode} loading={loading} />
+      <TestimonialsSection isDarkMode={isDarkMode} loading={loading} />
+      <EventsSection isDarkMode={isDarkMode} loading={loading} />
+      <GallerySection isDarkMode={isDarkMode} loading={loading} />
+      <MentorSection isDarkMode={isDarkMode} />
+      <FAQSection isDarkMode={isDarkMode} loading={loading} />
+      <StayConnectedSection isDarkMode={isDarkMode} loading={loading} />
+      <ContactSection isDarkMode={isDarkMode} loading={loading} />
+      <CallToActionSection isDarkMode={isDarkMode} loading={loading} />
+      <Footer isDarkMode={isDarkMode} loading={loading} />
     </div>
   );
 }

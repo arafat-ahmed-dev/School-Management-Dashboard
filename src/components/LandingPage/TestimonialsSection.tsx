@@ -1,4 +1,5 @@
 import { InfiniteMovingCards } from "../ui/infinite-moving-cards";
+import { Skeleton } from "../ui/skeleton";
 
 const testimonials = [
   {
@@ -32,23 +33,35 @@ const testimonials = [
   },
 ];
 
-const TestimonialsSection = ({ isDarkMode }: { isDarkMode: boolean }) => {
+const TestimonialsSection = ({
+  isDarkMode,
+  loading,
+}: {
+  isDarkMode: boolean;
+  loading: boolean;
+}) => {
   return (
     <section
       id="testimonials"
-      className={`w-full py-12 ${isDarkMode ? "bg-gray-800" : "bg-white"}`}
+      className={`w-full py-12 ${
+        isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"
+      }`}
     >
       <div className="px-4 md:px-6">
         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
           What Our Community Says
         </h2>
-        <div className="max-h-[40rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
-          <InfiniteMovingCards
-            items={testimonials}
-            direction="left"
-            speed="slow"
-          />
-        </div>
+        {loading ? ( // Conditional rendering for skeleton
+          <Skeleton className="w-full h-64 rounded-lg" />
+        ) : (
+          <div className="max-h-[40rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
+            <InfiniteMovingCards
+              items={testimonials}
+              direction="left"
+              speed="slow"
+            />
+          </div>
+        )}
       </div>
     </section>
   );
