@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-
+import AuthSilce from "./features/Auth/authSlice"
 // store variable is a global variable.
 export const makeStore = () => {
   return configureStore({
     reducer: {
-     
+      auth: AuthSilce,
     },
   });
 };
