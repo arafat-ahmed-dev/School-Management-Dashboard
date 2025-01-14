@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { login } from "@/lib/store/features/Auth/authSlice";
 import { useAppDispatch } from "@/lib/store/hooks";
 
@@ -10,11 +10,13 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className=''>
-      <button className="bg-red-100 p-4" onClick={handleLogin}>Login</button>
+    <div className="">
+      <button className="bg-red-100 p-4" onClick={handleLogin}>
+        Login
+      </button>
       ProfilePage
     </div>
   );
-}
+};
 
 export default ProfilePage;
