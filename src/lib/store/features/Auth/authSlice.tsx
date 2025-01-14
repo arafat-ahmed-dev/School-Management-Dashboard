@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 // Define TypeScript interface for the state
 interface UserState {
@@ -46,8 +46,8 @@ export const userSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    login: (state, action) => {
-      state.userData = action.payload; // Set the user data (replace with new user data)
+    login: (state, action: PayloadAction<any>) => {
+      state.userData = action.payload; // Set the user data
       state.status = true; // Set status to logged in
       state.error = null; // Clear errors
       saveUserDataToStorage(action.payload); // Save to localStorage
@@ -58,7 +58,7 @@ export const userSlice = createSlice({
       state.error = null; // Clear errors
       clearUserDataFromStorage(); // Remove from localStorage
     },
-    setError: (state, action) => {
+    setError: (state, action: PayloadAction<string>) => {
       state.error = action.payload; // Set error message
     },
     clearError: (state) => {
