@@ -8,20 +8,20 @@ datasource db {
 }
 
 model Admin {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  username String    @unique
-  password String    
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  username String @unique
+  password String
 }
 
 model Student {
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
   username    String       @unique
-  password    String       
+  password    String
   name        String
   Parent      Parent       @relation(fields: [parentId], references: [id])
   parentId    String       @db.ObjectId
   email       String       @unique
-  phone       String      
+  phone       String
   address     String
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -37,12 +37,13 @@ model Student {
   subject     Subject      @relation(fields: [subjectId], references: [id])
   attendances Attendance[]
   result      Result[]
+  approved    Boolean      @default(false)
 }
 
 model Teacher {
   id         String    @id @default(auto()) @map("_id") @db.ObjectId
   username   String    @unique
-  password   String    
+  password   String
   name       String
   email      String    @unique
   phone      String    @unique
@@ -57,21 +58,23 @@ model Teacher {
   birthday   DateTime?
   classes    Class[]
   sex        UserSex
+  approved   Boolean   @default(false)
 }
 
 model Parent {
   id        String     @id @default(auto()) @map("_id") @db.ObjectId
   username  String     @unique
-  password  String     
+  password  String
   name      String
-  email     String?     @unique
-  phone     String?     @unique
+  email     String?    @unique
+  phone     String?    @unique
   address   String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   img       String?
   students  Student[]
   type      ParentType
+  approved  Boolean    @default(false)
 }
 
 model Class {
@@ -150,9 +153,6 @@ model Result {
   examId       String?     @db.ObjectId
   exam         Exam?       @relation(fields: [examId], references: [id])
   assignmentId String?     @db.ObjectId
-  assignment   Assignment? @relation(fields: [assignmentId], references: [id])
-  studentId    String      @db.ObjectId
-  student      Student     @relation(fields: [studentId], references: [id])
 }
 
 model Attendance {
