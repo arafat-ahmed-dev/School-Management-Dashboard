@@ -153,6 +153,9 @@ model Result {
   examId       String?     @db.ObjectId
   exam         Exam?       @relation(fields: [examId], references: [id])
   assignmentId String?     @db.ObjectId
+  assignment   Assignment? @relation(fields: [assignmentId], references: [id])
+  studentId    String      @db.ObjectId
+  student      Student     @relation(fields: [studentId], references: [id])
 }
 
 model Attendance {
