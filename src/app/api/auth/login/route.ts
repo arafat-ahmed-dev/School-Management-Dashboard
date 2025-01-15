@@ -57,5 +57,8 @@ export const POST = async (request: NextRequest) => {
       { message: "Internal Server Error in Login" , error},
       { status: 500 }
     );
+  } finally {
+    await prisma.$disconnect();
+    console.log("disconnect the database");
   }
 };
