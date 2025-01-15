@@ -8,9 +8,13 @@ datasource db {
 }
 
 model Admin {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  username String @unique
-  password String
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  username String   @unique
+  password String   @unique
+  email    String?   @unique
+  phone    String
+  approved Boolean? @default(true)
 }
 
 model Student {
