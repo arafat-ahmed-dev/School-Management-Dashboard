@@ -33,6 +33,7 @@ export const POST = async (request: NextRequest) => {
       return Response.json({ message: "User not found" }, { status: 404 });
     }
 
+    console.log("user ----------> ", user);
     // Check if user is approved
     if (!user.approved) {
       return Response.json({ message: "User not approved" }, { status: 403 });

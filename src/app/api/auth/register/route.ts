@@ -1,6 +1,6 @@
 import bcryptjs from "bcryptjs";
 import { NextRequest } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Approve } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -49,7 +49,7 @@ export const POST = async (request: NextRequest) => {
     const hashedPassword = await bcryptjs.hash(password, 10);
 
     // Set approval status based on user type
-    const approved = userType === "Admin" || userType === "Teacher";
+    const approved = userType === "Admin" ? Approve.ACCEPTED : Approve.PENDING;
 
     // Log the data being sent to Prisma
     console.log("Creating new user with data:", {
@@ -68,6 +68,7 @@ export const POST = async (request: NextRequest) => {
             username,
             password: hashedPassword,
             name,
+            approved,
             ...additionalFields,
           },
         });
