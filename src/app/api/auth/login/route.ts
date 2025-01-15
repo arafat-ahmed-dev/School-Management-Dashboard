@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export const POST = async (request: NextRequest) => {
   try {
-    const { username, password } = await request.json();
+    const {userType ,  username, password } = await request.json();
 
     if (!username || !password) {
       return Response.json(
@@ -16,18 +16,25 @@ export const POST = async (request: NextRequest) => {
     }
 
     // Check user type and find user
-    const user =
-      ((await prisma.admin.findUnique({ where: { username } })) as Admin) ||
-      ((await prisma.teacher.findUnique({ where: { username } })) as Teacher) ||
-      ((await prisma.student.findUnique({ where: { username } })) as Student) ||
-      ((await prisma.parent.findUnique({ where: { username } })) as Parent);
-
+    let user;
+    if (userType === 'Admin') {
+      user = await prisma.admin.findUnique({ where: { username } });
+    } else if (userType === 'Teacher') {
+      user = await prisma.teacher.findUnique({ where: { username } });
+    } else if (userType === 'Student') {
+      user = await prisma.student.findUnique({ where: { username } });
+    } else if (userType === 'Parent') {
+      user = await prisma.parent.findUnique({ where: { username } });
+    } else {
+      return Response.json({ message: "Invalid user type" }, { status: 400 });
+    }
+      
     if (!user) {
       return Response.json({ message: "User not found" }, { status: 404 });
     }
 
     // Check if user is approved
-    if ("approved" in user && !user.approved) {
+    if (!user.approved) {
       return Response.json({ message: "User not approved" }, { status: 403 });
     }
 
@@ -37,14 +44,17 @@ export const POST = async (request: NextRequest) => {
       return Response.json({ message: "Invalid password" }, { status: 401 });
     }
 
+    // Log successful login
+    console.log(`User ${username} logged in successfully.`);
+
     return Response.json(
-      { message: "Login successful", user },
+      { message: "Login successful", user , userRole : userType}, 
       { status: 200 }
     );
   } catch (error) {
     console.error(error);
     return Response.json(
-      { message: "Internal Server Error in Login" },
+      { message: "Internal Server Error in Login" , error},
       { status: 500 }
     );
   }

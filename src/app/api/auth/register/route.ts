@@ -16,6 +16,14 @@ export const POST = async (request: NextRequest) => {
       );
     }
 
+    // Validate username and password formats
+    if (username.length < 3 || password.length < 6) {
+      return Response.json(
+        { message: "Username must be at least 3 characters and password at least 6 characters" },
+        { status: 400 }
+      );
+    }
+
     // Check if username already exists
     let existingUser;
     switch (userType) {
@@ -110,7 +118,7 @@ export const POST = async (request: NextRequest) => {
       error,
     });
   } finally {
-    // disconnet the database
+    // disconnect the database
     await prisma.$disconnect();
   }
 };
