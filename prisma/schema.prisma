@@ -12,36 +12,37 @@ model Admin {
   name     String
   username String   @unique
   password String   @unique
-  email    String?   @unique
+  email    String   @unique
   phone    String
-  approved Boolean? @default(true)
+  approved Approve? @default(ACCEPTED)
 }
 
 model Student {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
-  username    String       @unique
-  password    String
-  name        String
-  Parent      Parent       @relation(fields: [parentId], references: [id])
-  parentId    String       @db.ObjectId
-  email       String       @unique
-  phone       String
-  address     String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  img         String
-  bloodType   String
-  sex         UserSex
-  birthDate   DateTime
-  gradeId     String       @db.ObjectId
-  grade       Grade        @relation(fields: [gradeId], references: [id])
-  classId     String       @db.ObjectId
-  class       Class        @relation(fields: [classId], references: [id])
-  subjectId   String       @db.ObjectId
-  subject     Subject      @relation(fields: [subjectId], references: [id])
-  attendances Attendance[]
-  result      Result[]
-  approved    Boolean      @default(false)
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  username      String       @unique
+  password      String
+  name          String
+  Parent        Parent?      @relation(fields: [parentId], references: [id])
+  parentId      String?      @db.ObjectId
+  email         String       @unique
+  parentContact String
+  phone         String
+  address       String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  img           String?
+  bloodType     String?
+  sex           UserSex
+  birthDate     DateTime
+  gradeId       String?      @db.ObjectId
+  grade         Grade?       @relation(fields: [gradeId], references: [id])
+  classId       String       @db.ObjectId
+  class         Class        @relation(fields: [classId], references: [id])
+  subjectId     String?      @db.ObjectId
+  subject       Subject?     @relation(fields: [subjectId], references: [id])
+  attendances   Attendance[]
+  result        Result[]
+  approved      Approve?     @default(PENDING)
 }
 
 model Teacher {
@@ -54,15 +55,15 @@ model Teacher {
   address    String?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-  img        String
+  img        String?
   subjectsId String[]  @db.ObjectId
   subjects   Subject[] @relation(fields: [subjectsId], references: [id])
   lessons    Lesson[]
-  bloodType  String
+  bloodType  String?
   birthday   DateTime?
   classes    Class[]
   sex        UserSex
-  approved   Boolean   @default(false)
+  approved   Approve?  @default(PENDING)
 }
 
 model Parent {
@@ -78,7 +79,7 @@ model Parent {
   img       String?
   students  Student[]
   type      ParentType
-  approved  Boolean    @default(false)
+  approved  Approve?   @default(PENDING)
 }
 
 model Class {
@@ -213,4 +214,10 @@ enum ParentType {
   FATHER
   MOTHER
   OTHER
+}
+
+enum Approve {
+  PENDING
+  ACCEPTED
+  CANCEL
 }

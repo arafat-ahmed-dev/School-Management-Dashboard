@@ -1,4 +1,3 @@
-/// ----------- Login ----------- ///
 import { NextRequest } from "next/server";
 import { PrismaClient, Admin, Teacher, Student, Parent } from "@prisma/client";
 import bcryptjs from "bcryptjs";

@@ -1,4 +1,3 @@
-/// ----------- Register ----------- ///
 import bcryptjs from "bcryptjs";
 import { NextRequest } from "next/server";
 import { PrismaClient } from "@prisma/client";
@@ -7,7 +6,7 @@ const prisma = new PrismaClient();
 
 export const POST = async (request: NextRequest) => {
   try {
-    /* const { userType, username, password, name, ...additionalFields } =
+    const { userType, username, password, name, ...additionalFields } =
       await request.json();
 
     if (!userType || !username || !password || !name) {
@@ -103,7 +102,7 @@ export const POST = async (request: NextRequest) => {
         data: newUser,
       },
       { status: 201 }
-    ); */
+    );
   } catch (error) {
     console.error(error);
     return Response.json({
