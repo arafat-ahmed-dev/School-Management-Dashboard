@@ -1,32 +1,38 @@
-"use client"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+"use client";
+import React, { useState } from "react";
+import { cn } from "../lib/utils"; // Adjusted path
+import { Button } from "./ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import Link from "next/link"
+} from "./ui/card";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import Link from "next/link";
+import { Select, SelectItem, SelectTrigger, SelectContent, SelectValue } from "./ui/select"; // Import Select components
 
 export function LoginForm({
   className,
   onLogin,
   ...props
 }: React.ComponentPropsWithoutRef<"div"> & { onLogin: (data: any) => void }) {
+  const [role, setRole] = useState<string>("");
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = {
+      role: formData.get("role"), // Include role in the data object
       email: formData.get("email"),
       password: formData.get("password"),
     };
     console.log("Form submitted", data);
     onLogin(data);
   };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -39,6 +45,20 @@ export function LoginForm({
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
+              <LabelInputContainer>
+                <Label htmlFor="role">Role</Label>
+                <Select name="role" onValueChange={setRole}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="student">Student</SelectItem>
+                    <SelectItem value="teacher">Teacher</SelectItem>
+                    <SelectItem value="parent">Parent</SelectItem>
+                  </SelectContent>
+                </Select>
+              </LabelInputContainer>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -68,7 +88,7 @@ export function LoginForm({
                 />
               </div>
               <button
-                className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+                className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]"
                 type="submit"
               >
                 Login &larr;
@@ -89,3 +109,17 @@ export function LoginForm({
     </div>
   );
 }
+
+const LabelInputContainer = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <div className={cn("flex flex-col space-y-2 w-full", className)}>
+      {children}
+    </div>
+  );
+};

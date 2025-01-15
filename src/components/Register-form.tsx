@@ -26,6 +26,7 @@ export function RegisterForm({
     const data = {
       firstname: formData.get("firstname"),
       lastname: formData.get("lastname"),
+      username : formData.get("username"),
       email: formData.get("email"),
       password: formData.get("password"),
       role: formData.get("role"), // Include role in the data object
@@ -56,6 +57,20 @@ export function RegisterForm({
       </p>
 
       <form className="my-8" onSubmit={handleSubmit}>
+        <LabelInputContainer className="mb-4">
+          <Label htmlFor="role">Role</Label>
+          <Select name="role" onValueChange={setRole}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="admin">Admin</SelectItem>
+              <SelectItem value="student">Student</SelectItem>
+              <SelectItem value="teacher">Teacher</SelectItem>
+              <SelectItem value="parent">Parent</SelectItem>
+            </SelectContent>
+          </Select>
+        </LabelInputContainer>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
             <Label htmlFor="firstname">First name</Label>
@@ -102,20 +117,6 @@ export function RegisterForm({
             placeholder="••••••••"
             type="password"
           />
-        </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
-          <Label htmlFor="role">Role</Label>
-          <Select name="role" onValueChange={setRole}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select a role" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="admin">Admin</SelectItem>
-              <SelectItem value="student">Student</SelectItem>
-              <SelectItem value="teacher">Teacher</SelectItem>
-              <SelectItem value="parent">Parent</SelectItem>
-            </SelectContent>
-          </Select>
         </LabelInputContainer>
 
         {/* Conditional Fields */}
