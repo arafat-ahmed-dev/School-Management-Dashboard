@@ -1,5 +1,4 @@
 "use client";
-import { login } from "@/lib/store/features/Auth/authSlice";
 import { AppStore, makeStore } from "@/lib/store/index";
 import React, { ReactNode, useRef } from "react";
 import { Provider } from "react-redux";
