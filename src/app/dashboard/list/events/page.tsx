@@ -57,7 +57,7 @@ const EventListPage = () => {
       <td className="hidden md:table-cell p-2">{item.endTime}</td>
       <td>
         <div className="flex items-center gap-2">
-          {role === "admin" && (
+          {role === "Admin" && (
             <>
               <FormModel table="event" type="update" />
               <FormModel table="event" type="delete" id={item.id} />
@@ -86,7 +86,7 @@ const EventListPage = () => {
               <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/sort.png" alt="" width={14} height={14} />
               </button>
-              {role === "admin" && <FormModel table="event" type="create" />}
+              {role === "Admin" && <FormModel table="event" type="create" />}
             </div>
           </div>
         </div>

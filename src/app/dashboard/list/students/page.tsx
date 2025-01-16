@@ -78,7 +78,7 @@ const StudentListPage = () => {
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
           </Link>
-          {role === "admin" && (
+          {role === "Admin" && (
             <>
               <FormModel table="student" type="update" />
               <FormModel table="student" type="delete" id={item.id} />
@@ -107,7 +107,7 @@ const StudentListPage = () => {
               <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/sort.png" alt="" width={14} height={14} />
               </button>
-              {role === "admin" && <FormModel table="student" type="create" />}
+              {role === "Admin" && <FormModel table="student" type="create" />}
             </div>
           </div>
         </div>

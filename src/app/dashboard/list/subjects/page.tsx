@@ -45,7 +45,7 @@ const SubjectListPage = () => {
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
           </Link>
-          {role === "admin" && (
+          {role === "Admin" && (
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-aamPurple">
               <Image src="/delete.png" alt="" width={16} height={16} />
             </button>
@@ -73,7 +73,7 @@ const SubjectListPage = () => {
               <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/sort.png" alt="" width={14} height={14} />
               </button>
-              {role === "admin" && <FormModel table="subject" type="create" />}
+              {role === "Admin" && <FormModel table="subject" type="create" />}
             </div>
           </div>
         </div>

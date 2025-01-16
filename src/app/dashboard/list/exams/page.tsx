@@ -50,7 +50,7 @@ const ExamListPage = () => {
       <td className="hidden md:table-cell p-2">{item.date}</td>
       <td>
         <div className="flex items-center gap-2">
-          {role === "admin" && (
+          {role === "Admin" && (
             <>
               <FormModel table="exam" type="update" />
               <FormModel table="exam" type="delete" id={item.id} />
@@ -77,7 +77,7 @@ const ExamListPage = () => {
               <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/sort.png" alt="" width={14} height={14} />
               </button>
-              {(role === "admin" || role === "teacher") && (
+              {(role === "Admin" || role === "teacher") && (
                 <FormModel table="exam" type="create" />
               )}
             </div>

@@ -2,7 +2,7 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { attendanceData, role } from "@/lib/data";
+import { attendanceData, getUserRole } from "@/lib/data";
 import Image from "next/image";
 
 type Attendance = {
@@ -12,6 +12,7 @@ type Attendance = {
   date: string;
   status: string;
 };
+const role = getUserRole();
 
 const columns = [
   {
@@ -50,7 +51,7 @@ const AttendanceListPage = () => {
       <td className="hidden md:table-cell p-2">{item.status}</td>
       <td>
         <div className="flex items-center gap-2">
-          {role === "admin" && (
+          {role === "Admin" && (
             <>
               <FormModel table="attendance" type="update" />
               <FormModel table="attendance" type="delete" id={item.id} />
@@ -81,7 +82,7 @@ const AttendanceListPage = () => {
               <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/sort.png" alt="" width={14} height={14} />
               </button>
-              {role === "admin" && (
+              {role === "Admin" && (
                 <FormModel table="attendance" type="create" />
               )}
             </div>

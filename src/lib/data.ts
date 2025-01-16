@@ -1,6 +1,16 @@
-// TEMPORARY DATA
 
+import { useSelector } from "react-redux";
+import { RootState } from "./store"; // Adjust the path as necessary
 export let role = "admin";
+
+export const getUserRole = () => {
+  const userRole = useSelector(
+    (state: RootState) => state.auth.userData?.userRole
+  );
+  console.log(userRole);
+  return userRole; // Default to "guest" if no role is found
+};
+
 
 export const teachersData = [
   {
@@ -919,144 +929,420 @@ export const calendarEvents = [
   {
     title: "Math",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 9, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 9, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      9,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      9,
+      50
+    ),
   },
   {
     title: "English",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 12, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 12, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      12,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      12,
+      50
+    ),
   },
   {
     title: "Biology",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 10, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 10, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      10,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      10,
+      50
+    ),
   },
   {
     title: "Physics",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 11, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 11, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      11,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      11,
+      50
+    ),
   },
   {
     title: "Chemistry",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 13, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 13, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      13,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      13,
+      50
+    ),
   },
   {
     title: "History",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 14, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 14, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      14,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate(),
+      14,
+      50
+    ),
   },
   {
     title: "English",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 9, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 9, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 1,
+      9,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 1,
+      9,
+      50
+    ),
   },
   {
     title: "Biology",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 10, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 10, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 1,
+      10,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 1,
+      10,
+      50
+    ),
   },
   {
     title: "Physics",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 11, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 11, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 1,
+      11,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 1,
+      11,
+      50
+    ),
   },
 
   {
     title: "History",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 14, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 14, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 1,
+      14,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 1,
+      14,
+      50
+    ),
   },
   {
     title: "Math",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2, 9, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2, 9, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 2,
+      9,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 2,
+      9,
+      50
+    ),
   },
   {
     title: "Biology",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2, 10, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2, 10, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 2,
+      10,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 2,
+      10,
+      50
+    ),
   },
 
   {
     title: "Chemistry",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2, 13, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2, 13, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 2,
+      13,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 2,
+      13,
+      50
+    ),
   },
   {
     title: "History",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2, 14, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 2, 14, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 2,
+      14,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 2,
+      14,
+      50
+    ),
   },
   {
     title: "English",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 3, 9, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 3, 9, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 3,
+      9,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 3,
+      9,
+      50
+    ),
   },
   {
     title: "Biology",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 3, 10, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 3, 10, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 3,
+      10,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 3,
+      10,
+      50
+    ),
   },
   {
     title: "Physics",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 3, 11, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 3, 11, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 3,
+      11,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 3,
+      11,
+      50
+    ),
   },
 
   {
     title: "History",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 3, 14, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 3, 14, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 3,
+      14,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 3,
+      14,
+      50
+    ),
   },
   {
     title: "Math",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 4, 9, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 4, 9, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 4,
+      9,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 4,
+      9,
+      50
+    ),
   },
   {
     title: "English",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 5, 9, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 5, 9, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 5,
+      9,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 5,
+      9,
+      50
+    ),
   },
 
   {
     title: "Physics",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 4, 11, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 4, 11, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 4,
+      11,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 4,
+      11,
+      50
+    ),
   },
   {
     title: "Chemistry",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 4, 13, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 4, 13, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 4,
+      13,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 4,
+      13,
+      50
+    ),
   },
   {
     title: "History",
     allDay: false,
-    start: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 4, 14, 0),
-    end: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 4, 14, 50),
+    start: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 4,
+      14,
+      0
+    ),
+    end: new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      new Date().getDate() + 4,
+      14,
+      50
+    ),
   },
 ];
 
