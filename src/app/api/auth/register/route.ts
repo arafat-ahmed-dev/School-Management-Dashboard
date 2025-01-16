@@ -1,65 +1,103 @@
 import bcryptjs from "bcryptjs";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient, Approve } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export const POST = async (request: NextRequest) => {
   try {
-    const { userType, username, password, name, ...additionalFields } =
+    const { userType, username, password, name, email, ...additionalFields } =
       await request.json();
 
-    if (!userType || !username || !password || !name) {
-      return Response.json(
-        { message: "All fields are required" },
+    // Validate required fields
+    if (!userType || !username || !password || !name || !email) {
+      return NextResponse.json(
+        {
+          message:
+            "All fields (userType, username, password, name, email) are required.",
+        },
         { status: 422 }
       );
     }
 
-    // Validate username and password formats
-    if (username.length < 3 || password.length < 6) {
-      return Response.json(
-        { message: "Username must be at least 3 characters and password at least 6 characters" },
+    // Validate username, password, and email formats
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (username.length < 3 || password.length < 6 || !emailRegex.test(email)) {
+      return NextResponse.json(
+        {
+          message:
+            "Username must be at least 3 characters, password at least 6 characters, and email must be valid.",
+        },
         { status: 400 }
       );
     }
 
-    // Check if username already exists
-    let existingUser;
+    // Check if username or email already exists
+    let existingUserByUsername, existingUserByEmail;
     switch (userType) {
       case "Admin":
-        existingUser = await prisma.admin.findUnique({ where: { username } });
+        existingUserByUsername = await prisma.admin.findUnique({
+          where: { username },
+        });
+        existingUserByEmail = await prisma.admin.findUnique({
+          where: { email },
+        });
         break;
       case "Teacher":
-        existingUser = await prisma.teacher.findUnique({ where: { username } });
+        existingUserByUsername = await prisma.teacher.findUnique({
+          where: { username },
+        });
+        existingUserByEmail = await prisma.teacher.findUnique({
+          where: { email },
+        });
         break;
       case "Student":
-        existingUser = await prisma.student.findUnique({ where: { username } });
+        existingUserByUsername = await prisma.student.findUnique({
+          where: { username },
+        });
+        existingUserByEmail = await prisma.student.findUnique({
+          where: { email },
+        });
         break;
       case "Parent":
-        existingUser = await prisma.parent.findUnique({ where: { username } });
+        existingUserByUsername = await prisma.parent.findUnique({
+          where: { username },
+        });
+        existingUserByEmail = await prisma.parent.findUnique({
+          where: { email },
+        });
         break;
       default:
-        return Response.json({ message: "Invalid user type" }, { status: 400 });
+        return NextResponse.json(
+          {
+            message:
+              "Invalid user type. Must be one of Admin, Teacher, Student, or Parent.",
+          },
+          { status: 400 }
+        );
     }
 
-    if (existingUser) {
-      return Response.json({ message: "User already exists" }, { status: 400 });
+    if (existingUserByUsername) {
+      return NextResponse.json(
+        { message: "A user with this username already exists." },
+        { status: 400 }
+      );
     }
+
+    if (existingUserByEmail) {
+      return NextResponse.json(
+        { message: "A user with this email already exists." },
+        { status: 400 }
+      );
+    }
+
+    // Hash password before saving to database (security best practice)
     const hashedPassword = await bcryptjs.hash(password, 10);
 
-    // Set approval status based on user type
+    // Determine approval status (admins are automatically approved)
     const approved = userType === "Admin" ? Approve.ACCEPTED : Approve.PENDING;
 
-    // Log the data being sent to Prisma
-    console.log("Creating new user with data:", {
-      username,
-      password: hashedPassword,
-      name,
-      ...additionalFields,
-    });
-
-    // Create new user with appropriate fields
+    // Create new user in the database
     let newUser;
     switch (userType) {
       case "Admin":
@@ -68,6 +106,7 @@ export const POST = async (request: NextRequest) => {
             username,
             password: hashedPassword,
             name,
+            email,
             approved,
             ...additionalFields,
           },
@@ -78,6 +117,8 @@ export const POST = async (request: NextRequest) => {
           data: {
             username,
             password: hashedPassword,
+            email,
+            name,
             approved,
             ...additionalFields,
           },
@@ -88,6 +129,8 @@ export const POST = async (request: NextRequest) => {
           data: {
             username,
             password: hashedPassword,
+            name,
+            email,
             approved,
             ...additionalFields,
           },
@@ -98,27 +141,35 @@ export const POST = async (request: NextRequest) => {
           data: {
             username,
             password: hashedPassword,
+            email,
+            name,
             approved,
             ...additionalFields,
           },
         });
         break;
     }
-    return Response.json(
+
+    return NextResponse.json(
       {
-        message: "User created successfully",
-        requiresApproval: !approved,
+        message: "User created successfully.",
+        requiresApproval: approved === Approve.PENDING,
         data: newUser,
       },
       { status: 201 }
     );
   } catch (error) {
-    return Response.json({
-      message: "Internal Server Error in Registration",
-      error,
-    });
+    // Log error and return a generic error message
+    console.error("Error in registration:", error);
+    return NextResponse.json(
+      {
+        message: "Internal Server Error in Registration.",
+        error: error,
+      },
+      { status: 500 }
+    );
   } finally {
-    // disconnect the database
+    // Ensure proper database disconnection after operations
     await prisma.$disconnect();
   }
 };

@@ -1,44 +1,44 @@
 import { NextRequest } from "next/server";
-import {
-  PrismaClient,
-  Approve,
-} from "@prisma/client";
+import { PrismaClient, Approve } from "@prisma/client";
 import bcryptjs from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 export const POST = async (request: NextRequest) => {
   try {
+    // Destructure required fields from request
     const { userType, username, password } = await request.json();
 
+    // Validate required fields
     if (!username || !password || !userType) {
       return Response.json(
         { message: "All fields are required" },
         { status: 422 }
       );
     }
-    console.log(userType, username , password)
-    // Check user type and find user
+
+    // Check user type and find the respective user in the database
     let user;
-    if (userType === "Admin") {
-      user = await prisma.admin.findUnique({ where: { username } });
-    } else if (userType === "Teacher") {
-      user = await prisma.teacher.findUnique({ where: { username } });
-    } else if (userType === "Student") {
-      user = await prisma.student.findUnique({ where: { username } });
-    } else if (userType === "Parent") {
-      user = await prisma.parent.findUnique({ where: { username } });
-    } else {
-      return Response.json({ message: "Invalid user type" }, { status: 400 });
+    switch (userType) {
+      case "Admin":
+        user = await prisma.admin.findUnique({ where: { username } });
+        break;
+      case "Teacher":
+        user = await prisma.teacher.findUnique({ where: { username } });
+        break;
+      case "Student":
+        user = await prisma.student.findUnique({ where: { username } });
+        break;
+      case "Parent":
+        user = await prisma.parent.findUnique({ where: { username } });
+        break;
+      default:
+        return Response.json({ message: "Invalid user type" }, { status: 400 });
     }
-    console.log("user ----------> ", user?.approved);
 
     if (!user) {
       return Response.json({ message: "User not found" }, { status: 404 });
     }
-
-    console.log("user approved ----------> ", user.approved);
-
 
     // Check if user is approved
     if (user.approved !== Approve.ACCEPTED) {
@@ -51,20 +51,19 @@ export const POST = async (request: NextRequest) => {
       return Response.json({ message: "Invalid password" }, { status: 401 });
     }
 
-    // Log successful login
-    console.log(`User ${username} logged in successfully.`);
-
+    // Return successful login response
     return Response.json(
       { message: "Login successful", user, userRole: userType },
       { status: 200 }
     );
   } catch (error) {
+    // Handle unexpected errors gracefully
     return Response.json(
       { message: "Internal Server Error in Login", error },
       { status: 500 }
     );
   } finally {
+    // Ensure proper database disconnection
     await prisma.$disconnect();
-    console.log("disconnect the database");
   }
 };
