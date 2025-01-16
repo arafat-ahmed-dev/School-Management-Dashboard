@@ -12,7 +12,7 @@ export const POST = async (request: NextRequest) => {
     try {
       // Destructure required fields from request body
       const { userType, username, password } = await req.json();
-
+      console.log(userType, username, password);
       if (!username || !password || !userType) {
         return NextResponse.json(
           { message: "All fields are required" },
