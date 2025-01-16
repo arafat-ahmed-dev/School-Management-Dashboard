@@ -1,16 +1,44 @@
-const HistorySection = ({ isDarkMode, loading }: { isDarkMode: boolean; loading: boolean }) => {
+const HistorySection = ({
+  isDarkMode,
+  loading,
+}: {
+  isDarkMode: boolean;
+  loading: boolean;
+}) => {
   return (
     <section
       className={`w-full py-12 ${isDarkMode ? "bg-gray-800" : "bg-white"}`}
     >
       <div className="px-4 md:px-6">
-        <h2 className={`text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 ${isDarkMode ? "text-white" : "text-black"}`}>
-          Our History
+        <h2
+          className={`text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 ${
+            isDarkMode ? "text-white" : "text-black"
+          }`}
+        >
+          {loading ? (
+            <div className="skeleton-title w-3/4 h-8 bg-gray-400 mb-4 mx-auto"></div>
+          ) : (
+            "Our History"
+          )}
         </h2>
-        {loading ? ( // Conditional rendering for skeleton
-          <div className={`skeleton-history ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}>
-            <div className="skeleton-event"></div>
-            <div className="skeleton-event"></div>
+        {loading ? (
+          <div className="space-y-10">
+            <div className="flex items-center space-x-4">
+              <div className="w-6 h-6 bg-gray-400 rounded-full"></div>
+              <div className="flex-1 space-y-4">
+                <div className="skeleton-title w-1/2 h-6 bg-gray-400 mb-2"></div>
+                <div className="skeleton-description w-3/4 h-4 bg-gray-400 mb-4"></div>
+                <div className="skeleton-description w-3/4 h-4 bg-gray-400"></div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="w-6 h-6 bg-gray-400 rounded-full"></div>
+              <div className="flex-1 space-y-4">
+                <div className="skeleton-title w-1/2 h-6 bg-gray-400 mb-2"></div>
+                <div className="skeleton-description w-3/4 h-4 bg-gray-400 mb-4"></div>
+                <div className="skeleton-description w-3/4 h-4 bg-gray-400"></div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="relative border-l border-gray-200 dark:border-gray-700 ml-3">

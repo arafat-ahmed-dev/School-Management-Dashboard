@@ -14,16 +14,20 @@ const GallerySection = ({ isDarkMode, loading }: { isDarkMode: boolean; loading:
       className={`w-full py-12 ${isDarkMode ? "bg-gray-800" : "bg-white"}`}
     >
       <div className="px-4 md:px-6">
-        <h2 className={`text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 ${isDarkMode ? "text-white" : "text-black"}`}>
-          School Gallery
-        </h2>
         {loading ? ( // Conditional rendering for skeleton
+        <>
+         <div className="skeleton-title w-3/4 h-8 bg-gray-400 mb-4 mx-auto"></div>
           <div className={`skeleton-gallery ${isDarkMode ? "bg-gray-700" : "bg-gray-300"}`}>
             <div className="skeleton-image"></div>
             <div className="skeleton-image"></div>
             <div className="skeleton-image"></div>
           </div>
+        </>
         ) : (
+          <>
+        <h2 className={`text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 ${isDarkMode ? "text-white" : "text-black"}`}>
+          School Gallery
+        </h2>
           <div className="w-full h-full items-center flex justify-center">
             <ImagesSlider className="h-[30rem] md:w-[80%] w-full md:h-[35rem]" images={images}>
               <motion.div
@@ -42,6 +46,7 @@ const GallerySection = ({ isDarkMode, loading }: { isDarkMode: boolean; loading:
               ></motion.div>
             </ImagesSlider>
           </div>
+          </>
         )}
       </div>
     </section>

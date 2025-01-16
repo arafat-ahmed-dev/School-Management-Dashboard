@@ -48,19 +48,24 @@ const TestimonialsSection = ({
       }`}
     >
       <div className="px-4 md:px-6">
-        <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
-          What Our Community Says
-        </h2>
         {loading ? ( // Conditional rendering for skeleton
-          <Skeleton className="w-full h-64 rounded-lg" />
-        ) : (
-          <div className="max-h-[40rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
-            <InfiniteMovingCards
-              items={testimonials}
-              direction="left"
-              speed="slow"
-            />
+          <div>
+            <div className="skeleton-title w-3/4 h-8 bg-gray-400 mb-4 mx-auto"></div>
+            <Skeleton className="w-full h-64 rounded-lg" />
           </div>
+        ) : (
+          <>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
+              What Our Community Says
+            </h2>
+            <div className="max-h-[40rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
+              <InfiniteMovingCards
+                items={testimonials}
+                direction="left"
+                speed="slow"
+              />
+            </div>
+          </>
         )}
       </div>
     </section>
