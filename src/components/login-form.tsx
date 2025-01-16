@@ -21,6 +21,8 @@ import {
   SelectValue,
 } from "./ui/select"; // Import Select components
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { login } from "@/lib/store/features/Auth/authSlice";
 
 export function LoginForm({
   className,
@@ -28,7 +30,7 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const router = useRouter(); // Initialize the Next.js router
   const [error, setError] = useState<string | null>(null); // State for error messages
-
+  const dispatch = useDispatch()
   interface Data {
     username: string;
     password: string;
@@ -48,6 +50,8 @@ export function LoginForm({
       const validRoles = ["Admin", "Parent", "Teacher", "Student"];
       const role: Role = response.data.userRole as Role;
       if (validRoles.includes(role)) {
+        // Store user data (e.g., in Redux state)
+        dispatch(login(response.data));
         const roleLowerCase = role.toLowerCase();
         router.push(`/dashboard/${roleLowerCase}`); // Redirect to the appropriate dashboard
       }
