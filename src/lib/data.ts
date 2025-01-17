@@ -1,4 +1,4 @@
-
+import _ from "lodash";
 import { useSelector } from "react-redux";
 import { RootState } from "./store"; // Adjust the path as necessary
 export let role = "admin";
@@ -7,10 +7,10 @@ export const getUserRole = () => {
   const userRole = useSelector(
     (state: RootState) => state.auth.userData?.userRole
   );
-  console.log(userRole);
+  const lowercased = _.toLower(userRole);
+  console.log(lowercased);
   return userRole; // Default to "guest" if no role is found
 };
-
 
 export const teachersData = [
   {

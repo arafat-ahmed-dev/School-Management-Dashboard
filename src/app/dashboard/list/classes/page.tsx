@@ -51,7 +51,7 @@ const ClassListPage = () => {
       <td className=" p-2">{item.supervisor}</td>
       <td>
         <div className="flex items-center gap-2">
-          {role === "Admin" && (
+          {role === "admin" && (
             <>
               <FormModel table="class" type="update" />
               <FormModel table="class" type="delete" id={item.id} />
@@ -80,7 +80,7 @@ const ClassListPage = () => {
               <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/sort.png" alt="" width={14} height={14} />
               </button>
-              {role === "Admin" && <FormModel table="class" type="create" />}
+              {role === "admin" && <FormModel table="class" type="create" />}
             </div>
           </div>
         </div>

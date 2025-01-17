@@ -1,7 +1,9 @@
-import { role } from "@/lib/data";
+"use client"
+import { getUserRole } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 
+const role = getUserRole();
 const menuItems = [
   {
     title: "MENU",

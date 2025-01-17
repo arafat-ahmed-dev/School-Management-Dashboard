@@ -14,7 +14,7 @@ const Table = ({
   // Filter out the "action" column for non-admin/teacher roles
   const filteredColumns = columns.filter((col) => {
     if (col.accessor === "action") {
-      return role === "Admin" || teacher === true;
+      return role === "admin" || teacher === true;
     }
     return true; // Keep all other columns
   });
