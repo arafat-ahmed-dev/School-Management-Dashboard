@@ -8,13 +8,14 @@ datasource db {
 }
 
 model Admin {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  username String   @unique
-  password String   @unique
-  email    String   @unique
-  phone    String
-  approved Approve? @default(ACCEPTED)
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  username     String   @unique
+  password     String   @unique
+  email        String   @unique
+  phone        String
+  refreshToken String?
+  approved     Approve? @default(ACCEPTED)
 }
 
 model Student {
@@ -36,50 +37,53 @@ model Student {
   birthDate     DateTime?
   gradeId       String?      @db.ObjectId
   grade         Grade?       @relation(fields: [gradeId], references: [id])
-  classId       String?       @db.ObjectId
-  class         Class?        @relation(fields: [classId], references: [id])
+  classId       String?      @db.ObjectId
+  class         Class?       @relation(fields: [classId], references: [id])
   subjectId     String?      @db.ObjectId
   subject       Subject?     @relation(fields: [subjectId], references: [id])
   attendances   Attendance[]
   result        Result[]
+  refreshToken  String?
   approved      Approve?     @default(PENDING)
 }
 
 model Teacher {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  username   String    @unique
-  password   String
-  name       String
-  email      String    @unique
-  phone      String    @unique
-  address    String?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  img        String?
-  subjectsId String[]  @db.ObjectId
-  subjects   Subject[] @relation(fields: [subjectsId], references: [id])
-  lessons    Lesson[]
-  bloodType  String?
-  birthday   DateTime?
-  classes    Class[]
-  sex        UserSex?
-  approved   Approve?  @default(PENDING)
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  username     String    @unique
+  password     String
+  name         String
+  email        String    @unique
+  phone        String    @unique
+  address      String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  img          String?
+  subjectsId   String[]  @db.ObjectId
+  subjects     Subject[] @relation(fields: [subjectsId], references: [id])
+  lessons      Lesson[]
+  bloodType    String?
+  birthday     DateTime?
+  classes      Class[]
+  sex          UserSex?
+  refreshToken String?
+  approved     Approve?  @default(PENDING)
 }
 
 model Parent {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  username  String     @unique
-  password  String
-  name      String
-  email     String?    @unique
-  phone     String?    @unique
-  address   String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  img       String?
-  students  Student[]
-  type      ParentType?
-  approved  Approve?   @default(PENDING)
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  username     String      @unique
+  password     String
+  name         String
+  email        String?     @unique
+  phone        String?     @unique
+  address      String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  img          String?
+  students     Student[]
+  type         ParentType?
+  refreshToken String?
+  approved     Approve?    @default(PENDING)
 }
 
 model Class {
@@ -159,8 +163,8 @@ model Result {
   exam         Exam?       @relation(fields: [examId], references: [id])
   assignmentId String?     @db.ObjectId
   assignment   Assignment? @relation(fields: [assignmentId], references: [id])
-  studentId    String?      @db.ObjectId
-  student      Student?     @relation(fields: [studentId], references: [id])
+  studentId    String?     @db.ObjectId
+  student      Student?    @relation(fields: [studentId], references: [id])
 }
 
 model Attendance {

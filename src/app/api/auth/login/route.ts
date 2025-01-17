@@ -1,18 +1,17 @@
-// your API route
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient, Approve } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import bcryptjs from "bcryptjs";
-import { cors } from "@/lib/cors"; // Import the custom cors function
+import jwt from "jsonwebtoken";
+import { cors } from "@/lib/cors";
+import connectToDatabase from "@/helper/databaseConnection";
 
 const prisma = new PrismaClient();
 
 export const POST = async (request: NextRequest) => {
-  // Use CORS middleware
-  return cors(request, async (req: NextRequest, res: NextResponse) => {
+  return cors(request, async () => {
     try {
-      // Destructure required fields from request body
-      const { userType, username, password } = await req.json();
-      console.log(userType, username, password);
+      const { userType, username, password } = await request.json();
+
       if (!username || !password || !userType) {
         return NextResponse.json(
           { message: "All fields are required" },
@@ -20,7 +19,8 @@ export const POST = async (request: NextRequest) => {
         );
       }
 
-      // Check user type and find the respective user in the database
+      await connectToDatabase();
+
       let user;
       switch (userType) {
         case "Admin":
@@ -49,31 +49,79 @@ export const POST = async (request: NextRequest) => {
         );
       }
 
-      // Check if user is approved
-      if (user.approved !== Approve.ACCEPTED) {
+      if (user.approved !== "ACCEPTED" && user.approved !== "CANCEL") {
         return NextResponse.json(
           { message: "User not approved" },
           { status: 403 }
         );
+      } else if (user.approved === "CANCEL") {
+        return NextResponse.json(
+          { message: "User has been canceled" },
+          { status: 403 }
+        );
       }
 
-      // Validate password
       const isPasswordValid = await bcryptjs.compare(password, user.password);
+
       if (!isPasswordValid) {
         return NextResponse.json(
-          { message: "Invalid password" },
+          { message: "Invalid user credentials" },
           { status: 401 }
         );
       }
 
-      // Return successful login response
-      return NextResponse.json(
-        { message: "Login successful", user, userRole: userType },
+      const accessToken = jwt.sign(
+        { userId: user.id, userType },
+        process.env.ACCESS_TOKEN_SECRET!,
+        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "1h" }
+      );
+
+      const refreshToken = jwt.sign(
+        { userId: user.id },
+        process.env.REFRESH_TOKEN_SECRET!,
+        { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "7d" }
+      );
+      // Cast the userType to a Prisma model
+      const model = prisma[userType.toLowerCase()] as any;
+
+      // Update the refresh token in the database
+      if (model && typeof model.update === "function") {
+        await model.update({
+          where: { id: user.id },
+          data: { refreshToken },
+        });
+      } else {
+        throw new Error("Invalid model or update method not found");
+      }
+
+      const response = NextResponse.json(
+        {
+          message: "Login successful",
+          user,
+          userRole: userType,
+          accessToken,
+          refreshToken,
+        },
         { status: 200 }
       );
+
+      response.cookies.set("accessToken", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 3600, // 1 hour
+      });
+
+      response.cookies.set("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 7 * 24 * 3600, // 7 days
+      });
+
+      return response;
     } catch (error) {
+      console.error(error);
       return NextResponse.json(
-        { message: "Internal Server Error in Login", error },
+        { message: "Internal Server Error", error },
         { status: 500 }
       );
     } finally {
