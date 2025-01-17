@@ -2,7 +2,7 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { attendanceData, getUserRole } from "@/lib/data";
+import { attendanceData, useGetUserRole } from "@/lib/data";
 import Image from "next/image";
 
 type Attendance = {
@@ -12,7 +12,7 @@ type Attendance = {
   date: string;
   status: string;
 };
-const role = getUserRole();
+const role = useGetUserRole();
 
 const columns = [
   {

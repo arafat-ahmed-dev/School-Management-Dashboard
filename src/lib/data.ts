@@ -1,15 +1,17 @@
-import _ from "lodash";
-import { useSelector } from "react-redux";
-import { RootState } from "./store"; // Adjust the path as necessary
+import { useAppSelector } from "./store/hooks"; // Adjusted path
+import { RootState } from "./store"; // Adjusted path
 export let role = "admin";
+import _ from "lodash";
 
-export const getUserRole = () => {
-  const userRole = useSelector(
-    (state: RootState) => state.auth.userData?.userRole
-  );
-  const lowercased = _.toLower(userRole);
-  console.log(lowercased);
-  return userRole; // Default to "guest" if no role is found
+export const useGetUserRole = () => {
+  // const userRole = useAppSelector(
+  //   (state: RootState) => state.auth.userData?.userRole
+  // );
+  // const lowercased = _.toLower(userRole);
+  // console.log(lowercased);
+  // return lowercased;
+  let role = "admin";
+  return role;
 };
 
 export const teachersData = [

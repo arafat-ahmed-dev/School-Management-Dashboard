@@ -1,4 +1,4 @@
-import { role } from "@/lib/data";
+import { useGetUserRole } from "@/lib/data";
 
 const Table = ({
   columns,
@@ -11,6 +11,7 @@ const Table = ({
   data: any[];
   teacher?: boolean;
 }) => {
+  const role = useGetUserRole();
   // Filter out the "action" column for non-admin/teacher roles
   const filteredColumns = columns.filter((col) => {
     if (col.accessor === "action") {

@@ -23,7 +23,6 @@ import {
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { login } from "@/lib/store/features/Auth/authSlice";
-import { getUserRole } from "@/lib/data";
 
 export function LoginForm({
   className,
@@ -43,8 +42,6 @@ export function LoginForm({
     Teacher = "Teacher",
     Student = "Student",
   }
-  const user =  getUserRole();
-  console.log(user)
   const handleLogin = async (data: Data) => {
     try {
       const response = await axios.post("/api/auth/login", data);

@@ -1,9 +1,12 @@
-"use client"
-import { getUserRole } from "@/lib/data";
+"use client";
+import { role, useGetUserRole } from "@/lib/data";
+import { useAppSelector } from "@/lib/store/hooks";
 import Image from "next/image";
 import Link from "next/link";
 
-const role = getUserRole();
+// const role = useGetUserRole();
+const user = useGetUserRole();
+console.log(user)
 const menuItems = [
   {
     title: "MENU",
