@@ -119,9 +119,10 @@ export const POST = async (request: NextRequest) => {
 
       return response;
     } catch (error) {
-      console.error(error);
+      const errorMessage = (error as Error).message;
+      console.error(errorMessage);
       return NextResponse.json(
-        { message: "Internal Server Error", error },
+        { message: "Internal Server Error", error: errorMessage },
         { status: 500 }
       );
     } finally {

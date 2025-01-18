@@ -1,25 +1,67 @@
 import { NextResponse, NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
+
+export function verifyToken(token: string) {
+  // Custom token verification logic
+  const parts = token.split(".");
+  if (parts.length !== 3) {
+    throw new Error("Invalid token");
+  }
+  const payload = Buffer.from(parts[1], "base64").toString("utf8");
+  return JSON.parse(payload);
+}
 
 export function middleware(request: NextRequest) {
   const tokenCookie = request.cookies.get("accessToken");
 
-  // If no token cookie is present, redirect to the login page
-  if (!tokenCookie) {
+  const currentPath = new URL(request.url).pathname;
+
+  // Block access to login, forget password, and reset password pages if the token exists
+  const authPages = ["/login", "/forget-password", "/reset-password"];
+  if (tokenCookie) {
+    try {
+      const token = tokenCookie.value; // Extract the token value
+      const decoded = verifyToken(token);
+      const { userType } = decoded as { userId: string; userType: string };
+
+      if (authPages.includes(currentPath)) {
+        return NextResponse.redirect(
+          new URL(`/dashboard/${userType.toLowerCase()}`, request.url)
+        );
+      }
+    } catch (error) {
+      console.error("Error decoding token for redirect:", error);
+    }
+  } else {
+    // Allow access to login, forget password, and reset password pages if no token is present
+    if (authPages.includes(currentPath)) {
+      return NextResponse.next();
+    }
+    // If no token cookie is present, redirect to the home page for protected paths
     return NextResponse.redirect(new URL("/", request.url));
   }
 
   const token = tokenCookie.value; // Extract the token value
-  console.log(token)
+  let decoded;
+
   try {
-    // Verify the token
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!);
+    // Verify the token and extract userId and userType
+    decoded = verifyToken(token);
+
+    const { userId, userType } = decoded as {
+      userId: string;
+      userType: string;
+    };
 
     // Add user info to the request headers for use in downstream handlers
-    request.headers.set("X-User-ID", decoded.userId);
-    request.headers.set("X-User-Type", decoded.userType);
+    request.headers.set("X-User-ID", userId);
+    request.headers.set("X-User-Type", userType);
+
+    // Log the headers to verify they are set
+    console.log("X-User-ID:", userId);
+    console.log("X-User-Type:", userType);
   } catch (error) {
-    console.error("Invalid or expired token:", error.message);
+    const errorMessage = (error as Error).message;
+    console.error("Invalid or expired token:", errorMessage);
     return NextResponse.redirect(new URL("/", request.url));
   }
 
@@ -28,5 +70,12 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*" , "/list/:path*"], // Apply middleware only to paths under /dashboard
+  matcher: [
+    "/dashboard/:path*", // All dashboard routes
+    "/list/:path*", // All list routes
+    "/login", // Specific login route
+    "/forget-password", // Specific forget-password route
+    "/reset-password", // Specific reset-password route
+    "/api/logout", // All API routes
+  ], // Apply middleware to these paths
 };
