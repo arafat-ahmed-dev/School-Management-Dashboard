@@ -20,12 +20,13 @@ const Header: React.FC<HeaderProps> = ({
   isDarkMode,
   loading, // Use loading prop
 }) => {
+  
   const role = useGetUserRole();
   console.log(role);
   const handleMenuClick = () => {
     setIsMenuOpen(false);
   };
-  // const userData = useAppSelector((state) => state.auth.userData.userRole);
+  // const userData = useAppSelector((state) => state.auth);
   // console.log(userData)
 
   return (
