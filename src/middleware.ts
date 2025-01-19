@@ -1,13 +1,13 @@
+import  jwt  from 'jsonwebtoken';
 import { NextResponse, NextRequest } from "next/server";
 
 export function verifyToken(token: string) {
-  // Custom token verification logic
-  const parts = token.split(".");
-  if (parts.length !== 3) {
-    throw new Error("Invalid token");
+  // Decode and verify the token using the secret key
+  try {
+    return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!);
+  } catch (error) {
+    throw new Error("Invalid or expired token");
   }
-  const payload = Buffer.from(parts[1], "base64").toString("utf8");
-  return JSON.parse(payload);
 }
 
 export function middleware(request: NextRequest) {
