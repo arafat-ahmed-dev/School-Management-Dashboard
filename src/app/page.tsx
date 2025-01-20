@@ -1,6 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "@/lib/store";
+import {
+  toggleDarkMode,
+  setDarkMode,
+} from "@/lib/store/features/DarkMode/darkModeSlice";
 import Header from "@/components/LandingPage/Header";
 import HeroSection from "@/components/LandingPage/HeroSection";
 import { Footer } from "@/components/LandingPage/Footer";
@@ -19,8 +25,25 @@ import { MentorSection } from "@/components/LandingPage/MentorSection";
 
 export default function EnhancedSchoolLandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const isDarkMode = useSelector(
+    (state: RootState) => state.darkMode.isDarkMode
+  );
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getInitialTheme = () => {
+      if (
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        return true;
+      }
+      return false;
+    };
+
+    dispatch(setDarkMode(getInitialTheme()));
+  }, [dispatch]);
 
   useEffect(() => {
     document.body.classList.toggle("dark", isDarkMode);
@@ -32,7 +55,7 @@ export default function EnhancedSchoolLandingPage() {
     return () => clearTimeout(timer);
   }, [isDarkMode]);
 
-  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
+  const handleToggleDarkMode = () => dispatch(toggleDarkMode());
 
   return (
     <div
@@ -44,7 +67,7 @@ export default function EnhancedSchoolLandingPage() {
         isDarkMode={isDarkMode}
         isMenuOpen={isMenuOpen}
         setIsMenuOpen={setIsMenuOpen}
-        toggleDarkMode={toggleDarkMode}
+        toggleDarkMode={handleToggleDarkMode}
         loading={loading} // Pass loading prop to Header
       />
       <HeroSection isDarkMode={isDarkMode} loading={loading} />

@@ -25,7 +25,7 @@ export function middleware(request: NextRequest) {
 
       if (authPages.includes(currentPath)) {
         return NextResponse.redirect(
-          new URL(`/${userType.toLowerCase()}`, request.url)
+          new URL(`/dashboard/${userType.toLowerCase()}`, request.url)
         );
       }
     } catch (error) {
@@ -71,6 +71,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/dashboard/:path*", // All dashboard routes
     "/list/:path*", // All list routes
     "/login", // Specific login route
     "/forget-password", // Specific forget-password route

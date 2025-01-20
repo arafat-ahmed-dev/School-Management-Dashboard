@@ -1,10 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import AuthSilce from "./features/Auth/authSlice"
+import AuthSlice from "./features/Auth/authSlice";
+import darkModeReducer from "./features/DarkMode/darkModeSlice"; // Import the dark mode reducer
+
 // store variable is a global variable.
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      auth: AuthSilce,
+      auth: AuthSlice,
+      darkMode: darkModeReducer, // Add dark mode reducer to the store
     },
   });
 };

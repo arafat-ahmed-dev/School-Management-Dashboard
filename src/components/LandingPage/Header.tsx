@@ -2,8 +2,8 @@ import Link from "next/link";
 import { GraduationCap } from "lucide-react";
 import { Button } from "../ui/button";
 import { Sun, Moon, ChevronUp, ChevronDown } from "lucide-react";
-import { useGetUserRole } from "@/lib/data"; // Updated import path
 import { useAppSelector } from "@/lib/store/hooks";
+import _ from "lodash";
 
 interface HeaderProps {
   isMenuOpen: boolean;
@@ -20,14 +20,11 @@ const Header: React.FC<HeaderProps> = ({
   isDarkMode,
   loading, // Use loading prop
 }) => {
-  
-  const role = useGetUserRole();
-  console.log(role);
   const handleMenuClick = () => {
     setIsMenuOpen(false);
   };
-  // const userData = useAppSelector((state) => state.auth);
-  // console.log(userData)
+  const response = useAppSelector((state) => state.auth.userData?.userRole);
+  const role = _.toLower(response);
 
   return (
     <header
