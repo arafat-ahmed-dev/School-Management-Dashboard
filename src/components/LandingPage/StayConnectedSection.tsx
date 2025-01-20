@@ -3,6 +3,9 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
 const StayConnectedSection = ({ isDarkMode, loading }: { isDarkMode: boolean; loading: boolean }) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
   return (
     <section
       className={`w-full py-12 ${isDarkMode ? "bg-gray-800" : "bg-white"}`}
@@ -26,7 +29,7 @@ const StayConnectedSection = ({ isDarkMode, loading }: { isDarkMode: boolean; lo
               </p>
             </div>
             <div className="w-full max-w-sm space-y-2">
-              <form className="flex space-x-2">
+              <form className="flex space-x-2" onSubmit={handleSubmit}>
                 <Label htmlFor="email" className="sr-only">
                   Email
                 </Label>

@@ -1,17 +1,4 @@
-import { useAppSelector } from "./store/hooks"; // Adjusted path
-import { RootState } from "./store"; // Adjusted path
 export let role = "admin";
-import _ from "lodash";
-
-export const useGetUserRole = () => {
-  // const userRole = useAppSelector((state) => state.auth.userData.userRole);
-  // const lowercased = _.toLower(userRole);
-  // console.log(lowercased);
-  // return lowercased;
-  let role = "admin";
-  return role;
-};
-
 export const teachersData = [
   {
     id: 1,

@@ -1,4 +1,8 @@
-import { useGetUserRole } from "@/lib/data";
+import { useAppSelector } from "@/lib/store/hooks";
+import _ from "lodash";
+
+const response = useAppSelector((state) => state.auth.userData?.userRole);
+const role = _.toLower(response);
 
 const Table = ({
   columns,
@@ -11,7 +15,6 @@ const Table = ({
   data: any[];
   teacher?: boolean;
 }) => {
-  const role = useGetUserRole();
   // Filter out the "action" column for non-admin/teacher roles
   const filteredColumns = columns.filter((col) => {
     if (col.accessor === "action") {

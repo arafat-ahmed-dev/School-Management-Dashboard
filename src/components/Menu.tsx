@@ -1,12 +1,14 @@
-"use client";
-import { role, useGetUserRole } from "@/lib/data";
-import { useAppSelector } from "@/lib/store/hooks";
+// import { role } from "@/lib/setting";
+// import { role } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
+import { useAppSelector } from "@/lib/store/hooks";
+import _ from "lodash";
 
-// const role = useGetUserRole();
-const user = useGetUserRole();
-console.log(user);
+// console.log(role)
+// const response = useAppSelector((state) => state.auth.userData?.userRole);
+const response = useAppSelector((state) => state.auth.userData?.userRole);
+const role = _.toLower(response);
 const menuItems = [
   {
     title: "MENU",

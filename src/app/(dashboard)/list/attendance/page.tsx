@@ -2,7 +2,9 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { attendanceData, useGetUserRole } from "@/lib/data";
+import { attendanceData } from "@/lib/data";
+import { useAppSelector } from "@/lib/store/hooks";
+import _ from "lodash";
 import Image from "next/image";
 
 type Attendance = {
@@ -12,8 +14,8 @@ type Attendance = {
   date: string;
   status: string;
 };
-const role = useGetUserRole();
-
+  const response = useAppSelector((state) => state.auth.userData?.userRole);
+  const role = _.toLower(response);
 const columns = [
   {
     header: "Student Name",
