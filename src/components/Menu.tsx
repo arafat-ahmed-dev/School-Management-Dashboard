@@ -3,14 +3,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { useAppSelector } from "@/lib/store/hooks";
 import _ from "lodash";
+import { role } from "@/lib/data";
 
 // console.log(role)
 // const response = useAppSelector((state) => state.auth.userData?.userRole);
 
 const Menu = () => {
-  const response = useAppSelector((state) => state.auth.userData?.userRole);
-  const role = _.toLower(response);
-  console.log(response);
+  // const response = useAppSelector((state) => state.auth.userData?.userRole);
+  // const role = _.toLower(response) || "";
+  // console.log(response);
   const menuItems = [
     {
       title: "MENU",

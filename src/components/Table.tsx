@@ -1,8 +1,10 @@
-import { useAppSelector } from "@/lib/store/hooks";
-import _ from "lodash";
+// import { useAppSelector } from "@/lib/store/hooks";
+// import _ from "lodash";
 
-const response = useAppSelector((state) => state.auth.userData?.userRole);
-const role = _.toLower(response);
+import { role } from "@/lib/data";
+
+// const response = useAppSelector((state) => state.auth.userData?.userRole);
+// const role = _.toLower(response);
 
 const Table = ({
   columns,

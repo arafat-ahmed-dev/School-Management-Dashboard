@@ -32,10 +32,14 @@ const columns = [
     accessor: "dueDate",
     className: "hidden md:table-cell p-2",
   },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
+  ...(role === "admin" || role === "teacher"
+    ? [
+        {
+          header: "Actions",
+          accessor: "action",
+        },
+      ]
+    : []),
 ];
 
 const AssignmentListPage = () => {
@@ -50,7 +54,7 @@ const AssignmentListPage = () => {
       <td className="hidden md:table-cell p-2">{item.dueDate}</td>
       <td>
         <div className="flex items-center gap-2">
-          {(role === "admin" || role === "teacher") && (
+          {role === "admin" && (
             <>
               <FormModel table="assignment" type="update" />
               <FormModel table="assignment" type="delete" id={item.id} />

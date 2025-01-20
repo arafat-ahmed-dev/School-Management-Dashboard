@@ -33,10 +33,14 @@ const columns = [
     accessor: "supervisor",
     className: "p-2",
   },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
+  ...(role === "admin"
+    ? [
+        {
+          header: "Actions",
+          accessor: "action",
+        },
+      ]
+    : []),
 ];
 
 const ClassListPage = () => {

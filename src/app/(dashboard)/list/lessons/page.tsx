@@ -26,10 +26,14 @@ const columns = [
     accessor: "teacher",
     className: "hidden md:table-cell p-2",
   },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
+  ...(role === "admin"
+    ? [
+        {
+          header: "Actions",
+          accessor: "action",
+        },
+      ]
+    : []),
 ];
 
 const LessonListPage = () => {

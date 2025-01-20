@@ -2,7 +2,7 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { attendanceData } from "@/lib/data";
+import { attendanceData, role } from "@/lib/data";
 import { useAppSelector } from "@/lib/store/hooks";
 import _ from "lodash";
 import Image from "next/image";
@@ -14,8 +14,8 @@ type Attendance = {
   date: string;
   status: string;
 };
-  const response = useAppSelector((state) => state.auth.userData?.userRole);
-  const role = _.toLower(response);
+  // const response = useAppSelector((state) => state.auth.userData?.userRole);
+  // const role = _.toLower(response);
 const columns = [
   {
     header: "Student Name",
@@ -35,10 +35,14 @@ const columns = [
     accessor: "status",
     className: "hidden md:table-cell p-2",
   },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
+  ...(role === "admin"
+    ? [
+        {
+          header: "Actions",
+          accessor: "action",
+        },
+      ]
+    : []),
 ];
 
 const AttendanceListPage = () => {
