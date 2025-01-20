@@ -95,7 +95,7 @@ const Header: React.FC<HeaderProps> = ({
                 </Link>
               </nav>
               {role ? (
-                <Link href={`/dashboard/${role}`}>
+                <Link href={`/${role}`}>
                   <Button className="hidden md:block">Dashboard</Button>
                 </Link>
               ) : (
@@ -166,7 +166,7 @@ const Header: React.FC<HeaderProps> = ({
             Gallery
           </Link>
           {role ? (
-            <Link href={`/dashboard/${role}`} onClick={handleMenuClick}>
+            <Link href={`/${role}`} onClick={handleMenuClick}>
               <Button className="mt-4 w-full">Dashboard</Button>
             </Link>
           ) : (

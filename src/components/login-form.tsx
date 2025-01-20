@@ -53,7 +53,7 @@ export function LoginForm({
         // Store user data (e.g., in Redux state)
         dispatch(login(response.data));
         const roleLowerCase = role.toLowerCase();
-        router.push(`/dashboard/${roleLowerCase}`); // Redirect to the appropriate dashboard
+        router.push(`/${roleLowerCase}`); // Redirect to the appropriate dashboard
       }
     } catch (err) {
       console.error("Login failed:", err);
