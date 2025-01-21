@@ -3,193 +3,197 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  // Create 10 Admins
-  for (let i = 1; i <= 10; i++) {
-    await prisma.admin.create({
-      data: {
-        name: `Admin ${i}`,
-        username: `admin${i}`,
-        password: `password${i}`,
-        email: `admin${i}@example.com`,
-        phone: `12345678${i}`,
-        refreshToken: i % 2 === 0 ? `token${i}` : null,
-        approved: i % 2 === 0 ? "ACCEPTED" : "PENDING",
-      },
-    });
+  try {
+    // Create 10 Admins
+    const admins = await Promise.all(
+      Array.from({ length: 10 }, (_, i) =>
+        prisma.admin.create({
+          data: {
+            name: `Admin ${i + 1}`,
+            username: `admin${i + 1}`,
+            password: `password${i + 1}`,
+            email: `admin${i + 1}@example.com`,
+            phone: `12345678${i + 1}`,
+            refreshToken: `token${i + 1}`,
+            approved: i % 2 === 0 ? "ACCEPTED" : "PENDING",
+          },
+        })
+      )
+    );
+
+    // Create 10 Grades
+    const grades = await Promise.all(
+      Array.from({ length: 10 }, (_, i) =>
+        prisma.grade.create({
+          data: {
+            level: i + 1,
+          },
+        })
+      )
+    );
+
+    // Create 10 Classes
+    const classes = await Promise.all(
+      Array.from({ length: 10 }, (_, i) =>
+        prisma.class.create({
+          data: {
+            name: `Class ${i + 1}`,
+            gradeId: grades[i % grades.length].id,
+            capacity: 30,
+          },
+        })
+      )
+    );
+
+    // Create 15 Subjects
+    const subjects = await Promise.all(
+      Array.from({ length: 15 }, (_, i) =>
+        prisma.subject.create({
+          data: {
+            name: `Subject ${i + 1}`,
+            code: `SUB${i + 1}`,
+          },
+        })
+      )
+    );
+
+    // Create 20 Teachers
+    const teachers = await Promise.all(
+      Array.from({ length: 20 }, (_, i) =>
+        prisma.teacher.create({
+          data: {
+            username: `teacher${i + 1}`,
+            password: `password${i + 1}`,
+            name: `Teacher ${i + 1}`,
+            email: `teacher${i + 1}@example.com`,
+            phone: `98765432${i + 1}`,
+            address: `Address ${i + 1}`,
+            img: `https://placekitten.com/200/200?image=${i}`,
+            bloodType: i % 3 === 0 ? "O+" : "A+",
+            birthday: new Date(1985 + i, i % 12, i + 1),
+            refreshToken: `refreshToken${i}`,
+            sex: i % 2 === 0 ? "MALE" : "FEMALE",
+            approved: i % 2 === 0 ? "ACCEPTED" : "PENDING",
+            subjects: {
+              connect: subjects
+                .slice(i % subjects.length, (i % subjects.length) + 3)
+                .map((subject) => ({ id: subject.id })),
+            },
+          },
+        })
+      )
+    );
+
+    // Assign Teachers to Classes
+    await Promise.all(
+      classes.map((cls, index) =>
+        prisma.class.update({
+          where: { id: cls.id },
+          data: {
+            supervisorId: teachers[index % teachers.length].id,
+          },
+        })
+      )
+    );
+
+    // Create 20 Parents
+    const parents = await Promise.all(
+      Array.from({ length: 20 }, (_, i) =>
+        prisma.parent.create({
+          data: {
+            username: `parent${i + 1}`,
+            password: `password${i + 1}`,
+            name: `Parent ${i + 1}`,
+            email: `parent${i + 1}@example.com`,
+            phone: `11223344${i + 1}`,
+            address: `Parent Address ${i + 1}`,
+            img: `https://placekitten.com/200/200?image=${i + 10}`,
+            type: i % 3 === 0 ? "FATHER" : i % 3 === 1 ? "MOTHER" : "OTHER",
+            refreshToken: `parentToken${i}`,
+            approved: i % 2 === 0 ? "ACCEPTED" : "PENDING",
+          },
+        })
+      )
+    );
+
+    // Create 30 Students
+    const students = await Promise.all(
+      Array.from({ length: 30 }, (_, i) =>
+        prisma.student.create({
+          data: {
+            username: `student${i + 1}`,
+            password: `password${i + 1}`,
+            name: `Student ${i + 1}`,
+            email: `student${i + 1}@example.com`,
+            phone: `55566677${i + 1}`,
+            address: `Student Address ${i + 1}`,
+            bloodType: i % 2 === 0 ? "B+" : "AB+",
+            birthDate: new Date(2005 + (i % 5), i % 12, i + 1),
+            img: `https://placekitten.com/200/200?image=${i + 20}`,
+            sex: i % 2 === 0 ? "MALE" : "FEMALE",
+            refreshToken: `studentToken${i}`,
+            approved: i % 2 === 0 ? "ACCEPTED" : "PENDING",
+            parentId: parents[i % parents.length].id,
+            gradeId: grades[i % grades.length].id,
+            classId: classes[i % classes.length].id,
+          },
+        })
+      )
+    );
+
+    // Create Lessons for each Class and Subject
+    await Promise.all(
+      Array.from({ length: 35 }, (_, i) =>
+        prisma.lesson.create({
+          data: {
+            name: `Lesson ${i + 1}`,
+            day: "MONDAY",
+            startTime: new Date(),
+            endTime: new Date(),
+            subjectId: subjects[i % subjects.length].id,
+            classId: classes[i % classes.length].id,
+            teacherId: teachers[i % teachers.length].id,
+          },
+        })
+      )
+    );
+
+    // Create Events for Classes
+    await Promise.all(
+      classes.map((cls, i) =>
+        prisma.event.create({
+          data: {
+            title: `Event ${i + 1}`,
+            description: `Event Description ${i + 1}`,
+            startTime: new Date(),
+            endTime: new Date(),
+            classId: cls.id,
+          },
+        })
+      )
+    );
+
+    // Create Announcements for Classes
+    await Promise.all(
+      classes.map((cls, i) =>
+        prisma.announcement.create({
+          data: {
+            title: `Announcement ${i + 1}`,
+            description: `Announcement Description ${i + 1}`,
+            date: new Date(),
+            classId: cls.id,
+          },
+        })
+      )
+    );
+
+    console.log("Seeding completed successfully!");
+  } catch (error) {
+    console.error("Error during seeding:", error);
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect();
   }
-
-  // Create 10 Grades
-  const grades = await Promise.all(
-    Array.from({ length: 10 }, (_, i) =>
-      prisma.grade.create({
-        data: {
-          level: i + 1,
-        },
-      })
-    )
-  );
-
-  // Create 10 Classes
-  const classes = await Promise.all(
-    Array.from({ length: 10 }, (_, i) =>
-      prisma.class.create({
-        data: {
-          name: `Class ${i + 1}`,
-          gradeId: grades[i % grades.length].id,
-          capacity: 30,
-        },
-      })
-    )
-  );
-
-  // Create 10 Teachers
-  const teachers = await Promise.all(
-    Array.from({ length: 10 }, (_, i) =>
-      prisma.teacher.create({
-        data: {
-          username: `teacher${i + 1}`,
-          password: `password${i + 1}`,
-          name: `Teacher ${i + 1}`,
-          email: `teacher${i + 1}@example.com`,
-          phone: `98765432${i + 1}`,
-          address: `Address ${i + 1}`,
-          img: `https://placekitten.com/200/200?image=${i}`,
-          bloodType: i % 3 === 0 ? "O+" : "A+",
-          birthday: new Date(1985 + i, i % 12, i + 1),
-          refreshToken: `refreshToken${i}`,
-          sex: i % 2 === 0 ? "MALE" : "FEMALE",
-          approved: i % 2 === 0 ? "ACCEPTED" : "PENDING",
-        },
-      })
-    )
-  );
-
-  // Assign Teachers to Classes
-  await Promise.all(
-    classes.map((cls, index) =>
-      prisma.class.update({
-        where: { id: cls.id },
-        data: {
-          supervisorId: teachers[index % teachers.length].id,
-        },
-      })
-    )
-  );
-
-  // Create 10 Parents
-  const parents = await Promise.all(
-    Array.from({ length: 10 }, (_, i) =>
-      prisma.parent.create({
-        data: {
-          username: `parent${i + 1}`,
-          password: `password${i + 1}`,
-          name: `Parent ${i + 1}`,
-          email: `parent${i + 1}@example.com`,
-          phone: `11223344${i + 1}`,
-          address: `Parent Address ${i + 1}`,
-          img: `https://placekitten.com/200/200?image=${i + 10}`,
-          type: i % 3 === 0 ? "FATHER" : i % 3 === 1 ? "MOTHER" : "OTHER",
-          refreshToken: `parentToken${i}`,
-          approved: i % 2 === 0 ? "ACCEPTED" : "PENDING",
-        },
-      })
-    )
-  );
-
-  // Create 10 Students
-  const students = await Promise.all(
-    Array.from({ length: 10 }, (_, i) =>
-      prisma.student.create({
-        data: {
-          username: `student${i + 1}`,
-          password: `password${i + 1}`,
-          name: `Student ${i + 1}`,
-          email: `student${i + 1}@example.com`,
-          phone: `55566677${i + 1}`,
-          address: `Student Address ${i + 1}`,
-          bloodType: i % 2 === 0 ? "B+" : "AB+",
-          birthDate: new Date(2005 + (i % 5), i % 12, i + 1),
-          img: `https://placekitten.com/200/200?image=${i + 20}`,
-          sex: i % 2 === 0 ? "MALE" : "FEMALE",
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          refreshToken: `studentToken${i}`,
-          approved: i % 2 === 0 ? "ACCEPTED" : "PENDING",
-          parentId: parents[i % parents.length].id,
-          gradeId: grades[i % grades.length].id,
-          classId: classes[i % classes.length].id,
-        },
-      })
-    )
-  );
-
-  // Create 10 Subjects
-  const subjects = await Promise.all(
-    Array.from({ length: 10 }, (_, i) =>
-      prisma.subject.create({
-        data: {
-          name: `Subject ${i + 1}`,
-          code: `SUB${i + 1}`,
-          teachersId: [teachers[i % teachers.length].id],
-        },
-      })
-    )
-  );
-
-  // Create Lessons for each Class and Subject
-  await Promise.all(
-    Array.from({ length: 10 }, (_, i) =>
-      prisma.lesson.create({
-        data: {
-          name: `Lesson ${i + 1}`,
-          day: "MONDAY",
-          startTime: new Date(),
-          endTime: new Date(),
-          subjectId: subjects[i % subjects.length].id,
-          classId: classes[i % classes.length].id,
-          teacherId: teachers[i % teachers.length].id,
-        },
-      })
-    )
-  );
-
-  // Create Events for Classes
-  await Promise.all(
-    classes.map((cls, i) =>
-      prisma.event.create({
-        data: {
-          title: `Event ${i + 1}`,
-          description: `Event Description ${i + 1}`,
-          startTime: new Date(),
-          endTime: new Date(),
-          classId: cls.id,
-        },
-      })
-    )
-  );
-
-  // Create Announcements for Classes
-  await Promise.all(
-    classes.map((cls, i) =>
-      prisma.announcement.create({
-        data: {
-          title: `Announcement ${i + 1}`,
-          description: `Announcement Description ${i + 1}`,
-          date: new Date(),
-          classId: cls.id,
-        },
-      })
-    )
-  );
-
-  console.log("Seeding completed successfully!");
 }
 
-main()
-  .catch((e) => {
-    console.error("Error during seeding:", e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main();
