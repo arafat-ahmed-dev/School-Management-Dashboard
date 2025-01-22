@@ -5,12 +5,11 @@ import TableSearch from "@/components/TableSearch";
 import { role, subjectsData } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
+import prisma from "../../../../../prisma";
+import { ITEM_PER_PAGE } from "@/lib/setting";
+import { Prisma, Subject, Teacher } from "@prisma/client";
 
-type Subject = {
-  id: number;
-  name: string;
-  teachers: string[];
-};
+type SubjectList = Subject & { teachers: Teacher[] };
 
 const columns = [
   {
@@ -31,33 +30,73 @@ const columns = [
       ]
     : []),
 ];
+const renderRow = (item: SubjectList) => (
+  <tr
+    key={item.id}
+    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
+  >
+    <td className="flex items-center gap-4 p-4 px-2">
+      <h3 className="font-semibold">{item.name}</h3>
+    </td>
+    <td className="hidden md:table-cell p-2">
+      {item.teachers.map((item) => item.name).join(", ")}
+    </td>
+    <td>
+      <div className="flex items-center gap-2">
+        <Link href={`/list/teachers/${item.id}`}>
+          <button className="w-7 h-7 flex items-center justify-center rounded-full bg-aamSky">
+            <Image src="/view.png" alt="" width={16} height={16} />
+          </button>
+        </Link>
+        {role === "admin" && (
+          <button className="w-7 h-7 flex items-center justify-center rounded-full bg-aamPurple">
+            <Image src="/delete.png" alt="" width={16} height={16} />
+          </button>
+        )}
+      </div>
+    </td>
+  </tr>
+);
 
-const SubjectListPage = () => {
-  const renderRow = (item: Subject) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
-    >
-      <td className="flex items-center gap-4 p-4 px-2">
-        <h3 className="font-semibold">{item.name}</h3>
-      </td>
-      <td className="hidden md:table-cell p-2">{item.teachers.join(", ")}</td>
-      <td>
-        <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-aamSky">
-              <Image src="/view.png" alt="" width={16} height={16} />
-            </button>
-          </Link>
-          {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-aamPurple">
-              <Image src="/delete.png" alt="" width={16} height={16} />
-            </button>
-          )}
-        </div>
-      </td>
-    </tr>
-  );
+const SubjectListPage = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) => {
+  const { page, ...queryParams } = searchParams;
+  const p = page ? parseInt(page) : 1;
+  const query: Prisma.SubjectWhereInput = {};
+
+  for (const [key, value] of Object.entries(queryParams)) {
+    if (value !== undefined) {
+      switch (key) {
+        case "search":
+          query.OR = [
+            { name: { contains: value, mode: "insensitive" } },
+            {
+              teachers: {
+                some: { name: { contains: value, mode: "insensitive" } },
+              },
+            },
+          ];
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  const [data, count] = await prisma.$transaction([
+    prisma.subject.findMany({
+      where: query,
+      include: {
+        teachers: true,
+      },
+      take: ITEM_PER_PAGE,
+      skip: (p - 1) * ITEM_PER_PAGE,
+    }),
+    prisma.subject.count({ where: query }),
+  ]);
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -83,7 +122,7 @@ const SubjectListPage = () => {
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={subjectsData} />
+      <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
       <Pagination page={p} count={count} />
     </div>

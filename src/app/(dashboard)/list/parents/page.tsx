@@ -8,7 +8,7 @@ import Image from "next/image";
 import prisma from "../../../../../prisma";
 import { Prisma, Parent, Student } from "@prisma/client";
 
-type ParentList = Parent  & { students: Student[] };
+type ParentList = Parent & { students: Student[] };
 
 const columns = [
   {
@@ -50,7 +50,7 @@ const renderRow = (item: ParentList) => (
         <p className="text-xs text-gray-500">{item?.email}</p>
       </div>
     </td>
-    <td className="p-2">{item.students.map(item => item.name).join(", ")}</td>
+    <td className="p-2">{item.students.map((item) => item.name).join(", ")}</td>
     <td className="hidden md:table-cell p-2">{item.phone}</td>
     <td className="hidden md:table-cell p-2">{item.address}</td>
     <td>
@@ -111,7 +111,6 @@ const ParentListPage = async ({
     prisma.parent.count({ where: query }),
   ]);
 
-  console.log(data, count);
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}

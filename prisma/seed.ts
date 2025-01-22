@@ -142,7 +142,7 @@ async function main() {
     );
 
     // Create Lessons for each Class and Subject
-    await Promise.all(
+    const lessons = await Promise.all(
       Array.from({ length: 35 }, (_, i) =>
         prisma.lesson.create({
           data: {
@@ -153,6 +153,60 @@ async function main() {
             subjectId: subjects[i % subjects.length].id,
             classId: classes[i % classes.length].id,
             teacherId: teachers[i % teachers.length].id,
+          },
+        })
+      )
+    );
+
+    // Create Exams for Lessons
+    const exams = await Promise.all(
+      lessons.map((lesson, i) =>
+        prisma.exam.create({
+          data: {
+            title: `Exam ${i + 1}`,
+            startTime: new Date(),
+            endTime: new Date(),
+            lessonId: lesson.id,
+          },
+        })
+      )
+    );
+
+    // Create Assignments for Lessons
+    const assignments = await Promise.all(
+      lessons.map((lesson, i) =>
+        prisma.assignment.create({
+          data: {
+            title: `Assignment ${i + 1}`,
+            startDate: new Date(),
+            dueDate: new Date(),
+            lessonId: lesson.id,
+          },
+        })
+      )
+    );
+
+    // Create Results for Exams
+    await Promise.all(
+      exams.map((exam, i) =>
+        prisma.result.create({
+          data: {
+            score: Math.floor(Math.random() * 100),
+            examId: exam.id,
+            studentId: students[i % students.length].id,
+          },
+        })
+      )
+    );
+
+    // Create Results for Assignments
+    await Promise.all(
+      assignments.map((assignment, i) =>
+        prisma.result.create({
+          data: {
+            score: Math.floor(Math.random() * 100),
+            assignmentId: assignment.id,
+            studentId: students[i % students.length].id,
           },
         })
       )

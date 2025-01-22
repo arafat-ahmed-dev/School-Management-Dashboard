@@ -124,25 +124,25 @@ const SingleTeacherPage = () => {
           <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
             <Link
               className="p-3 rounded-md bg-aamSkyLight"
-              href={`/list/classes/${"item.id"}`}
+              href={`/list/classes?teacherId=${"6790a3258d9a372b7c1d6f22"}`}
             >
               Teacher&apos;s Classes
             </Link>
             <Link
               className="p-3 rounded-md bg-aamPurpleLight"
-              href={`/list/students?teacherId=${"678f332b53acac7e4a7b1482"}`}
+              href={`/list/students?teacherId=${"6790a3258d9a372b7c1d6f22"}`}
             >
               Teacher&apos;s Students
             </Link>
             <Link
               className="p-3 rounded-md bg-aamYellowLight"
-              href={`/list/lessons/${"item.id"}`}
+              href={`/list/lessons?teacherId=${"6790a3258d9a372b7c1d6f22"}`}
             >
               Teacher&apos;s Lessons
             </Link>
             <Link
               className="p-3 rounded-md bg-pink-50"
-              href={`/list/exams/${"item.id"}`}
+              href={`/list/exams?teacherId=${"6790a3258d9a372b7c1d6f22"}`}
             >
               Teacher&apos;s Exams
             </Link>

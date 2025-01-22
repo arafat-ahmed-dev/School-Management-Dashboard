@@ -131,12 +131,13 @@ const StudentListPage = async ({
       },
       take: ITEM_PER_PAGE,
       skip: (p - 1) * ITEM_PER_PAGE,
+      orderBy: {
+        name: "asc", // Sort by className in ascending order
+      },
     }),
     prisma.student.count({ where: query }),
   ]);
-
-  console.log(data, count);
-
+  
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
