@@ -35,6 +35,7 @@ const columns = [
         {
           header: "Actions",
           accessor: "action",
+          className: "flex justify-center",
         },
       ]
     : []),
@@ -49,7 +50,7 @@ const renderRow = (item: ClassList) => (
     <td className="hidden md:table-cell p-2">{item.grade.level}</td>
     <td className=" p-2">{item.supervisor?.name}</td>
     <td>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2  justify-center">
         {role === "admin" && (
           <>
             <FormModel table="class" type="update" />
@@ -69,13 +70,13 @@ const ClassListPage = async ({
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
   const query: Prisma.ClassWhereInput = {};
-  const orderBy: Prisma.ClassOrderByWithRelationInput = { name: 'asc' }; // Add sorting by name
+  const orderBy: Prisma.ClassOrderByWithRelationInput = { name: "asc" }; // Add sorting by name
 
   for (const [key, value] of Object.entries(queryParams)) {
     if (value !== undefined) {
       switch (key) {
         case "teacherId":
-          query.supervisorId = { equals : value};
+          query.supervisorId = { equals: value };
           break;
         case "search":
           query.OR = [
@@ -106,7 +107,7 @@ const ClassListPage = async ({
     }),
     prisma.class.count({ where: query }),
   ]);
-  console.log(data)
+  console.log(data);
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}

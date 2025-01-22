@@ -40,6 +40,7 @@ const columns = [
         {
           header: "Actions",
           accessor: "action",
+          className: "flex justify-center",
         },
       ]
     : []),
@@ -58,7 +59,7 @@ const renderRow = (item: ExamList) => (
       {new Intl.DateTimeFormat("en-US").format(item.startTime)}
     </td>
     <td>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2  justify-center">
         {role === "admin" && (
           <>
             <FormModel table="exam" type="update" />
@@ -133,7 +134,6 @@ const ExamListPage = async ({
     prisma.exam.count({ where: query }),
   ]);
 
-  console.log(data, count);
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}

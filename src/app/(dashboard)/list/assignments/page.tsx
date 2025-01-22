@@ -40,6 +40,7 @@ const columns = [
         {
           header: "Actions",
           accessor: "action",
+          className: "flex justify-center",
         },
       ]
     : []),
@@ -49,18 +50,24 @@ const renderRow = (item: AssignmentList) => (
     key={item.id}
     className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
   >
-    <td className="flex items-center gap-4 p-4 px-2">{item.lesson.subject.name}</td>
+    <td className="flex items-center gap-4 p-4 px-2">
+      {item.lesson.subject.name}
+    </td>
     <td>{item.lesson.class.name}</td>
     <td className="hidden md:table-cell p-2">{item.lesson.teacher.name}</td>
     <td className="hidden md:table-cell p-2">
       {new Intl.DateTimeFormat("en-US").format(item.dueDate)}
     </td>
     <td>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2  justify-center">
         {role === "admin" && (
           <>
             <FormModel table="assignment" type="update" />
-            <FormModel table="assignment" type="delete" id={parseInt(item.id)} />
+            <FormModel
+              table="assignment"
+              type="delete"
+              id={parseInt(item.id)}
+            />
           </>
         )}
       </div>
@@ -79,33 +86,33 @@ const AssignmentListPage = async ({
 
   for (const [key, value] of Object.entries(queryParams)) {
     if (value !== undefined) {
-     switch (key) {
-       case "teacherId":
-         query.lesson = {
-           teacherId: value,
-         };
-         break;
-       case "classId":
-         query.lesson = {
-           classId: value,
-         };
-         break;
-       case "search":
-         query.lesson = {
-           OR: [
-             {
-               subject: { name: { contains: value, mode: "insensitive" } },
-             },
-             {
-               teacher: { name: { contains: value, mode: "insensitive" } },
-             },
-             { class: { name: { contains: value, mode: "insensitive" } } },
-           ],
-         };
-         break;
-       default:
-         break;
-     }
+      switch (key) {
+        case "teacherId":
+          query.lesson = {
+            teacherId: value,
+          };
+          break;
+        case "classId":
+          query.lesson = {
+            classId: value,
+          };
+          break;
+        case "search":
+          query.lesson = {
+            OR: [
+              {
+                subject: { name: { contains: value, mode: "insensitive" } },
+              },
+              {
+                teacher: { name: { contains: value, mode: "insensitive" } },
+              },
+              { class: { name: { contains: value, mode: "insensitive" } } },
+            ],
+          };
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -125,12 +132,10 @@ const AssignmentListPage = async ({
       skip: (p - 1) * ITEM_PER_PAGE,
       orderBy: {
         dueDate: "asc",
-      }
+      },
     }),
     prisma.assignment.count({ where: query }),
   ]);
-
-  console.log(data, count);
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">

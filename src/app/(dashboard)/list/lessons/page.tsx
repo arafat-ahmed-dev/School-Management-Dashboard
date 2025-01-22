@@ -6,9 +6,11 @@ import { role } from "@/lib/data";
 import Image from "next/image";
 import prisma from "../../../../../prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Prisma , Lesson, Subject, Class, Teacher } from "@prisma/client";
+import { Prisma, Lesson, Subject, Class, Teacher } from "@prisma/client";
 
-type LessonList = Lesson & { subject : Subject[] } & { class: Class } & { teacher: Teacher };
+type LessonList = Lesson & { subject: Subject[] } & { class: Class } & {
+  teacher: Teacher;
+};
 
 const columns = [
   {
@@ -29,6 +31,7 @@ const columns = [
         {
           header: "Actions",
           accessor: "action",
+          className: "flex justify-center",
         },
       ]
     : []),
@@ -42,7 +45,7 @@ const renderRow = (item: LessonList) => (
     <td>{item.class.name}</td>
     <td className="hidden md:table-cell p-2">{item.teacher.name}</td>
     <td>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2  justify-center">
         {role === "admin" && (
           <>
             <FormModel table="lesson" type="update" />

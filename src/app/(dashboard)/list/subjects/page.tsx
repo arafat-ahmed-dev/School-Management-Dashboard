@@ -26,6 +26,7 @@ const columns = [
         {
           header: "Actions",
           accessor: "action",
+          className: "flex justify-center",
         },
       ]
     : []),

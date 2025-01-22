@@ -120,20 +120,32 @@ const SingleStudentPage = () => {
           <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
             <Link
               className="p-3 rounded-md bg-aamPurpleLight"
-              href={`/list/teachers?classId=${"678e0a0030f8d31a520f647c"}`}
+              href={`/list/teachers?classId=${"6790a3218d9a372b7c1d6ed9"}`}
             >
               Student&apos;s Teachers
             </Link>
-            <Link className="p-3 rounded-md bg-aamSkyLight" href="/">
+            <Link
+              className="p-3 rounded-md bg-aamSkyLight"
+              href={`/list/lessons?classId=${"6790a3218d9a372b7c1d6ed9"}`}
+            >
               Student&apos;s Lessons
             </Link>
-            <Link className="p-3 rounded-md bg-pink-50" href="/">
+            <Link
+              className="p-3 rounded-md bg-pink-50"
+              href={`/list/exams?classId=${"6790a3218d9a372b7c1d6ed9"}`}
+            >
               Student&apos;s Exams
             </Link>
-            <Link className="p-3 rounded-md bg-aamSkyLight" href="/">
+            <Link
+              className="p-3 rounded-md bg-aamSkyLight"
+              href={`/list/assignments?classId=${"6790a3218d9a372b7c1d6ed9"}`}
+            >
               Student&apos;s Assignments
             </Link>
-            <Link className="p-3 rounded-md bg-aamYellowLight" href="/">
+            <Link
+              className="p-3 rounded-md bg-aamYellowLight"
+              href={`/list/results?classId=${"6790a3218d9a372b7c1d6ed9"}`}
+            >
               Student&apos;s Results
             </Link>
           </div>

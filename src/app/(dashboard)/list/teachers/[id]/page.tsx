@@ -148,7 +148,7 @@ const SingleTeacherPage = () => {
             </Link>
             <Link
               className="p-3 rounded-md bg-aamSkyLight"
-              href={`/list/assignments/${"item.id"}`}
+              href={`/list/assignments?teacherId=${"6790a3258d9a372b7c1d6f22"}`}
             >
               Teacher&apos;s Assignments
             </Link>

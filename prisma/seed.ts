@@ -241,6 +241,22 @@ async function main() {
       )
     );
 
+    // Create Attendance records for each student and lesson
+    await Promise.all(
+      students.flatMap((student) =>
+        lessons.map((lesson) =>
+          prisma.attendance.create({
+            data: {
+              date: new Date(),
+              present: Math.random() > 0.5,
+              studentId: student.id,
+              lessonId: lesson.id,
+            },
+          })
+        )
+      )
+    );
+
     console.log("Seeding completed successfully!");
   } catch (error) {
     console.error("Error during seeding:", error);

@@ -41,6 +41,7 @@ const columns = [
         {
           header: "Actions",
           accessor: "action",
+          className: "flex justify-center",
         },
       ]
     : []),
@@ -69,7 +70,7 @@ const renderRow = (item: StudnetList) => (
     <td className="hidden md:table-cell p-2">{item.phone}</td>
     <td className="hidden md:table-cell p-2">{item.address}</td>
     <td>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2  justify-center">
         <Link href={`/list/students/${item.id}`}>
           <button className="w-7 h-7 flex items-center justify-center rounded-full bg-aamSky">
             <Image src="/view.png" alt="" width={16} height={16} />
@@ -137,7 +138,7 @@ const StudentListPage = async ({
     }),
     prisma.student.count({ where: query }),
   ]);
-  
+
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}

@@ -46,6 +46,7 @@ const columns = [
         {
           header: "Actions",
           accessor: "action",
+          className: "flex justify-center",
         },
       ]
     : []),
@@ -79,7 +80,7 @@ const renderRow = (item: TeacherList) => (
     <td className="hidden lg:table-cell p-2">{item.phone}</td>
     <td className="hidden lg:table-cell p-2">{item.address}</td>
     <td>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 justify-center">
         <Link href={`/list/teachers/${item.id}`}>
           <button className="w-7 h-7 flex items-center justify-center rounded-full bg-aamSky">
             <Image src="/view.png" alt="" width={16} height={16} />
@@ -92,6 +93,7 @@ const renderRow = (item: TeacherList) => (
     </td>
   </tr>
 );
+
 const TeacherListPage = async ({
   searchParams,
 }: {

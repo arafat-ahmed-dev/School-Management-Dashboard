@@ -35,6 +35,7 @@ const columns = [
         {
           header: "Actions",
           accessor: "action",
+          className: "flex justify-center",
         },
       ]
     : []),
@@ -54,7 +55,7 @@ const renderRow = (item: ParentList) => (
     <td className="hidden md:table-cell p-2">{item.phone}</td>
     <td className="hidden md:table-cell p-2">{item.address}</td>
     <td>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2  justify-center">
         {role === "admin" && (
           <>
             <FormModel table="parent" type="update" />

@@ -168,14 +168,13 @@ model Result {
 }
 
 model Attendance {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  date    DateTime
-  present Boolean
-
-  studentId String  @db.ObjectId
-  student   Student @relation(fields: [studentId], references: [id])
-  lessonId  String  @db.ObjectId
-  lesson    Lesson  @relation(fields: [lessonId], references: [id])
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  date      DateTime
+  present   Boolean
+  studentId String   @db.ObjectId
+  student   Student  @relation(fields: [studentId], references: [id])
+  lessonId  String   @db.ObjectId
+  lesson    Lesson   @relation(fields: [lessonId], references: [id])
 }
 
 model Event {
