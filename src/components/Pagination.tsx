@@ -10,6 +10,25 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
     router.push(`${window.location.pathname}?${params}`);
   }
 
+  const totalPages = Math.ceil(count / ITEM_PER_PAGE);
+  const getPageNumbers = () => {
+    const pages = [];
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (page <= 3) {
+        pages.push(1, 2, 3, 4, '...', totalPages);
+      } else if (page >= totalPages - 2) {
+        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, '...', page - 1, page, page + 1, '...', totalPages);
+      }
+    }
+    return pages;
+  };
+
   return (
     <div className="p-4 flex items-center justify-between text-gray-500">
       <button
@@ -20,30 +39,22 @@ const Pagination = ({ page, count }: { page: number; count: number }) => {
         Prev
       </button>
       <div className="flex items-center gap-2 text-sm">
-        {/* <button className="px-2 rounded-sm bg-aamSky">1</button>
-        <button className="px-2 rounded-sm ">2</button>
-        <button className="px-2 rounded-sm ">3</button>
-        ...
-        <button className="px-2 rounded-sm ">10</button> */}
-        {Array.from({ length: Math.floor(count / ITEM_PER_PAGE) }).map(
-          (_, index) => {
-            return (
-              <button
-                key={index}
-                className={`px-2 rounded-sm ${
-                  index + 1 === page ? "bg-aamSky" : "bg-gray-300"
-                }`}
-                onClick={() => changePage(index + 1)}
-              >
-                {index + 1}
-              </button>
-            );
-          }
-        )}
+        {getPageNumbers().map((pageNumber, index) => (
+          <button
+            key={index}
+            className={`px-2 rounded-sm ${
+              pageNumber === page ? "bg-aamSky" : "bg-gray-300"
+            } ${pageNumber === '...' ? 'cursor-default' : ''}`}
+            onClick={() => typeof pageNumber === 'number' && changePage(pageNumber)}
+            disabled={pageNumber === '...'}
+          >
+            {pageNumber}
+          </button>
+        ))}
       </div>
       <button
         className="py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled={page === Math.floor(count / ITEM_PER_PAGE)}
+        disabled={page === totalPages}
         onClick={() => changePage(page + 1)}
       >
         Next
