@@ -3,14 +3,17 @@ import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { assignmentsData, role } from "@/lib/data";
+import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
+import prisma from "../../../../../prisma";
+import { Assignment, Class, Prisma, Subject, Teacher } from "@prisma/client";
 
-type Assignment = {
-  id: number;
-  subject: string;
-  class: string;
-  teacher: string;
-  dueDate: string;
+type AssignmentList = Assignment & {
+  lesson: {
+    subject: Subject;
+    class: Class;
+    teacher: Teacher;
+  };
 };
 
 const columns = [
@@ -41,29 +44,93 @@ const columns = [
       ]
     : []),
 ];
+const renderRow = (item: AssignmentList) => (
+  <tr
+    key={item.id}
+    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
+  >
+    <td className="flex items-center gap-4 p-4 px-2">{item.lesson.subject.name}</td>
+    <td>{item.lesson.class.name}</td>
+    <td className="hidden md:table-cell p-2">{item.lesson.teacher.name}</td>
+    <td className="hidden md:table-cell p-2">
+      {new Intl.DateTimeFormat("en-US").format(item.dueDate)}
+    </td>
+    <td>
+      <div className="flex items-center gap-2">
+        {role === "admin" && (
+          <>
+            <FormModel table="assignment" type="update" />
+            <FormModel table="assignment" type="delete" id={parseInt(item.id)} />
+          </>
+        )}
+      </div>
+    </td>
+  </tr>
+);
 
-const AssignmentListPage = () => {
-  const renderRow = (item: Assignment) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
-    >
-      <td className="flex items-center gap-4 p-4 px-2">{item.subject}</td>
-      <td>{item.class}</td>
-      <td className="hidden md:table-cell p-2">{item.teacher}</td>
-      <td className="hidden md:table-cell p-2">{item.dueDate}</td>
-      <td>
-        <div className="flex items-center gap-2">
-          {role === "admin" && (
-            <>
-              <FormModel table="assignment" type="update" />
-              <FormModel table="assignment" type="delete" id={item.id} />
-            </>
-          )}
-        </div>
-      </td>
-    </tr>
-  );
+const AssignmentListPage = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) => {
+  const { page, ...queryParams } = searchParams;
+  const p = page ? parseInt(page) : 1;
+  const query: Prisma.AssignmentWhereInput = {};
+
+  for (const [key, value] of Object.entries(queryParams)) {
+    if (value !== undefined) {
+     switch (key) {
+       case "teacherId":
+         query.lesson = {
+           teacherId: value,
+         };
+         break;
+       case "classId":
+         query.lesson = {
+           classId: value,
+         };
+         break;
+       case "search":
+         query.lesson = {
+           OR: [
+             {
+               subject: { name: { contains: value, mode: "insensitive" } },
+             },
+             {
+               teacher: { name: { contains: value, mode: "insensitive" } },
+             },
+             { class: { name: { contains: value, mode: "insensitive" } } },
+           ],
+         };
+         break;
+       default:
+         break;
+     }
+    }
+  }
+
+  const [data, count] = await prisma.$transaction([
+    prisma.assignment.findMany({
+      where: query,
+      include: {
+        lesson: {
+          select: {
+            subject: true,
+            teacher: true,
+            class: true,
+          },
+        },
+      },
+      take: ITEM_PER_PAGE,
+      skip: (p - 1) * ITEM_PER_PAGE,
+      orderBy: {
+        dueDate: "asc",
+      }
+    }),
+    prisma.assignment.count({ where: query }),
+  ]);
+
+  console.log(data, count);
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -96,7 +163,7 @@ const AssignmentListPage = () => {
       <Table
         columns={columns}
         renderRow={renderRow}
-        data={assignmentsData}
+        data={data}
         teacher={true}
       />
       {/* PAGINATION */}

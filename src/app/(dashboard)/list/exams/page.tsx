@@ -6,7 +6,7 @@ import { examsData, role } from "@/lib/data";
 import Image from "next/image";
 import prisma from "../../../../../prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Prisma , Exam, Lesson, Subject, Class, Teacher } from "@prisma/client";
+import { Prisma, Exam, Lesson, Subject, Class, Teacher } from "@prisma/client";
 
 type ExamList = Exam & {
   lesson: {
@@ -45,26 +45,30 @@ const columns = [
     : []),
 ];
 const renderRow = (item: ExamList) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
-    >
-      <td className="flex items-center gap-4 p-4 px-2">{item.lesson.subject.name}</td>
-      <td>{item.lesson.class.name}</td>
-      <td className="hidden md:table-cell p-2">{item.lesson.teacher.name}</td>
-      <td className="hidden md:table-cell p-2">{item.startTime.toLocaleString()}</td>
-      <td>
-        <div className="flex items-center gap-2">
-          {role === "admin" && (
-            <>
-              <FormModel table="exam" type="update" />
-              <FormModel table="exam" type="delete" id={parseInt(item.id)} />
-            </>
-          )}
-        </div>
-      </td>
-    </tr>
-  );
+  <tr
+    key={item.id}
+    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
+  >
+    <td className="flex items-center gap-4 p-4 px-2">
+      {item.lesson.subject.name}
+    </td>
+    <td>{item.lesson.class.name}</td>
+    <td className="hidden md:table-cell p-2">{item.lesson.teacher.name}</td>
+    <td className="hidden md:table-cell p-2">
+      {new Intl.DateTimeFormat("en-US").format(item.startTime)}
+    </td>
+    <td>
+      <div className="flex items-center gap-2">
+        {role === "admin" && (
+          <>
+            <FormModel table="exam" type="update" />
+            <FormModel table="exam" type="delete" id={parseInt(item.id)} />
+          </>
+        )}
+      </div>
+    </td>
+  </tr>
+);
 
 const ExamListPage = async ({
   searchParams,
@@ -72,31 +76,40 @@ const ExamListPage = async ({
   searchParams: { [key: string]: string | undefined };
 }) => {
   const { page, ...queryParams } = searchParams;
+
   const p = page ? parseInt(page) : 1;
+
+  // URL PARAMS CONDITION
+
   const query: Prisma.ExamWhereInput = {};
 
-  for (const [key, value] of Object.entries(queryParams)) {
-    if (value !== undefined) {
-      switch (key) {
-        case "teacherId":
-          query.lesson = {
-            teacherId: value,
-          };
-          break;
-        case "classId":
-          query.lesson = {
-            classId: value,
-          };
-          break;
-        case "search":
-          query.OR = [
-            { lesson: { subject: { name: { contains: value, mode: "insensitive" } } } },
-            { lesson: { class: { name: { contains: value, mode: "insensitive" } } } },
-            { lesson: { teacher: { name: { contains: value, mode: "insensitive" } } } },
-          ];
-          break;
-        default:
-          break;
+  query.lesson = {};
+  if (queryParams) {
+    for (const [key, value] of Object.entries(queryParams)) {
+      if (value !== undefined) {
+        switch (key) {
+          case "classId":
+            query.lesson.classId = value;
+            break;
+          case "teacherId":
+            query.lesson.teacherId = value;
+            break;
+          case "search":
+            query.lesson = {
+              OR: [
+                {
+                  subject: { name: { contains: value, mode: "insensitive" } },
+                },
+                {
+                  teacher: { name: { contains: value, mode: "insensitive" } },
+                },
+                { class: { name: { contains: value, mode: "insensitive" } } },
+              ],
+            };
+            break;
+          default:
+            break;
+        }
       }
     }
   }
@@ -107,15 +120,16 @@ const ExamListPage = async ({
       include: {
         lesson: {
           select: {
-            subject: true,
-            teacher: true,
-            class: true,
+            subject: { select: { name: true } },
+            teacher: { select: { name: true } },
+            class: { select: { name: true } },
           },
         },
       },
       take: ITEM_PER_PAGE,
       skip: (p - 1) * ITEM_PER_PAGE,
     }),
+
     prisma.exam.count({ where: query }),
   ]);
 
