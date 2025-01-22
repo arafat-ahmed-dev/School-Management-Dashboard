@@ -100,7 +100,7 @@ const AssignmentListPage = () => {
         teacher={true}
       />
       {/* PAGINATION */}
-      <Pagination />
+      <Pagination page={p} count={count} />
     </div>
   );
 };

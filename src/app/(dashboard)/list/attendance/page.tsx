@@ -14,8 +14,8 @@ type Attendance = {
   date: string;
   status: string;
 };
-  // const response = useAppSelector((state) => state.auth.userData?.userRole);
-  // const role = _.toLower(response);
+// const response = useAppSelector((state) => state.auth.userData?.userRole);
+// const role = _.toLower(response);
 const columns = [
   {
     header: "Student Name",
@@ -98,7 +98,7 @@ const AttendanceListPage = () => {
       {/* LIST */}
       <Table columns={columns} renderRow={renderRow} data={attendanceData} />
       {/* PAGINATION */}
-      <Pagination />
+      <Pagination page={p} count={count} />
     </div>
   );
 };

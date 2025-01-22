@@ -92,7 +92,7 @@ const MessageListPage = () => {
       {/* LIST */}
       <Table columns={columns} renderRow={renderRow} data={messagesData} />
       {/* PAGINATION */}
-      <Pagination />
+      <Pagination page={p} count={count} />
     </div>
   );
 };

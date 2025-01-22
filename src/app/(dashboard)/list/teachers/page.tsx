@@ -8,7 +8,6 @@ import Link from "next/link";
 import prisma from "../../../../../prisma";
 import Pagination from "@/components/Pagination";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { ObjectId } from "mongodb";
 
 type TeacherList = Teacher & { subjects: Subject[] } & { classes: Class[] };
 
@@ -28,8 +27,8 @@ const columns = [
     className: "hidden md:table-cell p-2",
   },
   {
-    header: "Classes",
-    accessor: "classes",
+    header: "Supervisors",
+    accessor: "supervisors",
     className: "hidden md:table-cell p-2",
   },
   {
@@ -119,6 +118,8 @@ const TeacherListPage = async ({
               },
             },
           ];
+          break;
+        default:
           break;
       }
     }

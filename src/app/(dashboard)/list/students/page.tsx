@@ -65,7 +65,7 @@ const renderRow = (item: StudnetList) => (
       </div>
     </td>
     <td className="hidden md:table-cell p-2">{item.id.substring(10)}</td>
-    <td className="hidden md:table-cell p-2">{item.grade?.level ?? 'N/A'}</td>
+    <td className="hidden md:table-cell p-2">{item.grade?.level ?? "N/A"}</td>
     <td className="hidden md:table-cell p-2">{item.phone}</td>
     <td className="hidden md:table-cell p-2">{item.address}</td>
     <td>
@@ -97,7 +97,7 @@ const StudentListPage = async ({
   for (const [key, value] of Object.entries(queryParams)) {
     if (value !== undefined) {
       switch (key) {
-        case "classId":
+        case "teacherId":
           query.class = {
             lessons: {
               some: {
@@ -107,7 +107,16 @@ const StudentListPage = async ({
           };
           break;
         case "search":
-          query.name = { contains: value, mode: "insensitive" };
+          query.OR = [
+            { name: { contains: value, mode: "insensitive" } },
+            {
+              class: {
+                name: { contains: value, mode: "insensitive" },
+              },
+            },
+          ];
+          break;
+        default:
           break;
       }
     }
