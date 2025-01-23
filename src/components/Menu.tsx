@@ -94,6 +94,12 @@ const Menu = () => {
           href: "/list/announcements",
           visible: ["admin", "teacher", "student", "parent"],
         },
+        {
+          icon: "/approvement.png",
+          label: "Approvements",
+          href: "/list/approvements",
+          visible: ["admin"],
+        },
       ],
     },
     {
