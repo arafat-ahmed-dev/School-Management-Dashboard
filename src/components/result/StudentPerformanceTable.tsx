@@ -201,10 +201,7 @@ export default function StudentPerformanceTable({
             </thead>
             <tbody>
               {filteredStudents.map((student) => (
-                <tr
-                  key={student.id}
-                  className="border-b text-[12px] md:text-base"
-                >
+                <tr key={student.id} className="border-b text-xs md:text-base">
                   <td className="md:px-4 py-2">{student.name}</td>
                   <td className="md:px-4 py-2  hidden md:table-cell p-2">
                     {student.grade}

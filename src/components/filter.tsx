@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -11,6 +10,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
 
 interface FilterOption {
   label: string;
@@ -53,27 +53,27 @@ export function FilterPopover({ filterGroups, onFilterChange }: FilterPopoverPro
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="w-8 h-8 rounded-full bg-aamYellow hover:bg-aamYellow/90"
-        >
-          <Filter className="h-4 w-4" />
-          <span className="sr-only">Filter list</span>
-        </Button>
+        <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
+          <Image src="/filter.png" alt="" width={14} height={14} />
+        </button>
       </PopoverTrigger>
       <PopoverContent className="w-80 md:mr-4" align="start">
         <div className="grid gap-4">
-          {filterGroups.map(group => (
+          {filterGroups.map((group) => (
             <div key={group.title} className="space-y-2">
               <h4 className="font-medium leading-none">{group.title}</h4>
               <RadioGroup
                 value={filters[group.title] || ""}
-                onValueChange={value => handleFilterChange(group.title, value)}
+                onValueChange={(value) =>
+                  handleFilterChange(group.title, value)
+                }
                 className="grid gap-2 pt-2"
               >
-                {group.options.map(option => (
-                  <div key={option.value} className="flex items-center space-x-2">
+                {group.options.map((option) => (
+                  <div
+                    key={option.value}
+                    className="flex items-center space-x-2"
+                  >
                     <RadioGroupItem value={option.value} id={option.value} />
                     <Label htmlFor={option.value}>{option.label}</Label>
                   </div>
@@ -86,7 +86,11 @@ export function FilterPopover({ filterGroups, onFilterChange }: FilterPopoverPro
             <Button variant="outline" size="sm" onClick={handleReset}>
               Reset
             </Button>
-            <Button size="sm" onClick={handleApplyFilters}>
+            <Button
+              size="sm"
+              onClick={handleApplyFilters}
+              className="bg-aamYellow text-black hover:bg-aamYellowLight"
+            >
               Apply Filters
             </Button>
           </div>

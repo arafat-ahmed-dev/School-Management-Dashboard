@@ -15,7 +15,7 @@ model Admin {
   email        String   @unique
   phone        String
   refreshToken String?
-  approved     Approve? @default(ACCEPTED)
+  userApproval UserApproval?
 }
 
 model Student {
@@ -44,7 +44,7 @@ model Student {
   attendances   Attendance[]
   result        Result[]
   refreshToken  String?
-  approved      Approve?     @default(PENDING)
+  userApproval UserApproval?
 }
 
 model Teacher {
@@ -66,7 +66,7 @@ model Teacher {
   classes      Class[]
   sex          UserSex?
   refreshToken String?
-  approved     Approve?  @default(PENDING)
+   userApproval UserApproval?
 }
 
 model Parent {
@@ -83,7 +83,7 @@ model Parent {
   students     Student[]
   type         ParentType?
   refreshToken String?
-  approved     Approve?    @default(PENDING)
+  userApproval UserApproval?
 }
 
 model Class {
@@ -197,6 +197,19 @@ model Announcement {
   classId String? @db.ObjectId
   class   Class?  @relation(fields: [classId], references: [id])
 }
+model UserApproval {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @unique @db.ObjectId
+  userType  UserType
+  status    Approve? @default(PENDING)
+  updatedAt DateTime @updatedAt
+
+  admin     Admin?   @relation(fields: [userId], references: [id])
+  student   Student? @relation(fields: [userId], references: [id])
+  teacher   Teacher? @relation(fields: [userId], references: [id])
+  parent    Parent?  @relation(fields: [userId], references: [id])
+}
+
 
 enum Day {
   SUNDAY
@@ -223,4 +236,11 @@ enum Approve {
   PENDING
   ACCEPTED
   CANCEL
+}
+
+enum UserType {
+  ADMIN
+  STUDENT
+  TEACHER
+  PARENT
 }

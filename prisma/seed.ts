@@ -73,7 +73,6 @@ async function main() {
             birthday: new Date(1985 + i, i % 12, i + 1),
             refreshToken: `refreshToken${i}`,
             sex: i % 2 === 0 ? "MALE" : "FEMALE",
-            approved: i % 2 === 0 ? "ACCEPTED" : "PENDING",
             subjects: {
               connect: subjects
                 .slice(i % subjects.length, (i % subjects.length) + 3)
@@ -110,7 +109,6 @@ async function main() {
             img: `https://placekitten.com/200/200?image=${i + 10}`,
             type: i % 3 === 0 ? "FATHER" : i % 3 === 1 ? "MOTHER" : "OTHER",
             refreshToken: `parentToken${i}`,
-            approved: i % 2 === 0 ? "ACCEPTED" : "PENDING",
           },
         })
       )
@@ -132,10 +130,61 @@ async function main() {
             img: `https://placekitten.com/200/200?image=${i + 20}`,
             sex: i % 2 === 0 ? "MALE" : "FEMALE",
             refreshToken: `studentToken${i}`,
-            approved: i % 2 === 0 ? "ACCEPTED" : "PENDING",
             parentId: parents[i % parents.length].id,
             gradeId: grades[i % grades.length].id,
             classId: classes[i % classes.length].id,
+          },
+        })
+      )
+    );
+
+    // Create UserApproval for Admins
+    await Promise.all(
+      admins.map((admin) =>
+        prisma.userApproval.create({
+          data: {
+            userId: admin.id,
+            userType: "ADMIN",
+            status: admin.approved,
+          },
+        })
+      )
+    );
+
+    // Create UserApproval for Teachers
+    await Promise.all(
+      teachers.map((teacher) =>
+        prisma.userApproval.create({
+          data: {
+            userId: teacher.id,
+            userType: "TEACHER",
+            status: "PENDING",
+          },
+        })
+      )
+    );
+
+    // Create UserApproval for Parents
+    await Promise.all(
+      parents.map((parent) =>
+        prisma.userApproval.create({
+          data: {
+            userId: parent.id,
+            userType: "PARENT",
+            status: "PENDING",
+          },
+        })
+      )
+    );
+
+    // Create UserApproval for Students
+    await Promise.all(
+      students.map((student) =>
+        prisma.userApproval.create({
+          data: {
+            userId: student.id,
+            userType: "STUDENT",
+            status: "PENDING",
           },
         })
       )
