@@ -9,7 +9,7 @@ datasource db {
 
 model Admin {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
+  name         String   // Ensure this line is included
   username     String   @unique
   password     String   @unique
   email        String   @unique

@@ -9,7 +9,7 @@ async function main() {
       Array.from({ length: 10 }, (_, i) =>
         prisma.admin.create({
           data: {
-            name: `Admin ${i + 1}`,
+            name: `Admin ${i + 1}`, // Ensure this line is included
             username: `admin${i + 1}`,
             password: `password${i + 1}`,
             email: `admin${i + 1}@example.com`,
