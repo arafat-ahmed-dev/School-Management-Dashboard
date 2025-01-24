@@ -46,16 +46,29 @@ async function main() {
     );
 
     // Create 15 Subjects
-    const subjects = await Promise.all(
-      Array.from({ length: 15 }, (_, i) =>
-        prisma.subject.create({
-          data: {
-            name: `Subject ${i + 1}`,
-            code: `SUB${i + 1}`,
-          },
-        })
-      )
-    );
+   const subjectData = [
+     { name: "Mathematics" },
+     { name: "Science" },
+     { name: "English" },
+     { name: "History" },
+     { name: "Geography" },
+     { name: "Physics" },
+     { name: "Chemistry" },
+     { name: "Biology" },
+     { name: "Computer Science" },
+     { name: "Art" },
+   ];
+
+   const subjects = await Promise.all(
+     subjectData.map((subject, index) =>
+       prisma.subject.create({
+         data: {
+           name: subject.name,
+           code: `SUB${index + 1}`,
+         },
+       })
+     )
+   );
 
     // Create 20 Teachers
     const teachers = await Promise.all(
@@ -137,59 +150,6 @@ async function main() {
         })
       )
     );
-
-    // Create UserApproval for Admins
-    await Promise.all(
-      admins.map((admin) =>
-        prisma.userApproval.create({
-          data: {
-            userId: admin.id,
-            userType: "ADMIN",
-            status: admin.approved,
-          },
-        })
-      )
-    );
-
-    // Create UserApproval for Teachers
-    await Promise.all(
-      teachers.map((teacher) =>
-        prisma.userApproval.create({
-          data: {
-            userId: teacher.id,
-            userType: "TEACHER",
-            status: "PENDING",
-          },
-        })
-      )
-    );
-
-    // Create UserApproval for Parents
-    await Promise.all(
-      parents.map((parent) =>
-        prisma.userApproval.create({
-          data: {
-            userId: parent.id,
-            userType: "PARENT",
-            status: "PENDING",
-          },
-        })
-      )
-    );
-
-    // Create UserApproval for Students
-    await Promise.all(
-      students.map((student) =>
-        prisma.userApproval.create({
-          data: {
-            userId: student.id,
-            userType: "STUDENT",
-            status: "PENDING",
-          },
-        })
-      )
-    );
-
     // Create Lessons for each Class and Subject
     const lessons = await Promise.all(
       Array.from({ length: 35 }, (_, i) =>
