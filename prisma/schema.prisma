@@ -16,6 +16,7 @@ model Admin {
   phone        String
   refreshToken String?
   approved     Approve? @default(ACCEPTED)
+  createdAt    DateTime @default(now())
 }
 
 model Student {

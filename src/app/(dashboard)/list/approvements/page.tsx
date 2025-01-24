@@ -12,7 +12,7 @@ const filterGroups = [
   {
     title: "Role",
     options: [
-      { label: "Student", value: "student" },
+      { label: "Student", value: "student", default: "student" },
       { label: "Teacher", value: "teacher" },
       { label: "Parent", value: "parent" },
       { label: "Admin", value: "admin" },
@@ -28,47 +28,7 @@ const filterGroups = [
   },
 ];
 
-const renderRow = (item: any) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
-  >
-    <td className="flex items-center gap-4 text-xs md:text-sm md:p-4 p-2 md:px-2 ">
-      {item.name}
-    </td>
-    <td className="text-xs md:text-sm">
-      {item?.class?.name ||
-        item.subjects?.map((item: any) => item.name).join(", ") ||
-        item.students.map((item: any) => item.name).join(", ")}
-    </td>
-    <td className="hidden md:table-cell text-xs p-2">
-      {new Intl.DateTimeFormat("en-US").format(new Date(item.createdAt))}
-    </td>
-    <td className="hidden md:table-cell text-xs p-2">{item.approved}</td>
-    <td>
-      <div className="flex items-center gap-2 justify-center flex-col md:flex-row">
-        {item.approved === "PENDING" && (
-          <>
-            <button className="bg-green-500 w-[60px] md:w-[75px] text-[11px] md:text-sm text-white px-2 py-1 rounded">
-              Approve
-            </button>
-            <button className="bg-red-500 w-[60px] md:w-[75px] text-[11px] md:text-sm text-white px-2 py-1 rounded">
-              Cancel
-            </button>
-          </>
-        )}
-        {item.approved === "ACCEPTED" && (
-          <Image
-            src="/approvement2.png"
-            width={20}
-            height={20}
-            alt="checkmark"
-          />
-        )}
-      </div>
-    </td>
-  </tr>
-);
+
 
 const ApprovementListPage = async ({
   searchParams,
@@ -91,23 +51,17 @@ const ApprovementListPage = async ({
   for (const [key, value] of Object.entries(queryParams)) {
     if (value !== undefined) {
       switch (key) {
-        // case "teacherId":
-        //   // (query as Prisma.StudentWhereInput).class = {
-        //   //   lessons: {
-        //   //     some: {
-        //   //       teacherId: value,
-        //   //     },
-        //   //   },
-        //   };
+        // case "status":
+        //   query.status = value;
         //   break;
         case "search":
           query.OR = [
-            // { name: { contains: value, mode: "insensitive" } },
-            // {
-            //   class: {
-            //     name: { contains: value, mode: "insensitive" },
-            //   },
-            // },
+            { name: { contains: value, mode: "insensitive" } },
+            {
+              class: {
+                name: { contains: value, mode: "insensitive" },
+              },
+            },
           ];
           break;
         default:
@@ -116,6 +70,28 @@ const ApprovementListPage = async ({
     }
   }
 
+  const include = (() => {
+    switch (role) {
+      case "student":
+        return { class: { select: { name: true } } };
+      case "teacher":
+        return { subjects: { select: { name: true } } };
+      case "parent":
+        return { students: { select: { name: true } } };
+      default:
+        return {};
+    }
+  })();
+
+  const [data, count] = await prisma.$transaction([
+    (prisma[role] as any).findMany({
+      where: query,
+      include,
+      take: ITEM_PER_PAGE,
+      skip: (p - 1) * ITEM_PER_PAGE,
+    }),
+    (prisma[role] as any).count({ where: query }),
+  ]);
   const columns = [
     {
       header: "Title",
@@ -159,29 +135,51 @@ const ApprovementListPage = async ({
         ]
       : []),
   ];
-
-  const include = (() => {
-    switch (role) {
-      case "student":
-        return { class: { select: { name: true } } };
-      case "teacher":
-        return { subjects: { select: { name: true } } };
-      case "parent":
-        return { students: { select: { name: true } } };
-      default:
-        return {};
-    }
-  })();
-
-  const [data, count] = await prisma.$transaction([
-    (prisma[role] as any).findMany({
-      where: query,
-      include,
-      take: ITEM_PER_PAGE,
-      skip: (p - 1) * ITEM_PER_PAGE,
-    }),
-    (prisma[role] as any).count({ where: query }),
-  ]);
+  const renderRow = (item: any) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
+    >
+      <td className="flex items-center gap-4 text-xs md:text-sm md:p-4 p-2 md:px-2 ">
+        {item.name}
+      </td>
+      {role !== "admin" && (
+        <td className="text-xs md:text-sm">
+          {item?.class?.name ||
+            item.subjects?.map((item: any) => item.name).join(", ") ||
+            item.students?.map((item: any) => item.name).join(", ")}
+        </td>
+      )}
+      <td className="hidden md:table-cell text-xs p-2">
+        {new Intl.DateTimeFormat("en-US").format(
+          new Date(item.createdAt || Date.now())
+        )}
+      </td>
+      <td className="hidden md:table-cell text-xs p-2">{item.approved}</td>
+      <td>
+        <div className="flex items-center gap-2 justify-center flex-col md:flex-row">
+          {item.approved === "PENDING" && (
+            <>
+              <button className="bg-green-500 w-[60px] md:w-[75px] text-[11px] md:text-sm text-white px-2 py-1 rounded">
+                Approve
+              </button>
+              <button className="bg-red-500 w-[60px] md:w-[75px] text-[11px] md:text-sm text-white px-2 py-1 rounded">
+                Cancel
+              </button>
+            </>
+          )}
+          {item.approved === "ACCEPTED" && (
+            <Image
+              src="/approvement2.png"
+              width={20}
+              height={20}
+              alt="checkmark"
+            />
+          )}
+        </div>
+      </td>
+    </tr>
+  );
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
