@@ -1,67 +1,12 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role } from "@/lib/data";
+import { role as host } from "@/lib/data";
 import Image from "next/image";
-import { useState } from "react";
 import { FilterPopover } from "@/components/filter";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import prisma from "../../../../../prisma";
 import { Prisma } from "@prisma/client";
-
-
-const staticData = [
-  {
-    id: 1,
-    title: "Approvement 1",
-    class: { name: "Class A" },
-    date: "2023-10-01",
-    status: "pending",
-  },
-  {
-    id: 2,
-    title: "Approvement 2",
-    class: { name: "Class B" },
-    date: "2023-10-02",
-    status: "pending",
-  },
-  {
-    id: 3,
-    title: "Approvement 3",
-    class: { name: "Class C" },
-    date: "2023-10-03",
-    status: "pending",
-  },
-];
-const columns = [
-  {
-    header: "Title",
-    accessor: "title",
-  },
-  {
-    header: role === "admin" ? "Subject" : "Class",
-    accessor: "class.name",
-  },
-  {
-    header: "Date",
-    accessor: "date",
-    className: "hidden md:table-cell p-2",
-  },
-  {
-    header: "Status",
-    accessor: "status",
-    className: "hidden md:table-cell p-2",
-  },
-  ...(role === "admin"
-    ? [
-        {
-          header: "Actions",
-          accessor: "action",
-          className: "flex justify-center",
-        },
-      ]
-    : []),
-];
 
 const filterGroups = [
   {
@@ -77,7 +22,7 @@ const filterGroups = [
     title: "Status",
     options: [
       { label: "Pending", value: "pending" },
-      { label: "Approved", value: "approved" },
+      { label: "Approved", value: "accepted" },
       { label: "Cancelled", value: "cancelled" },
     ],
   },
@@ -88,17 +33,21 @@ const renderRow = (item: any) => (
     key={item.id}
     className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
   >
-    <td className="flex items-center gap-4 text-xs md:p-4 p-2 md:px-2 ">
-      {item.title}
+    <td className="flex items-center gap-4 text-xs md:text-sm md:p-4 p-2 md:px-2 ">
+      {item.name}
     </td>
-    <td className="text-xs md:text-sm">{item.class.name}</td>
+    <td className="text-xs md:text-sm">
+      {item?.class?.name ||
+        item.subjects?.map((item: any) => item.name).join(", ") ||
+        item.students.map((item: any) => item.name).join(", ")}
+    </td>
     <td className="hidden md:table-cell text-xs p-2">
-      {new Intl.DateTimeFormat("en-US").format(new Date(item.date))}
+      {new Intl.DateTimeFormat("en-US").format(new Date(item.createdAt))}
     </td>
-    <td className="hidden md:table-cell text-xs p-2">{item.status}</td>
+    <td className="hidden md:table-cell text-xs p-2">{item.approved}</td>
     <td>
       <div className="flex items-center gap-2 justify-center flex-col md:flex-row">
-        {item.status === "pending" && (
+        {item.approved === "PENDING" && (
           <>
             <button className="bg-green-500 w-[60px] md:w-[75px] text-[11px] md:text-sm text-white px-2 py-1 rounded">
               Approve
@@ -107,6 +56,14 @@ const renderRow = (item: any) => (
               Cancel
             </button>
           </>
+        )}
+        {item.approved === "ACCEPTED" && (
+          <Image
+            src="/approvement2.png"
+            width={20}
+            height={20}
+            alt="checkmark"
+          />
         )}
       </div>
     </td>
@@ -120,52 +77,111 @@ const ApprovementListPage = async ({
 }) => {
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
-  const query: Prisma.UserApprovalWhereInput = {};
+  const query:
+    | Prisma.StudentWhereInput
+    | Prisma.ParentWhereInput
+    | Prisma.AdminWhereInput
+    | Prisma.TeacherWhereInput = {};
+  const role = (queryParams.role || "student") as
+    | "student"
+    | "teacher"
+    | "parent"
+    | "admin";
+  console.log(role);
+  for (const [key, value] of Object.entries(queryParams)) {
+    if (value !== undefined) {
+      switch (key) {
+        // case "teacherId":
+        //   // (query as Prisma.StudentWhereInput).class = {
+        //   //   lessons: {
+        //   //     some: {
+        //   //       teacherId: value,
+        //   //     },
+        //   //   },
+        //   };
+        //   break;
+        case "search":
+          query.OR = [
+            // { name: { contains: value, mode: "insensitive" } },
+            // {
+            //   class: {
+            //     name: { contains: value, mode: "insensitive" },
+            //   },
+            // },
+          ];
+          break;
+        default:
+          break;
+      }
+    }
+  }
 
-  // for (const [key, value] of Object.entries(queryParams)) {
-  //   if (value !== undefined) {
-  //     switch (key) {
-  //       case "teacherId":
-  //         query.class = {
-  //           lessons: {
-  //             some: {
-  //               teacherId: value,
-  //             },
-  //           },
-  //         };
-  //         break;
-  //       case "search":
-  //         query.OR = [
-  //           // { name: { contains: value, mode: "insensitive" } },
-  //           // {
-  //           //   class: {
-  //           //     name: { contains: value, mode: "insensitive" },
-  //           //   },
-  //           // },
-  //         ];
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   }
-  // }
+  const columns = [
+    {
+      header: "Title",
+      accessor: "title",
+    },
+    ...(role === "admin"
+      ? []
+      : [
+          {
+            header:
+              role === "student"
+                ? "Class"
+                : role === "teacher"
+                ? "Subjects"
+                : "Students",
+            accessor:
+              role === "student"
+                ? "class.name"
+                : role === "teacher"
+                ? "subjects.name"
+                : "students.name",
+          },
+        ]),
+    {
+      header: "Date",
+      accessor: "date",
+      className: "hidden md:table-cell p-2",
+    },
+    {
+      header: "Status",
+      accessor: "status",
+      className: "hidden md:table-cell p-2",
+    },
+    ...(host === "admin"
+      ? [
+          {
+            header: "Actions",
+            accessor: "action",
+            className: "flex justify-center",
+          },
+        ]
+      : []),
+  ];
+
+  const include = (() => {
+    switch (role) {
+      case "student":
+        return { class: { select: { name: true } } };
+      case "teacher":
+        return { subjects: { select: { name: true } } };
+      case "parent":
+        return { students: { select: { name: true } } };
+      default:
+        return {};
+    }
+  })();
 
   const [data, count] = await prisma.$transaction([
-    prisma.userApproval.findMany({
+    (prisma[role] as any).findMany({
       where: query,
-      include: {
-        admin: true,
-        student: true,
-        teacher: true,
-        parent: true,
-      },
+      include,
       take: ITEM_PER_PAGE,
       skip: (p - 1) * ITEM_PER_PAGE,
     }),
-    prisma.userApproval.count({ where: query }),
+    (prisma[role] as any).count({ where: query }),
   ]);
-
-  console.log(data, count);
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -179,10 +195,7 @@ const ApprovementListPage = async ({
               All Approvals
             </h1>
             <div className="flex items-center gap-4 self-end">
-              {/* <FilterPopover
-                filterGroups={filterGroups}
-                onFilterChange={setFilters}
-              /> */}
+              <FilterPopover filterGroups={filterGroups} />
               <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/sort.png" alt="" width={14} height={14} />
               </button>
@@ -191,7 +204,7 @@ const ApprovementListPage = async ({
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={staticData} />
+      <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
       <Pagination page={p} count={count} />
     </div>
