@@ -16,11 +16,13 @@ import Image from "next/image";
 interface FilterOption {
   label: string;
   value: string;
+  default?: string;
 }
 
 interface FilterGroup {
   title: string;
   options: FilterOption[];
+  default?: string;
 }
 
 interface FilterPopoverProps {
@@ -35,7 +37,7 @@ export function FilterPopover({ filterGroups }: FilterPopoverProps) {
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const initialFilters = filterGroups.reduce((acc, group) => {
-      acc[group.title] = query.get(group.title.toLowerCase()) || "";
+      acc[group.title] = query.get(group.title.toLowerCase()) || group.options.find(option => option.default)?.value || "";
       return acc;
     }, {} as Record<string, string>);
     setFilters(initialFilters);
