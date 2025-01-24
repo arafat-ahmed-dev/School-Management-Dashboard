@@ -6,7 +6,7 @@ import Image from "next/image";
 import { FilterPopover } from "@/components/filter";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import prisma from "../../../../../prisma";
-import { Prisma } from "@prisma/client";
+import { Prisma, Approve } from "@prisma/client"; // Updated import
 
 const filterGroups = [
   {
@@ -23,7 +23,7 @@ const filterGroups = [
     options: [
       { label: "Pending", value: "pending" },
       { label: "Approved", value: "accepted" },
-      { label: "Cancelled", value: "cancelled" },
+      { label: "Cancelled", value: "cancel" },
     ],
   },
 ];
@@ -51,23 +51,40 @@ const ApprovementListPage = async ({
   for (const [key, value] of Object.entries(queryParams)) {
     if (value !== undefined) {
       switch (key) {
-        // case "status":
-        //   query.status = value;
-        //   break;
+        case "status":
+          (query as any).approved = value.toUpperCase() as Approve;
+          break;
         case "search":
-          query.OR = [
-            { name: { contains: value, mode: "insensitive" } },
-            {
-              class: {
-                name: { contains: value, mode: "insensitive" },
-              },
-            },
-          ];
+          if (role === "student") {
+            query.OR = [
+              { name: { contains: value, mode: "insensitive" } },
+              { class: { name: { contains: value, mode: "insensitive" } } },
+            ];
+          } else if (role === "teacher") {
+            query.OR = [
+              { name: { contains: value, mode: "insensitive" } },
+              { subjects: { some: { name: { contains: value, mode: "insensitive" } } } },
+            ];
+          } else if (role === "parent") {
+            query.OR = [
+              { name: { contains: value, mode: "insensitive" } },
+              { students: { some: { name: { contains: value, mode: "insensitive" } } } },
+            ];
+          } else if (role === "admin") {
+            query.OR = [
+              { name: { contains: value, mode: "insensitive" } },
+            ];
+          }
           break;
         default:
           break;
       }
     }
+  }
+
+  // If no status is specified, get all statuses
+  if (!queryParams.status) {
+    (query as any).approved = undefined;
   }
 
   const include = (() => {
