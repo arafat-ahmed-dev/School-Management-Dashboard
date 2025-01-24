@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -24,15 +25,28 @@ interface FilterGroup {
 
 interface FilterPopoverProps {
   filterGroups: FilterGroup[];
-  onFilterChange: (filters: Record<string, string>) => void;
 }
 
-export function FilterPopover({ filterGroups, onFilterChange }: FilterPopoverProps) {
+export function FilterPopover({ filterGroups }: FilterPopoverProps) {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<Record<string, string>>({});
+  const router = useRouter();
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const initialFilters = filterGroups.reduce((acc, group) => {
+      acc[group.title] = query.get(group.title.toLowerCase()) || "";
+      return acc;
+    }, {} as Record<string, string>);
+    setFilters(initialFilters);
+  }, [filterGroups]);
 
   const handleApplyFilters = () => {
-    onFilterChange(filters);
+    const params = new URLSearchParams(window.location.search);
+    Object.keys(filters).forEach(key => {
+      params.set(key.toLowerCase(), filters[key]);
+    });
+    router.push(`${window.location.pathname}?${params}`);
     setOpen(false);
   };
 
@@ -42,7 +56,7 @@ export function FilterPopover({ filterGroups, onFilterChange }: FilterPopoverPro
       return acc;
     }, {} as Record<string, string>);
     setFilters(resetFilters);
-    onFilterChange(resetFilters);
+    router.push(window.location.pathname);
     setOpen(false);
   };
 
