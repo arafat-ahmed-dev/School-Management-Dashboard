@@ -161,11 +161,11 @@ export function RegisterForm({
               </LabelInputContainer>
             </div>
             <LabelInputContainer className="mb-4">
-              <Label htmlFor="parentContact">Parent's Contact</Label>
+              <Label htmlFor="parentContact">Parent&apos;s Contact</Label>
               <Input
                 id="parentContact"
                 name="parentContact"
-                placeholder="Parent's contact number"
+                placeholder="Parent&apos;s contact number"
                 type="text"
               />
             </LabelInputContainer>
