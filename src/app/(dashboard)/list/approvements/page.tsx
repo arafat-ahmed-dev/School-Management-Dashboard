@@ -7,6 +7,8 @@ import { FilterPopover } from "@/components/filter";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import prisma from "../../../../../prisma";
 import { Prisma, Approve } from "@prisma/client"; // Updated import
+import dynamic from "next/dynamic";
+import { Toaster } from "sonner"; // Import Toaster from sonner
 
 const filterGroups = [
   {
@@ -23,12 +25,9 @@ const filterGroups = [
     options: [
       { label: "Pending", value: "pending" },
       { label: "Approved", value: "accepted" },
-      { label: "Cancelled", value: "cancel" },
     ],
   },
 ];
-
-
 
 const ApprovementListPage = async ({
   searchParams,
@@ -109,6 +108,7 @@ const ApprovementListPage = async ({
     }),
     (prisma[role] as any).count({ where: query }),
   ]);
+
   const columns = [
     {
       header: "Title",
@@ -152,54 +152,14 @@ const ApprovementListPage = async ({
         ]
       : []),
   ];
-  const renderRow = (item: any) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
-    >
-      <td className="flex items-center gap-4 text-xs md:text-sm md:p-4 p-2 md:px-2 ">
-        {item.name}
-      </td>
-      {role !== "admin" && (
-        <td className="text-xs md:text-sm">
-          {item?.class?.name ||
-            item.subjects?.map((item: any) => item.name).join(", ") ||
-            item.students?.map((item: any) => item.name).join(", ")}
-        </td>
-      )}
-      <td className="hidden md:table-cell text-xs p-2">
-        {new Intl.DateTimeFormat("en-US").format(
-          new Date(item.createdAt || Date.now())
-        )}
-      </td>
-      <td className="hidden md:table-cell text-xs p-2">{item.approved}</td>
-      <td>
-        <div className="flex items-center gap-2 justify-center flex-col md:flex-row">
-          {item.approved === "PENDING" && (
-            <>
-              <button className="bg-green-500 w-[60px] md:w-[75px] text-[11px] md:text-sm text-white px-2 py-1 rounded">
-                Approve
-              </button>
-              <button className="bg-red-500 w-[60px] md:w-[75px] text-[11px] md:text-sm text-white px-2 py-1 rounded">
-                Cancel
-              </button>
-            </>
-          )}
-          {item.approved === "ACCEPTED" && (
-            <Image
-              src="/approvement2.png"
-              width={20}
-              height={20}
-              alt="checkmark"
-            />
-          )}
-        </div>
-      </td>
-    </tr>
-  );
+
+  const ClientComponent = dynamic(() => import("./ClientComponent"), {
+    ssr: false,
+  });
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+      <Toaster /> {/* Add Toaster component */}
       {/* TOP */}
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold">All Approvals</h1>
@@ -219,7 +179,12 @@ const ApprovementListPage = async ({
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={data} />
+      <Table columns={columns} renderRow={(item) => (
+        <ClientComponent
+          item={item}
+          role={role}
+        />
+      )} data={data} />
       {/* PAGINATION */}
       <Pagination page={p} count={count} />
     </div>

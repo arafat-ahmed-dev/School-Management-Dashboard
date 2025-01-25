@@ -105,7 +105,7 @@ export function FilterPopover({ filterGroups }: FilterPopoverProps) {
             <Button
               size="sm"
               onClick={handleApplyFilters}
-              className="bg-aamYellow text-black hover:bg-aamYellowLight"
+              className="bg-aamYellow text-black hover:bg-yellow-400 hover:text-white"
             >
               Apply Filters
             </Button>
