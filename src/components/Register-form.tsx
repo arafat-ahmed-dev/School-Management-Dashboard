@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import axios from "axios"; // Import axios
+import { toast } from "sonner";
 import { cn } from "../lib/utils"; // Adjusted path
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
@@ -14,22 +16,19 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 
 export function RegisterForm({
-  onRegister,
-}: {
-  onRegister: (data: any) => void;
 }) {
   const [role, setRole] = useState<string>("");
+  const [error, setError] = useState<string | null>(null); // State for error message
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = {
-      firstname: formData.get("firstname"),
-      lastname: formData.get("lastname"),
+      name: formData.get("name"), // Merge first name and last name
       username : formData.get("username"),
       email: formData.get("email"),
       password: formData.get("password"),
-      role: formData.get("role"), // Include role in the data object
+      userType: formData.get("role"), // Include role in the data object
       // Add additional fields based on role
       ...(role === "student" && {
         class: formData.get("class"),
@@ -43,8 +42,16 @@ export function RegisterForm({
         class: formData.get("class"),
       }),
     };
-    console.log("Form submitted", data);
-    onRegister(data);
+    try {
+      const response = await axios.post("/api/auth/register", data);
+      console.log("Registration successful", response);
+      setError(null); // Clear error message on success
+      toast.success("Your registration request has been accepted. You will be notified soon."); // Show success toast
+    } catch (err) {
+      const error = err as any; // Type assertion
+      console.error("Registration error", error);
+      setError(error.response?.data?.message || "An error occurred during registration."); // Set error message
+    }
   };
 
   return (
@@ -56,6 +63,12 @@ export function RegisterForm({
         Enter your details below to register to your account
       </p>
 
+      {error && (
+        <div className="text-red-500 text-sm my-4">
+          {error}
+        </div>
+      )}
+
       <form className="my-8" onSubmit={handleSubmit}>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="role">Role</Label>
@@ -64,33 +77,17 @@ export function RegisterForm({
               <SelectValue placeholder="Select a role" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="admin">Admin</SelectItem>
-              <SelectItem value="student">Student</SelectItem>
-              <SelectItem value="teacher">Teacher</SelectItem>
-              <SelectItem value="parent">Parent</SelectItem>
+              <SelectItem value="Admin">Admin</SelectItem>
+              <SelectItem value="Student">Student</SelectItem>
+              <SelectItem value="Teacher">Teacher</SelectItem>
+              <SelectItem value="Parent">Parent</SelectItem>
             </SelectContent>
           </Select>
         </LabelInputContainer>
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          <LabelInputContainer>
-            <Label htmlFor="firstname">First name</Label>
-            <Input
-              id="firstname"
-              name="firstname"
-              placeholder="Arafat"
-              type="text"
-            />
-          </LabelInputContainer>
-          <LabelInputContainer>
-            <Label htmlFor="lastname">Last name</Label>
-            <Input
-              id="lastname"
-              name="lastname"
-              placeholder="Ahmed"
-              type="text"
-            />
-          </LabelInputContainer>
-        </div>
+        <LabelInputContainer className="mb-4">
+          <Label htmlFor="name">Name</Label>
+          <Input id="name" name="name" placeholder="Full Name" type="text" />
+        </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="username">Username</Label>
           <Input
@@ -165,7 +162,7 @@ export function RegisterForm({
               <Input
                 id="parentContact"
                 name="parentContact"
-                placeholder="Parent&apos;s contact number"
+                placeholder="Parent's contact number"
                 type="text"
               />
             </LabelInputContainer>

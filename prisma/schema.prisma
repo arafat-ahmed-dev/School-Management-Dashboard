@@ -13,9 +13,9 @@ model Admin {
   username     String   @unique
   password     String   @unique
   email        String   @unique
-  phone        String
+  phone        String?
   refreshToken String?
-  approved     Approve? @default(ACCEPTED)
+  approved     Approve? @default(PENDING)
   createdAt    DateTime @default(now())
 }
 
@@ -28,7 +28,7 @@ model Student {
   parentId      String?      @db.ObjectId
   email         String       @unique
   parentContact String?
-  phone         String
+  phone         String?
   address       String?
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
@@ -54,7 +54,7 @@ model Teacher {
   password     String
   name         String
   email        String    @unique
-  phone        String    @unique
+  phone        String?    @unique
   address      String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt

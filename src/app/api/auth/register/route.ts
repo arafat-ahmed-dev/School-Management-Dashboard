@@ -8,6 +8,7 @@ export const POST = async (request: NextRequest) => {
   try {
     const { userType, username, password, name, email, ...additionalFields } =
       await request.json();
+    console.log(userType, username, password, name, email, additionalFields);
 
     // Validate required fields
     if (!userType || !username || !password || !name || !email) {
@@ -94,8 +95,6 @@ export const POST = async (request: NextRequest) => {
     // Hash password before saving to database (security best practice)
     const hashedPassword = await bcryptjs.hash(password, 10);
 
-    // Determine approval status (admins are automatically approved)
-    const approved = userType === "Admin" ? Approve.ACCEPTED : Approve.PENDING;
 
     // Create new user in the database
     let newUser;
@@ -107,7 +106,6 @@ export const POST = async (request: NextRequest) => {
             password: hashedPassword,
             name,
             email,
-            approved,
             ...additionalFields,
           },
         });
@@ -119,7 +117,7 @@ export const POST = async (request: NextRequest) => {
             password: hashedPassword,
             email,
             name,
-            approved,
+
             ...additionalFields,
           },
         });
@@ -131,7 +129,7 @@ export const POST = async (request: NextRequest) => {
             password: hashedPassword,
             name,
             email,
-            approved,
+
             ...additionalFields,
           },
         });
@@ -143,7 +141,7 @@ export const POST = async (request: NextRequest) => {
             password: hashedPassword,
             email,
             name,
-            approved,
+
             ...additionalFields,
           },
         });
@@ -153,8 +151,6 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json(
       {
         message: "User created successfully.",
-        requiresApproval: approved === Approve.PENDING,
-        data: newUser,
       },
       { status: 201 }
     );
