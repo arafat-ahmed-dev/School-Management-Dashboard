@@ -14,7 +14,6 @@ import {
 } from "./ui/select"; // Import Select components
 import Link from "next/link";
 import { Button } from "./ui/button";
-
 export function RegisterForm({
 }) {
   const [role, setRole] = useState<string>("");
@@ -30,14 +29,14 @@ export function RegisterForm({
       password: formData.get("password"),
       userType: formData.get("role"), // Include role in the data object
       // Add additional fields based on role
-      ...(role === "student" && {
+      ...(role === "Student" && {
         class: formData.get("class"),
         parentContact: formData.get("parentContact"),
       }),
-      ...(role === "teacher" && {
+      ...(role === "Teacher" && {
         subject: formData.get("subject"),
       }),
-      ...(role === "parent" && {
+      ...(role === "Parent" && {
         studentName: formData.get("studentName"),
         class: formData.get("class"),
       }),
@@ -117,7 +116,7 @@ export function RegisterForm({
         </LabelInputContainer>
 
         {/* Conditional Fields */}
-        {role === "student" && (
+        {role === "Student" && (
           <>
             <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
               <LabelInputContainer className="mb-4">
@@ -168,7 +167,7 @@ export function RegisterForm({
             </LabelInputContainer>
           </>
         )}
-        {role === "teacher" && (
+        {role === "Teacher" && (
           <>
             <LabelInputContainer className="mb-4">
               <Label htmlFor="subject">Subject</Label>
@@ -181,7 +180,7 @@ export function RegisterForm({
             </LabelInputContainer>
           </>
         )}
-        {role === "parent" && (
+        {role === "Parent" && (
           <>
             <LabelInputContainer className="mb-4">
               <Label htmlFor="class">Class</Label>

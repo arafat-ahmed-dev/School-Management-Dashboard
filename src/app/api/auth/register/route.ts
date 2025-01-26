@@ -6,9 +6,9 @@ const prisma = new PrismaClient();
 
 export const POST = async (request: NextRequest) => {
   try {
-    const { userType, username, password, name, email, ...additionalFields } =
+    const { userType, username, password, name, email, class: className, ...additionalFields } =
       await request.json();
-    console.log(userType, username, password, name, email, additionalFields);
+    console.log(userType, username, password, name, email, className, additionalFields);
 
     // Validate required fields
     if (!userType || !username || !password || !name || !email) {
@@ -95,7 +95,6 @@ export const POST = async (request: NextRequest) => {
     // Hash password before saving to database (security best practice)
     const hashedPassword = await bcryptjs.hash(password, 10);
 
-
     // Create new user in the database
     let newUser;
     switch (userType) {
@@ -117,31 +116,48 @@ export const POST = async (request: NextRequest) => {
             password: hashedPassword,
             email,
             name,
-
             ...additionalFields,
           },
         });
         break;
       case "Student":
+        const studentClass = await prisma.class.findUnique({
+          where: { name: className },
+        });
+        if (!studentClass) {
+          return NextResponse.json(
+            { message: "Invalid class name provided." },
+            { status: 400 }
+          );
+        }
         newUser = await prisma.student.create({
           data: {
             username,
             password: hashedPassword,
             name,
             email,
-
+            classId: studentClass.id,
             ...additionalFields,
           },
         });
         break;
       case "Parent":
+        const parentClass = await prisma.class.findUnique({
+          where: { name: className },
+        });
+        if (!parentClass) {
+          return NextResponse.json(
+            { message: "Invalid class name provided." },
+            { status: 400 }
+          );
+        }
         newUser = await prisma.parent.create({
           data: {
             username,
             password: hashedPassword,
             email,
             name,
-
+            classId: parentClass.id,
             ...additionalFields,
           },
         });

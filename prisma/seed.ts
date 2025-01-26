@@ -21,24 +21,41 @@ async function main() {
       )
     );
 
-    // Create 10 Grades
+    // Create Grades
     const grades = await Promise.all(
-      Array.from({ length: 10 }, (_, i) =>
+      Array.from({ length: 6 }, (_, i) =>
         prisma.grade.create({
           data: {
-            level: i + 1,
+            level: i + 7,
           },
         })
       )
     );
 
-    // Create 10 Classes
+    // Create Classes
+    const classNames = [
+      "class7",
+      "class8",
+      "class9-sci",
+      "class9-art",
+      "class9-com",
+      "class10-sci",
+      "class10-art",
+      "class10-com",
+      "class11-sci",
+      "class11-art",
+      "class11-com",
+      "class12-sci",
+      "class12-art",
+      "class12-com"
+    ];
+
     const classes = await Promise.all(
-      Array.from({ length: 10 }, (_, i) =>
+      classNames.map((name, i) =>
         prisma.class.create({
           data: {
-            name: `Class ${i + 1}`,
-            gradeId: grades[i % grades.length].id,
+            name,
+            gradeId: grades[Math.floor(i / 3)].id,
             capacity: 30,
           },
         })
@@ -46,18 +63,48 @@ async function main() {
     );
 
     // Create 15 Subjects
-   const subjectData = [
-     { name: "Mathematics" },
-     { name: "Science" },
-     { name: "English" },
-     { name: "History" },
-     { name: "Geography" },
-     { name: "Physics" },
-     { name: "Chemistry" },
-     { name: "Biology" },
-     { name: "Computer Science" },
-     { name: "Art" },
-   ];
+    const subjectData = [
+      { id: "Ban-1", name: "Bangla-1" },
+      { id: "Ban-2", name: "Bangla-2" },
+      { id: "Eng-1", name: "English-1" },
+      { id: "Eng-2", name: "English-2" },
+      { id: "Math", name: "Mathematics" },
+      { id: "GenSci", name: "General Science" },
+      { id: "BGS", name: "Bangladesh and Global Studies" },
+      { id: "ICT", name: "Information and Communication Technology" },
+      { id: "Rel", name: "Religion (Islamic Studies or Hindu Studies)" },
+      { id: "Phy", name: "Physics" },
+      { id: "Bio", name: "Biology" },
+      { id: "HM", name: "Home Management" },
+      { id: "Acc", name: "Accounting" },
+      { id: "BOM", name: "Business Organization and Management" },
+      { id: "Eco", name: "Economics" },
+      { id: "Stat", name: "Statistics" },
+      { id: "Hist", name: "History" },
+      { id: "Civ", name: "Civics and Good Citizenship" },
+      { id: "IHC", name: "Islamic History and Culture" },
+      { id: "Phy-1", name: "Physics-1" },
+      { id: "Chem-1", name: "Chemistry-1" },
+      { id: "Bio-1", name: "Biology-1" },
+      { id: "HM-1", name: "Home Management-1" },
+      { id: "Acc-1", name: "Accounting-1" },
+      { id: "BOM-1", name: "Business Organization and Management-1" },
+      { id: "Eco-1", name: "Economics-1" },
+      { id: "Hist-1", name: "History-1" },
+      { id: "Civ-1", name: "Civics-1" },
+      { id: "IHC-1", name: "Islamic History and Culture-1" },
+      { id: "Phy-2", name: "Physics-2" },
+      { id: "Chem-2", name: "Chemistry-2" },
+      { id: "Bio-2", name: "Biology-2" },
+      { id: "HM-2", name: "Home Management-2" },
+      { id: "Acc-2", name: "Accounting-2" },
+      { id: "BOM-2", name: "Business Organization and Management-2" },
+      { id: "Eco-2", name: "Economics-2" },
+      { id: "Hist-2", name: "History-2" },
+      { id: "Civ-2", name: "Civics-2" },
+      { id: "IHC-2", name: "Islamic History and Culture-2" },
+    ];
+ 
 
    const subjects = await Promise.all(
      subjectData.map((subject, index) =>
@@ -65,6 +112,7 @@ async function main() {
          data: {
            name: subject.name,
            code: `SUB${index + 1}`,
+           subjectId: subject.id
          },
        })
      )
@@ -72,7 +120,7 @@ async function main() {
 
     // Create 20 Teachers
     const teachers = await Promise.all(
-      Array.from({ length: 20 }, (_, i) =>
+      Array.from({length: 20 }, (_, i) =>
         prisma.teacher.create({
           data: {
             username: `teacher${i + 1}`,
