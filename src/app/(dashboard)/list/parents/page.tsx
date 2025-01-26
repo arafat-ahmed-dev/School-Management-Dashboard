@@ -74,7 +74,9 @@ const ParentListPage = async ({
 }) => {
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
-  const query: Prisma.ParentWhereInput = {};
+  const query: Prisma.ParentWhereInput = {
+    approved: "ACCEPTED", // Add this line to filter accepted students
+  };;
 
   for (const [key, value] of Object.entries(queryParams)) {
     if (value !== undefined) {

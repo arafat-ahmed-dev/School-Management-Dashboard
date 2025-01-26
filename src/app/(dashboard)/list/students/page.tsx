@@ -93,7 +93,9 @@ const StudentListPage = async ({
 }) => {
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
-  const query: Prisma.StudentWhereInput = {};
+  const query: Prisma.StudentWhereInput = {
+    approved: "ACCEPTED", // Add this line to filter accepted students
+  };
 
   for (const [key, value] of Object.entries(queryParams)) {
     if (value !== undefined) {
@@ -130,6 +132,7 @@ const StudentListPage = async ({
         class: true,
         grade: true, // Ensure grade is included in the query
       },
+      
       take: ITEM_PER_PAGE,
       skip: (p - 1) * ITEM_PER_PAGE,
       orderBy: {
