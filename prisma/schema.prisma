@@ -105,7 +105,7 @@ model Subject {
   id         String    @id @default(auto()) @map("_id") @db.ObjectId
   name       String
   code       String
-  subjectId  String    
+  subjectId  String   @unique  
   teachersId String[]  @db.ObjectId
   teachers   Teacher[] @relation(fields: [teachersId], references: [id])
   lessons    Lesson[]

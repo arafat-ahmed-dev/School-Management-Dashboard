@@ -6,9 +6,30 @@ const prisma = new PrismaClient();
 
 export const POST = async (request: NextRequest) => {
   try {
-    const { userType, username, password, name, email, class: className, ...additionalFields } =
-      await request.json();
-    console.log(userType, username, password, name, email, className, additionalFields);
+    const {
+      userType,
+      username,
+      password,
+      name,
+      email,
+      class: className,
+      studentUsername,
+      parentContact,
+      subjectsId,
+      ...additionalFields
+    } = await request.json();
+    console.log(
+      userType,
+      username,
+      password,
+      name,
+      email,
+      className,
+      studentUsername,
+      parentContact,
+      subjectsId,
+      additionalFields
+    );
 
     // Validate required fields
     if (!userType || !username || !password || !name || !email) {
@@ -110,12 +131,24 @@ export const POST = async (request: NextRequest) => {
         });
         break;
       case "Teacher":
+        if (!subjectsId || subjectsId.length === 0) {
+          return NextResponse.json(
+            { message: "At least one subject must be provided." },
+            { status: 400 }
+          );
+        }
+         const subjects = await prisma.subject.findUnique({
+           where: { subjectId: subjectsId[0] },
+         });
         newUser = await prisma.teacher.create({
           data: {
             username,
             password: hashedPassword,
             email,
             name,
+            subjects: {
+              connect: subjects?.id
+            },
             ...additionalFields,
           },
         });
@@ -137,6 +170,7 @@ export const POST = async (request: NextRequest) => {
             name,
             email,
             classId: studentClass.id,
+            parentContact,
             ...additionalFields,
           },
         });
@@ -145,9 +179,27 @@ export const POST = async (request: NextRequest) => {
         const parentClass = await prisma.class.findUnique({
           where: { name: className },
         });
+        console.log(`Parent class ID: ${parentClass?.id}, Student username: ${studentUsername}`);
         if (!parentClass) {
           return NextResponse.json(
             { message: "Invalid class name provided." },
+            { status: 400 }
+          );
+        }
+        const parentStudent = await prisma.student.findUnique({
+          where: {
+            username: studentUsername,
+            classId: parentClass.id, // Ensure the student is in the specified class
+          },
+        });
+        console.log(`Parent student: ${JSON.stringify(parentStudent)}`);
+        if (!parentStudent) {
+          console.log(`Student with username ${studentUsername} not found in class ID ${parentClass.id}`);
+          return NextResponse.json(
+            {
+              message:
+                "Invalid student username or the student is not in the specified class.",
+            },
             { status: 400 }
           );
         }
@@ -157,7 +209,6 @@ export const POST = async (request: NextRequest) => {
             password: hashedPassword,
             email,
             name,
-            classId: parentClass.id,
             ...additionalFields,
           },
         });

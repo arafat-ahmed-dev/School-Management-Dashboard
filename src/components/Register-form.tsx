@@ -14,17 +14,19 @@ import {
 } from "./ui/select"; // Import Select components
 import Link from "next/link";
 import { Button } from "./ui/button";
-export function RegisterForm({
-}) {
+import { classNames, subjectData } from "@/lib/setting";
+
+export function RegisterForm() {
   const [role, setRole] = useState<string>("");
   const [error, setError] = useState<string | null>(null); // State for error message
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    
     const data = {
       name: formData.get("name"), // Merge first name and last name
-      username : formData.get("username"),
+      username: formData.get("username"),
       email: formData.get("email"),
       password: formData.get("password"),
       userType: formData.get("role"), // Include role in the data object
@@ -34,22 +36,28 @@ export function RegisterForm({
         parentContact: formData.get("parentContact"),
       }),
       ...(role === "Teacher" && {
-        subject: formData.get("subject"),
+        subjectsId: formData.getAll("subject").join(", "), // Correctly handle multiple subjects
       }),
       ...(role === "Parent" && {
-        studentName: formData.get("studentName"),
+        studentUsername: formData.get("studentUsername"), // Corrected typo
         class: formData.get("class"),
       }),
     };
+    console.log(data);
     try {
       const response = await axios.post("/api/auth/register", data);
       console.log("Registration successful", response);
       setError(null); // Clear error message on success
-      toast.success("Your registration request has been accepted. You will be notified soon."); // Show success toast
+      toast.success(
+        "Your registration request has been accepted. You will be notified soon."
+      ); // Show success toast
     } catch (err) {
       const error = err as any; // Type assertion
       console.error("Registration error", error);
-      setError(error.response?.data?.message || "An error occurred during registration."); // Set error message
+      setError(
+        error.response?.data?.message ||
+          "An error occurred during registration."
+      ); // Set error message
     }
   };
 
@@ -62,11 +70,7 @@ export function RegisterForm({
         Enter your details below to register to your account
       </p>
 
-      {error && (
-        <div className="text-red-500 text-sm my-4">
-          {error}
-        </div>
-      )}
+      {error && <div className="text-red-500 text-sm my-4">{error}</div>}
 
       <form className="my-8" onSubmit={handleSubmit}>
         <LabelInputContainer className="mb-4">
@@ -126,20 +130,11 @@ export function RegisterForm({
                     <SelectValue placeholder="Select your class" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="class7">Class 7</SelectItem>
-                    <SelectItem value="class8">Class 8</SelectItem>
-                    <SelectItem value="class9-sci">Class 9-sci</SelectItem>
-                    <SelectItem value="class9-art">Class 9-art</SelectItem>
-                    <SelectItem value="class9-com">Class 9-com</SelectItem>
-                    <SelectItem value="class10-sci">Class 10-sci</SelectItem>
-                    <SelectItem value="class10-art">Class 10-art</SelectItem>
-                    <SelectItem value="class10-com">Class 10-com</SelectItem>
-                    <SelectItem value="class11-sci">Class 11-sci</SelectItem>
-                    <SelectItem value="class11-art">Class 11-art</SelectItem>
-                    <SelectItem value="class11-com">Class 11-com</SelectItem>
-                    <SelectItem value="class12-sci">Class 12-sci</SelectItem>
-                    <SelectItem value="class12-art">Class 12-art</SelectItem>
-                    <SelectItem value="class12-com">Class 12-com</SelectItem>
+                    {classNames.map((className) => (
+                      <SelectItem key={className} value={className}>
+                        {className}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </LabelInputContainer>
@@ -171,12 +166,18 @@ export function RegisterForm({
           <>
             <LabelInputContainer className="mb-4">
               <Label htmlFor="subject">Subject</Label>
-              <Input
-                id="subject"
-                name="subject"
-                placeholder="Subject taught"
-                type="text"
-              />
+              <Select name="subject">
+                <SelectTrigger>
+                  <SelectValue placeholder="Select your Subject" />
+                </SelectTrigger>
+                <SelectContent>
+                  {subjectData.map((subject) => (
+                    <SelectItem key={subject.id} value={subject.id}>
+                      {subject.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </LabelInputContainer>
           </>
         )}
@@ -189,29 +190,20 @@ export function RegisterForm({
                   <SelectValue placeholder="Select your class" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="class7">Class 7</SelectItem>
-                  <SelectItem value="class8">Class 8</SelectItem>
-                  <SelectItem value="class9-sci">Class 9-sci</SelectItem>
-                  <SelectItem value="class9-art">Class 9-art</SelectItem>
-                  <SelectItem value="class9-com">Class 9-com</SelectItem>
-                  <SelectItem value="class10-sci">Class 10-sci</SelectItem>
-                  <SelectItem value="class10-art">Class 10-art</SelectItem>
-                  <SelectItem value="class10-com">Class 10-com</SelectItem>
-                  <SelectItem value="class11-sci">Class 11-sci</SelectItem>
-                  <SelectItem value="class11-art">Class 11-art</SelectItem>
-                  <SelectItem value="class11-com">Class 11-com</SelectItem>
-                  <SelectItem value="class12-sci">Class 12-sci</SelectItem>
-                  <SelectItem value="class12-art">Class 12-art</SelectItem>
-                  <SelectItem value="class12-com">Class 12-com</SelectItem>
+                  {classNames.map((className) => (
+                    <SelectItem key={className} value={className}>
+                      {className}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </LabelInputContainer>
             <LabelInputContainer className="mb-4">
-              <Label htmlFor="studentName">Student Name</Label>
+              <Label htmlFor="studentUsername">Student Username</Label>
               <Input
-                id="studentName"
-                name="studentName"
-                placeholder="Student Name"
+                id="studentUsername"
+                name="studentUsername"
+                placeholder="Student Username"
                 type="text"
               />
             </LabelInputContainer>
