@@ -1,4 +1,3 @@
-import { routeAccessMap } from "./lib/setting";
 import { NextResponse, NextRequest } from "next/server";
 import { jwtVerify } from "jose"; // Use jose for JWT verification
 
@@ -54,7 +53,6 @@ export default async function middleware(req: NextRequest) {
 
   // Extract accessToken from the cookies
   const accessToken = req.cookies.get("accessToken")?.value; // Access the value property
-  console.log(accessToken);
 
   // Allow access to login, register, forgetpassword pages if no accessToken is provided
   if (!accessToken && ["/login", "/register", "/forgetpassword"].includes(requestedPath)) {
@@ -70,7 +68,6 @@ export default async function middleware(req: NextRequest) {
         new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET!)
       );
       userType = (payload as { userType: string }).userType.toLowerCase(); // Convert to lowercase
-      console.log("User type:", userType);
       return NextResponse.redirect(new URL(`/${userType}`, req.url));
     } catch (error) {
       console.error("Invalid access token:", error);
@@ -91,7 +88,6 @@ export default async function middleware(req: NextRequest) {
       new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET!)
     );
     userType = (payload as { userType: string }).userType.toLowerCase(); // Convert to lowercase
-    console.log("User type:", userType);
   } catch (error) {
     console.error("Invalid access token:", error);
     return NextResponse.redirect(new URL("/login", req.url));
@@ -102,19 +98,11 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  console.log(matchers);
   // Check access for protected routes
   for (const { matcher, allowedRoles } of matchers) {
     if (matcher.test(requestedPath)) {
       // Match the route using requestedPath
-      console.log(
-        `Matching route: ${requestedPath}, Allowed roles: ${allowedRoles}`
-      );
-      // If userType is not in allowedRoles, redirect them
       if (!allowedRoles.includes(userType)) {
-        console.warn(
-          `Access denied for userType: ${userType}, Path: ${requestedPath}`
-        );
         return NextResponse.redirect(new URL(`/${userType}`, req.url)); // Redirect to their dashboard
       }
       break; // If a match is found and userType is allowed, no further checks are needed
