@@ -1,18 +1,15 @@
-"use client"
+"use client";
+
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useAppSelector } from "@/lib/store/hooks";
 import _ from "lodash";
-import { role } from "@/lib/data";
-import LogoutModal from "./LogoutModal"; // Import LogoutModal
-
-// console.log(role)
-// const response = useAppSelector((state) => state.auth.userData?.userRole);
+import { LogoutModal } from "./LogoutModal";
+import { useAppSelector } from "@/lib/store/hooks";
 
 const Menu = () => {
   const [isClient, setIsClient] = useState(false);
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // Add state for LogoutModal
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -141,8 +138,13 @@ const Menu = () => {
 
   return (
     <>
-      {showLogoutModal && <LogoutModal onCancel={() => setShowLogoutModal(false)} />} {/* Render LogoutModal */}
-      <div className={`mt-4 text-sm h-screen overflow-y-auto pb-4 ${showLogoutModal ? 'opacity-50' : ''}`}> {/* Add opacity when modal is visible */}
+      <div
+        className={`mt-4 text-sm h-screen overflow-y-auto pb-4 ${
+          showLogoutModal ? "opacity-50" : ""
+        }`}
+      >
+        {" "}
+        {/* Add opacity when modal is visible */}
         {menuItems.map((i) => (
           <div className="flex flex-col gap-2" key={i.title}>
             <span className="hidden lg:block text-gray-400 font-light my-2">
@@ -173,6 +175,10 @@ const Menu = () => {
             })}
           </div>
         ))}
+        <LogoutModal
+          isOpen={showLogoutModal}
+          onClose={() => setShowLogoutModal(false)}
+        />
       </div>
     </>
   );

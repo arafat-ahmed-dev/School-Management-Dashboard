@@ -54,11 +54,6 @@ export const POST = async (request: NextRequest) => {
           { message: "User not approved" },
           { status: 403 }
         );
-      } else if (user.approved === "CANCEL") {
-        return NextResponse.json(
-          { message: "User has been canceled" },
-          { status: 403 }
-        );
       }
 
       const isPasswordValid = await bcryptjs.compare(password, user.password);
@@ -70,6 +65,19 @@ export const POST = async (request: NextRequest) => {
         );
       }
 
+      // Check if the user already has an active session
+      const existingSession = await prisma.session.findFirst({
+        where: { userId: user.id, userType },
+      });
+
+      if (existingSession) {
+        return NextResponse.json(
+          { message: "User is already logged in" },
+          { status: 400 }
+        );
+      }
+
+      // Generate Access and Refresh Tokens
       const accessToken = jwt.sign(
         { userId: user.id, userType },
         process.env.ACCESS_TOKEN_SECRET!,
@@ -81,18 +89,21 @@ export const POST = async (request: NextRequest) => {
         process.env.REFRESH_TOKEN_SECRET!,
         { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "7d" }
       );
-      // Cast the userType to a Prisma model
-      const model = prisma[userType.toLowerCase()] as any;
 
-      // Update the refresh token in the database
-      if (model && typeof model.update === "function") {
-        await model.update({
-          where: { id: user.id },
-          data: { refreshToken },
-        });
-      } else {
-        throw new Error("Invalid model or update method not found");
-      }
+      // Create a new session for the user
+      await prisma.session.create({
+        data: {
+          userId: user.id,
+          userType,
+          accessToken,
+          refreshToken,
+          expiresAt: new Date(
+            Date.now() +
+              (parseInt(process.env.ACCESS_TOKEN_EXPIRY || "3600") * 1000 ||
+                3600)
+          ),
+        },
+      });
 
       const response = NextResponse.json(
         {
@@ -105,6 +116,7 @@ export const POST = async (request: NextRequest) => {
         { status: 200 }
       );
 
+      // Set Cookies
       response.cookies.set("accessToken", accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",

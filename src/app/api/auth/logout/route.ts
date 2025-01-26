@@ -1,4 +1,4 @@
-import  jwt  from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 import { cors } from "@/lib/cors";
 import { PrismaClient } from "@prisma/client";
@@ -7,52 +7,76 @@ const prisma = new PrismaClient();
 
 export const POST = async (request: NextRequest) => {
   return cors(request, async () => {
-    // Get user ID and user role from headers
     const accessToken = request.cookies.get("accessToken")?.value;
+
+    // Check if access token is missing
+    if (!accessToken) {
+      return NextResponse.json(
+        { error: "Unauthorized: Missing access token" },
+        { status: 401 }
+      );
+    }
+
     try {
-      // Check if the headers are present
-      if (!accessToken) {
+      // Verify and decode the token
+      const decoded = jwt.verify(
+        accessToken,
+        process.env.ACCESS_TOKEN_SECRET!
+      ) as unknown as { userId: string; userType: string };
+
+      const { userId, userType } = decoded;
+
+      // Log user data for debugging
+      console.log("userId: " + userId);
+      console.log("userType: " + userType);
+
+      // Find the active session for the user in the database
+      const session = await prisma.session.findFirst({
+        where: {
+          userId: userId,
+          userType: userType, // Query based on userId and userType
+        },
+      });
+
+      // If no active session exists, return an error
+      if (!session) {
         return NextResponse.json(
-          { error: "Unauthorized: Missing user data" },
-          { status: 401 }
+          { error: "No active session found" },
+          { status: 400 }
         );
       }
-       const decoded = jwt.verify(
-         accessToken,
-         process.env.ACCESS_TOKEN_SECRET!
-       ) as unknown as { userId: string; userType: string };
 
-       // Access the payload
-       const { userId, userType } = decoded as {
-         userId: string;
-         userType: string;
-       };
-       console.log("userId: " + userId)
-       console.log("userType: " + userType)
+      // Invalidate the session (delete the session record)
+      await prisma.session.delete({
+        where: { id: session.id },
+      });
+
       // Handle the logout logic based on user role
+      const updateData = { refreshToken: null };
+
       switch (userType) {
         case "Admin":
           await prisma.admin.update({
             where: { id: userId },
-            data: { refreshToken: null },
+            data: updateData,
           });
           break;
         case "Teacher":
           await prisma.teacher.update({
             where: { id: userId },
-            data: { refreshToken: null },
+            data: updateData,
           });
           break;
         case "Student":
           await prisma.student.update({
             where: { id: userId },
-            data: { refreshToken: null },
+            data: updateData,
           });
           break;
         case "Parent":
           await prisma.parent.update({
             where: { id: userId },
-            data: { refreshToken: null },
+            data: updateData,
           });
           break;
         default:
@@ -62,21 +86,24 @@ export const POST = async (request: NextRequest) => {
           );
       }
 
-      // Prepare the response
+      // Prepare the response to confirm logout
       const response = NextResponse.json(
         { message: "Logout successful" },
         { status: 200 }
       );
 
-      // Clear the cookies
+      // Clear cookies for logout
       response.cookies.delete("accessToken");
       response.cookies.delete("refreshToken");
-      console.log(response);
+
       return response;
     } catch (error) {
-      console.error(error);
+      // Log the error for debugging
+      console.error("Error during logout:", error);
+
+      const errorMessage = (error as Error).message;
       return NextResponse.json(
-        { message: "Internal Server Error", error },
+        { message: "Internal Server Error", error: errorMessage },
         { status: 500 }
       );
     }

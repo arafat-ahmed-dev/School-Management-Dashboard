@@ -105,7 +105,7 @@ model Subject {
   id         String    @id @default(auto()) @map("_id") @db.ObjectId
   name       String
   code       String
-  subjectId  String   @unique  
+  subjectId  String    @unique
   teachersId String[]  @db.ObjectId
   teachers   Teacher[] @relation(fields: [teachersId], references: [id])
   lessons    Lesson[]
@@ -198,6 +198,16 @@ model Announcement {
 
   classId String? @db.ObjectId
   class   Class?  @relation(fields: [classId], references: [id])
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @map("user_id")
+  userType     String // "Admin", "Student", "Teacher", "Parent"
+  accessToken  String
+  refreshToken String
+  createdAt    DateTime @default(now())
+  expiresAt    DateTime
 }
 
 enum Day {
