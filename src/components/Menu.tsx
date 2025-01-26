@@ -16,8 +16,8 @@ const Menu = () => {
     setIsClient(true);
   }, []);
 
-  const response = useAppSelector((state) => state.auth.userData?.userRole);
-  console.log(response);
+  const response = useAppSelector((state) => state.auth?.userData?.userRole);
+  const role = _.toLower(response);
   const menuItems = [
     {
       title: "MENU",

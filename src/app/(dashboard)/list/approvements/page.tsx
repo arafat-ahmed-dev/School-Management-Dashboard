@@ -108,7 +108,6 @@ const ApprovementListPage = async ({
     }),
     (prisma[role] as any).count({ where: query }),
   ]);
-  console.log(data, count);
   const columns = [
     {
       header: "Title",
