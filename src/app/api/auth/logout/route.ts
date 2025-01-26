@@ -27,6 +27,8 @@ export const POST = async (request: NextRequest) => {
          userId: string;
          userType: string;
        };
+       console.log("userId: " + userId)
+       console.log("userType: " + userType)
       // Handle the logout logic based on user role
       switch (userType) {
         case "Admin":
@@ -69,7 +71,7 @@ export const POST = async (request: NextRequest) => {
       // Clear the cookies
       response.cookies.delete("accessToken");
       response.cookies.delete("refreshToken");
-
+      console.log(response);
       return response;
     } catch (error) {
       console.error(error);

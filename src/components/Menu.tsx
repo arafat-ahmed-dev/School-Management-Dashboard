@@ -1,4 +1,5 @@
 "use client"
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAppSelector } from "@/lib/store/hooks";
@@ -9,9 +10,14 @@ import { role } from "@/lib/data";
 // const response = useAppSelector((state) => state.auth.userData?.userRole);
 
 const Menu = () => {
-  // const response = useAppSelector((state) => state.auth.userData?.userRole);
-  // const role = _.toLower(response) || "";
-  // console.log(response);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const response = useAppSelector((state) => state.auth.userData?.userRole);
+  console.log(response);
   const menuItems = [
     {
       title: "MENU",
@@ -126,6 +132,11 @@ const Menu = () => {
       ],
     },
   ];
+
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <div className="mt-4 text-sm h-screen overflow-y-auto pb-4">
       {menuItems.map((i) => (
