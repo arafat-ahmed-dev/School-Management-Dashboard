@@ -4,10 +4,10 @@ import EventCalender from "@/components/EventCalender";
 
 const StudentPage = () => {
   return (
-    <div className="p-4 flex gap-4 flex-col xl:flex-row">
+    <div className="md:p-4 flex gap-4 flex-col xl:flex-row p-2">
       {/* LEFT */}
       <div className="w-full xl:w-2/3">
-        <div className="h-full bg-white p-4 rounded-md">
+        <div className="h-full bg-white md:p-4 rounded-md p-2">
           <h1 className="text-xl font-semibold">Schedule (4A)</h1>
           <BigCalender />
         </div>
@@ -19,6 +19,6 @@ const StudentPage = () => {
       </div>
     </div>
   );
-}
+};
 
-export default StudentPage
+export default StudentPage;
