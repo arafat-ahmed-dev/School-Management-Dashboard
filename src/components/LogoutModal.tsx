@@ -11,6 +11,7 @@ import axios from "axios"; // Import axios
 import { useAppDispatch } from "@/lib/store/hooks"; // Import useAppDispatch
 import { logout } from "@/lib/store/features/Auth/authSlice"; // Import logout action
 import { useRouter } from "next/navigation"; // Import useRouter
+import { useState } from "react"; // Import useState
 
 interface LogoutModalProps {
   isOpen: boolean;
@@ -20,8 +21,10 @@ interface LogoutModalProps {
 export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
   const dispatch = useAppDispatch(); // Initialize dispatch
   const router = useRouter(); // Initialize router
+  const [loading, setLoading] = useState(false); // Initialize loading state
 
   const onConfirm = async () => {
+    setLoading(true); // Set loading to true when logout starts
     try {
       const response = await axios.post("/api/auth/logout");
       console.log("Logout successful:", response);
@@ -30,6 +33,7 @@ export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
     } catch (error) {
       console.error("Logout failed:", error);
     } finally {
+      setLoading(false); // Set loading to false when logout ends
       onClose();
     }
   };
@@ -54,8 +58,9 @@ export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
           <Button
             onClick={onConfirm}
             className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+            disabled={loading} // Disable button when loading
           >
-            Logout
+            {loading ? "Logging out..." : "Logout"} 
           </Button>
         </DialogFooter>
       </DialogContent>
