@@ -30,27 +30,6 @@ export const POST = async (request: NextRequest) => {
       console.log("userId: " + userId);
       console.log("userType: " + userType);
 
-      // Find the active session for the user in the database
-      const session = await prisma.session.findFirst({
-        where: {
-          userId: userId,
-          userType: userType, // Query based on userId and userType
-        },
-      });
-
-      // If no active session exists, return an error
-      if (!session) {
-        return NextResponse.json(
-          { error: "No active session found" },
-          { status: 400 }
-        );
-      }
-
-      // Invalidate the session (delete the session record)
-      await prisma.session.delete({
-        where: { id: session.id },
-      });
-
       // Handle the logout logic based on user role
       const updateData = { refreshToken: null };
 

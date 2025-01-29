@@ -202,15 +202,6 @@ model Announcement {
   class   Class?  @relation(fields: [classId], references: [id])
 }
 
-model Session {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId       String   @map("user_id")
-  userType     String // "Admin", "Student", "Teacher", "Parent"
-  accessToken  String
-  refreshToken String
-  createdAt    DateTime @default(now())
-  expiresAt    DateTime
-}
 
 model CalendarEvent {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId

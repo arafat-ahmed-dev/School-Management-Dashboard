@@ -65,17 +65,6 @@ export const POST = async (request: NextRequest) => {
         );
       }
 
-      // Check if the user already has an active session
-      const existingSession = await prisma.session.findFirst({
-        where: { userId: user.id, userType },
-      });
-
-      if (existingSession) {
-        return NextResponse.json(
-          { message: "User is already logged in" },
-          { status: 400 }
-        );
-      }
 
       // Generate Access and Refresh Tokens
       const accessToken = jwt.sign(
@@ -85,25 +74,10 @@ export const POST = async (request: NextRequest) => {
       );
 
       const refreshToken = jwt.sign(
-        { userId: user.id },
+        { userId: user.id, userType },
         process.env.REFRESH_TOKEN_SECRET!,
         { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "7d" }
       );
-
-      // Create a new session for the user
-      await prisma.session.create({
-        data: {
-          userId: user.id,
-          userType,
-          accessToken,
-          refreshToken,
-          expiresAt: new Date(
-            Date.now() +
-              (parseInt(process.env.ACCESS_TOKEN_EXPIRY || "3600") * 1000 ||
-                3600)
-          ),
-        },
-      });
 
       const response = NextResponse.json(
         {
