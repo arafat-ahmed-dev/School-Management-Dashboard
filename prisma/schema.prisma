@@ -49,25 +49,26 @@ model Student {
 }
 
 model Teacher {
-  id           String    @id @default(auto()) @map("_id") @db.ObjectId
-  username     String    @unique
-  password     String
-  name         String
-  email        String    @unique
-  phone        String?   @unique
-  address      String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  img          String?
-  subjectsId   String[]  @db.ObjectId
-  subjects     Subject[] @relation(fields: [subjectsId], references: [id])
-  lessons      Lesson[]
-  bloodType    String?
-  birthday     DateTime?
-  classes      Class[]
-  sex          UserSex?
-  refreshToken String?
-  approved     Approve?  @default(PENDING)
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  username       String          @unique
+  password       String
+  name           String
+  email          String          @unique
+  phone          String?         @unique
+  address        String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  img            String?
+  subjectsId     String[]        @db.ObjectId
+  subjects       Subject[]       @relation(fields: [subjectsId], references: [id])
+  lessons        Lesson[]
+  bloodType      String?
+  birthday       DateTime?
+  classes        Class[]
+  sex            UserSex?
+  refreshToken   String?
+  approved       Approve?        @default(PENDING)
+  calendarEvents CalendarEvent[]
 }
 
 model Parent {
@@ -88,17 +89,18 @@ model Parent {
 }
 
 model Class {
-  id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  name          String         @unique
-  gradeId       String         @db.ObjectId
-  grade         Grade          @relation(fields: [gradeId], references: [id])
-  supervisorId  String?        @db.ObjectId
-  supervisor    Teacher?       @relation(fields: [supervisorId], references: [id])
-  students      Student[]
-  lessons       Lesson[]
-  capacity      Int
-  events        Event[]
-  announcements Announcement[]
+  id             String          @id @default(auto()) @map("_id") @db.ObjectId
+  name           String          @unique
+  gradeId        String          @db.ObjectId
+  grade          Grade           @relation(fields: [gradeId], references: [id])
+  supervisorId   String?         @db.ObjectId
+  supervisor     Teacher?        @relation(fields: [supervisorId], references: [id])
+  students       Student[]
+  lessons        Lesson[]
+  capacity       Int
+  events         Event[]
+  announcements  Announcement[]
+  calendarEvents CalendarEvent[]
 }
 
 model Subject {
@@ -208,6 +210,18 @@ model Session {
   refreshToken String
   createdAt    DateTime @default(now())
   expiresAt    DateTime
+}
+
+model CalendarEvent {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  classId   String   @db.ObjectId
+  class     Class    @relation(fields: [classId], references: [id])
+  teacherId String   @db.ObjectId
+  teacher   Teacher  @relation(fields: [teacherId], references: [id])
+  allDay    Boolean
+  start     DateTime @default(now())
+  end       DateTime
 }
 
 enum Day {
