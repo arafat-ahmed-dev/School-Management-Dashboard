@@ -1,5 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
-import { jwtVerify } from "jose"; // Use jose for JWT verification
+import { jwtVerify } from "jose"; // Use jose for JWT verification and signing
+import { handleRefreshToken } from "./lib/utils"; // Import the new function
 
 const matchers = [
   { matcher: /^\/admin(.*)$/, allowedRoles: ["admin"] },
@@ -46,30 +47,59 @@ export default async function middleware(req: NextRequest) {
   const url = new URL(req.url);
   const requestedPath = url.pathname;
 
+  console.log("Requested Path:", requestedPath); // Add logging
+
   // Allow public access to the landing page
   if (requestedPath === "/") {
-    return NextResponse.next();
+    const refreshToken = req.cookies.get("refreshToken")?.value;
+    const accessToken = req.cookies.get("accessToken")?.value;
+    console.log("Refresh Token:", refreshToken); // Add logging
+    console.log("Access Token:", accessToken); // Add logging
+    if (refreshToken) {
+      if (!accessToken && refreshToken) {
+        const response = await handleRefreshToken(refreshToken, req);
+        console.log("Response after handling refresh token:", response); // Add logging
+        return response;
+      }
+      return NextResponse.next();
+    } else {
+      return NextResponse.next();
+    }
   }
 
   // Extract accessToken from the cookies
   const accessToken = req.cookies.get("accessToken")?.value; // Access the value property
 
   // Allow access to login, register, forgetpassword pages if no accessToken is provided
-  if (!accessToken && ["/login", "/register", "/forgetpassword"].includes(requestedPath)) {
+  if (
+    !accessToken &&
+    ["/login", "/register", "/forgetpassword"].includes(requestedPath)
+  ) {
     return NextResponse.next();
   }
 
   // Redirect logged-in users away from the login, register, forgetpassword page
-  if (accessToken && ["/login", "/register", "/forgetpassword"].includes(requestedPath)) {
-    let userType;
+  if (
+    accessToken &&
+    ["/login", "/register", "/forgetpassword"].includes(requestedPath)
+  ) {
+    let userType, userId;
     try {
       const { payload } = await jwtVerify(
         accessToken,
         new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET!)
       );
       userType = (payload as { userType: string }).userType.toLowerCase(); // Convert to lowercase
+      userId = (payload as { userId: string }).userId;
       return NextResponse.redirect(new URL(`/${userType}`, req.url));
     } catch (error) {
+      if ((error as any).code === 'ERR_JWT_EXPIRED') {
+        const refreshToken = req.cookies.get("refreshToken")?.value;
+        if (refreshToken) {
+          const response = await handleRefreshToken(refreshToken, req);
+          return response;
+        }
+      }
       console.error("Invalid access token:", error);
       return NextResponse.redirect(new URL("/login", req.url));
     }
@@ -81,14 +111,22 @@ export default async function middleware(req: NextRequest) {
   }
 
   // Verify the accessToken
-  let userType;
+  let userType, userId;
   try {
     const { payload } = await jwtVerify(
       accessToken,
       new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET!)
     );
     userType = (payload as { userType: string }).userType.toLowerCase(); // Convert to lowercase
+    userId = (payload as { userId: string }).userId;
   } catch (error) {
+    if ((error as any).code === 'ERR_JWT_EXPIRED') {
+      const refreshToken = req.cookies.get("refreshToken")?.value;
+      if (refreshToken) {
+        const response = await handleRefreshToken(refreshToken, req);
+        return response;
+      }
+    }
     console.error("Invalid access token:", error);
     return NextResponse.redirect(new URL("/login", req.url));
   }

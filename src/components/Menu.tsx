@@ -139,9 +139,9 @@ const Menu = () => {
   return (
     <>
       <div
-        className={`mt-4 text-sm h-screen overflow-y-auto pb-4 ${
+        className={`mt-4 text-sm pb-4 ${
           showLogoutModal ? "opacity-50" : ""
-        }`}
+        } overflow-y-auto max-h-[80vh] sm:max-h-[90vh] `}
       >
         {" "}
         {/* Add opacity when modal is visible */}
@@ -158,7 +158,13 @@ const Menu = () => {
                     className="flex items-center justify-center lg:justify-start gap-3 text-gray-500 py-2 md:px-2 rounded-md hover:bg-aamSkyLight"
                     onClick={() => setShowLogoutModal(true)} // Show LogoutModal on click
                   >
-                    <Image src={item.icon} alt="" width={20} height={20} />
+                    <Image
+                      src={item.icon}
+                      alt=""
+                      width={20} // Default size for mobile
+                      height={20}
+                      className="sm:w-5 sm:h-5" // Adjust size based on screen size
+                    />
                     <span className="hidden lg:block">{item.label}</span>
                   </button>
                 ) : (
@@ -167,7 +173,13 @@ const Menu = () => {
                     key={item.label}
                     className="flex items-center justify-center lg:justify-start gap-3 text-gray-500 py-2 md:px-2 rounded-md hover:bg-aamSkyLight"
                   >
-                    <Image src={item.icon} alt="" width={20} height={20} />
+                    <Image
+                      src={item.icon}
+                      alt=""
+                      width={20} // Default size for mobile
+                      height={20}
+                      className="sm:w-5 sm:h-5 md:w-6 md:h-6 " // Adjust size based on screen size
+                    />
                     <span className="hidden lg:block">{item.label}</span>
                   </Link>
                 );

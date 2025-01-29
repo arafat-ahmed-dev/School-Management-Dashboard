@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cn } from "../lib/utils"; // Adjusted path
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
@@ -30,7 +30,8 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const router = useRouter(); // Initialize the Next.js router
   const [error, setError] = useState<string | null>(null); // State for error messages
-  const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false); // State for loading
+  const dispatch = useDispatch();
   interface Data {
     username: string;
     password: string;
@@ -43,6 +44,7 @@ export function LoginForm({
     Student = "Student",
   }
   const handleLogin = async (data: Data) => {
+    setLoading(true); // Set loading to true when login starts
     try {
       const response = await axios.post("/api/auth/login", data);
       console.log("Login successful:", response.data);
@@ -66,15 +68,23 @@ export function LoginForm({
       } else {
         setError("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false); // Set loading to false when login ends
     }
   };
-
 
   const handleInputChange = () => {
     if (error) {
       setError(null); // Clear the error message
     }
   };
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 0.4; // Adjust speed (1 = normal, 2 = 2x faster)
+    }
+  }, [loading]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -90,6 +100,15 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <video ref={videoRef} autoPlay loop muted width={100} height={100}>
+            <source src="/loading.webm" type="video/webm" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      )}
+
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
@@ -149,10 +168,11 @@ export function LoginForm({
               <button
                 className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]"
                 type="submit"
+                disabled={loading} // Disable button when loading
               >
                 Login &larr;
               </button>
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full" disabled={loading}>
                 Login with Google
               </Button>
             </div>
