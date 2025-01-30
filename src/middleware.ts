@@ -49,22 +49,40 @@ export default async function middleware(req: NextRequest) {
 
   console.log("Requested Path:", requestedPath); // Add logging
 
-  // Allow public access to the landing page
+  // Allow public access to the landing page without checking refreshToken
   if (requestedPath === "/") {
+    return NextResponse.next();
+  }
+
+  // Handle login path
+  if (requestedPath === "/login") {
     const refreshToken = req.cookies.get("refreshToken")?.value;
-    const accessToken = req.cookies.get("accessToken")?.value;
-    console.log("Refresh Token:", refreshToken); // Add logging
-    console.log("Access Token:", accessToken); // Add logging
+
+    // If refreshToken exists, verify it and redirect to the respective dashboard
     if (refreshToken) {
-      if (!accessToken && refreshToken) {
+      try {
         const response = await handleRefreshToken(refreshToken, req);
-        console.log("Response after handling refresh token:", response); // Add logging
-        return response;
+        const accessToken = response.cookies.get("accessToken")?.value;
+
+        if (accessToken) {
+          const { payload } = await jwtVerify(
+            accessToken,
+            new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET!)
+          );
+          const userType = (
+            payload as { userType: string }
+          ).userType.toLowerCase();
+          return NextResponse.redirect(new URL(`/${userType}`, req.url));
+        }
+      } catch (error) {
+        console.error("Error verifying refresh token:", error);
+        // If refreshToken is invalid, proceed to the login page
+        return NextResponse.next();
       }
-      return NextResponse.next();
-    } else {
-      return NextResponse.next();
     }
+
+    // If no refreshToken, proceed to the login page
+    return NextResponse.next();
   }
 
   // Extract accessToken from the cookies
@@ -93,7 +111,7 @@ export default async function middleware(req: NextRequest) {
       userId = (payload as { userId: string }).userId;
       return NextResponse.redirect(new URL(`/${userType}`, req.url));
     } catch (error) {
-      if ((error as any).code === 'ERR_JWT_EXPIRED') {
+      if ((error as any).code === "ERR_JWT_EXPIRED") {
         const refreshToken = req.cookies.get("refreshToken")?.value;
         if (refreshToken) {
           const response = await handleRefreshToken(refreshToken, req);
@@ -120,10 +138,11 @@ export default async function middleware(req: NextRequest) {
     userType = (payload as { userType: string }).userType.toLowerCase(); // Convert to lowercase
     userId = (payload as { userId: string }).userId;
   } catch (error) {
-    if ((error as any).code === 'ERR_JWT_EXPIRED') {
+    if ((error as any).code === "ERR_JWT_EXPIRED") {
       const refreshToken = req.cookies.get("refreshToken")?.value;
       if (refreshToken) {
         const response = await handleRefreshToken(refreshToken, req);
+        console.log(response);
         return response;
       }
     }
