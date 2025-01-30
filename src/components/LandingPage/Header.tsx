@@ -96,7 +96,9 @@ const Header: React.FC<HeaderProps> = ({
                   <Button className="hidden md:block">Dashboard</Button>
                 </Link>
               ) : (
-                <Button className="hidden md:block">Apply Now</Button>
+                <Link href="/login">
+                <Button className="hidden md:block">Login</Button>
+              </Link>
               )}
               <Button
                 variant="ghost"
