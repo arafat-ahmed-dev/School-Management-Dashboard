@@ -4,7 +4,13 @@ import prisma from "../../../../../prisma";
 
 export const GET = async (request: NextRequest) => {
   const refreshToken = request.cookies.get("refreshToken")?.value;
+  const accessToken = request.cookies.get("accessToken")?.value;
   console.log(refreshToken);
+  if (accessToken) {
+    return NextResponse.json({
+      message: "Access token is valid",
+    });
+  }
   // Check if refresh token is missing
   if (!refreshToken) {
     return NextResponse.json(
