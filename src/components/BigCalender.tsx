@@ -1,19 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { schedule } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { DownloadIcon } from "lucide-react";
 import { useState } from "react";
 
-interface ScheduleBlock {
-  time: string;
-  subject: string;
-}
+// interface ScheduleBlock {
+//   time: string;
+//   subject: string;
+// }
 
-interface DaySchedule {
-  date: string;
-  blocks: ScheduleBlock[];
-}
+// interface DaySchedule {
+//   date: string;
+//   blocks: ScheduleBlock[];
+// }
 
 const colors: { [key: string]: string } = {
   Math: "bg-blue-50",
@@ -24,54 +25,54 @@ const colors: { [key: string]: string } = {
   History: "bg-gray-50",
 };
 
-const schedule: DaySchedule[] = [
-  {
-    date: "January 27",
-    blocks: [
-      { time: "9:00 AM – 9:50 AM", subject: "Math" },
-      { time: "10:00 AM – 10:50 AM", subject: "Biology" },
-      { time: "11:00 AM – 11:50 AM", subject: "Physics" },
-      { time: "12:00 PM – 12:50 PM", subject: "English" },
-      { time: "1:00 PM – 1:50 PM", subject: "Chemistry" },
-      { time: "2:00 PM – 2:50 PM", subject: "History" },
-    ],
-  },
-  {
-    date: "January 28",
-    blocks: [
-      { time: "9:00 AM – 9:50 AM", subject: "English" },
-      { time: "10:00 AM – 10:50 AM", subject: "Biology" },
-      { time: "11:00 AM – 11:50 AM", subject: "Physics" },
-      { time: "2:00 PM – 2:50 PM", subject: "History" },
-    ],
-  },
-  {
-    date: "January 29",
-    blocks: [
-      { time: "9:00 AM – 9:50 AM", subject: "Math" },
-      { time: "10:00 AM – 10:50 AM", subject: "Biology" },
-      { time: "2:00 PM – 2:50 PM", subject: "History" },
-    ],
-  },
-  {
-    date: "January 30",
-    blocks: [
-      { time: "9:00 AM – 9:50 AM", subject: "English" },
-      { time: "10:00 AM – 10:50 AM", subject: "Biology" },
-      { time: "11:00 AM – 11:50 AM", subject: "Physics" },
-      { time: "2:00 PM – 2:50 PM", subject: "History" },
-    ],
-  },
-  {
-    date: "January 31",
-    blocks: [
-      { time: "9:00 AM – 9:50 AM", subject: "Math" },
-      { time: "11:00 AM – 11:50 AM", subject: "Physics" },
-      { time: "1:00 PM – 1:50 PM", subject: "Chemistry" },
-      { time: "2:00 PM – 2:50 PM", subject: "History" },
-    ],
-  },
-];
+// const schedule: DaySchedule[] = [
+//   {
+//     date: "January 27",
+//     blocks: [
+//       { time: "9:00 AM – 9:50 AM", subject: "Math" },
+//       { time: "10:00 AM – 10:50 AM", subject: "Biology" },
+//       { time: "11:00 AM – 11:50 AM", subject: "Physics" },
+//       { time: "12:00 PM – 12:50 PM", subject: "English" },
+//       { time: "1:00 PM – 1:50 PM", subject: "Chemistry" },
+//       { time: "2:00 PM – 2:50 PM", subject: "History" },
+//     ],
+//   },
+//   {
+//     date: "January 28",
+//     blocks: [
+//       { time: "9:00 AM – 9:50 AM", subject: "English" },
+//       { time: "10:00 AM – 10:50 AM", subject: "Biology" },
+//       { time: "11:00 AM – 11:50 AM", subject: "Physics" },
+//       { time: "2:00 PM – 2:50 PM", subject: "History" },
+//     ],
+//   },
+//   {
+//     date: "January 29",
+//     blocks: [
+//       { time: "9:00 AM – 9:50 AM", subject: "Math" },
+//       { time: "10:00 AM – 10:50 AM", subject: "Biology" },
+//       { time: "2:00 PM – 2:50 PM", subject: "History" },
+//     ],
+//   },
+//   {
+//     date: "January 30",
+//     blocks: [
+//       { time: "9:00 AM – 9:50 AM", subject: "English" },
+//       { time: "10:00 AM – 10:50 AM", subject: "Biology" },
+//       { time: "11:00 AM – 11:50 AM", subject: "Physics" },
+//       { time: "2:00 PM – 2:50 PM", subject: "History" },
+//     ],
+//   },
+//   {
+//     date: "January 31",
+//     blocks: [
+//       { time: "9:00 AM – 9:50 AM", subject: "Math" },
+//       { time: "11:00 AM – 11:50 AM", subject: "Physics" },
+//       { time: "1:00 PM – 1:50 PM", subject: "Chemistry" },
+//       { time: "2:00 PM – 2:50 PM", subject: "History" },
+//     ],
+//   },
+// ];
 
 const timeSlots = [
   "9:00 AM",

@@ -29,7 +29,10 @@ export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
       const response = await axios.post("/api/auth/logout");
       console.log("Logout successful:", response);
       dispatch(logout());
-      router.push("/");
+      // Clear cookies manually
+      document.cookie = "accessToken=; Max-Age=0; path=/";
+      document.cookie = "refreshToken=; Max-Age=0; path=/";
+      router.push("/login"); // Redirect to login page
     } catch (error) {
       console.error("Logout failed:", error);
     } finally {
