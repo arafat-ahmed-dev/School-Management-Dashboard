@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import bcryptjs from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { cors } from "@/lib/cors";
 import connectToDatabase from "@/helper/databaseConnection";
+import { SignJWT } from "jose";
 
 const prisma = new PrismaClient();
 
@@ -66,25 +66,30 @@ export const POST = async (request: NextRequest) => {
       }
 
       // Generate Access and Refresh Tokens
-      const accessToken = jwt.sign(
-        { userId: user.id, userType },
-        process.env.ACCESS_TOKEN_SECRET!,
-        {
-          expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-            ? Number(process.env.ACCESS_TOKEN_EXPIRY)
-            : "1h",
-        }
+      const secretKey = new TextEncoder().encode(
+        process.env.ACCESS_TOKEN_SECRET
+      );
+      const refreshSecretKey = new TextEncoder().encode(
+        process.env.REFRESH_TOKEN_SECRET
       );
 
-      const refreshToken = jwt.sign(
-        { userId: user.id, userType },
-        process.env.REFRESH_TOKEN_SECRET!,
-        {
-          expiresIn: process.env.REFRESH_TOKEN_EXPIRY
-            ? Number(process.env.REFRESH_TOKEN_EXPIRY)
-            : "7d",
-        }
-      );
+      const accessToken = await new SignJWT({
+        userId: user.id,
+        userType: userType,
+      })
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt()
+        .setExpirationTime(process.env.ACCESS_TOKEN_EXPIRY || "1h")
+        .sign(secretKey);
+
+      const refreshToken = await new SignJWT({
+        userId: user.id,
+        userType: userType,
+      })
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt()
+        .setExpirationTime(process.env.REFRESH_TOKEN_EXPIRY || "7d")
+        .sign(refreshSecretKey);
 
       const response = NextResponse.json(
         {

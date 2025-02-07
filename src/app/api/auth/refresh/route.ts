@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../../prisma";
+import { SignJWT } from "jose";
 
 export const GET = async (request: NextRequest) => {
   const refreshToken = request.cookies.get("refreshToken")?.value;
@@ -58,15 +59,15 @@ export const GET = async (request: NextRequest) => {
     }
 
     // Generate new access token
-    const accessToken = jwt.sign(
-      { userId: user.id, userType },
-      process.env.ACCESS_TOKEN_SECRET!,
-      {
-        expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-          ? Number(process.env.ACCESS_TOKEN_EXPIRY)
-          : "1h",
-      }
-    );
+    const secretKey = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET);
+    const accessToken = await new SignJWT({
+      userId: user.id,
+      userType: userType,
+    })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime(process.env.ACCESS_TOKEN_EXPIRY || "1h")
+      .sign(secretKey);
 
     // set new access token in cookie
     const response = NextResponse.json({
