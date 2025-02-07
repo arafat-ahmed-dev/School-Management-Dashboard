@@ -7,6 +7,7 @@ import {
   toggleDarkMode,
   setDarkMode,
 } from "@/lib/store/features/DarkMode/darkModeSlice";
+import useAuthSession from "@/hooks/useAuthSession"; // Import the custom hook
 import Header from "@/components/LandingPage/Header";
 import HeroSection from "@/components/LandingPage/HeroSection";
 import { Footer } from "@/components/LandingPage/Footer";
@@ -30,6 +31,10 @@ export default function EnhancedSchoolLandingPage() {
   );
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
+
+  // ✅ Use the authentication hook
+  const { user, loading: authLoading } = useAuthSession();
+  console.log(user)
 
   useEffect(() => {
     const getInitialTheme = () => {

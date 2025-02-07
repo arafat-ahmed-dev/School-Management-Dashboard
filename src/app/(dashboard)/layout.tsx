@@ -2,6 +2,8 @@ import Menu from "@/components/Menu";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
+import Loading from "@/components/Loading";
 
 export default function DashboardLayout({
   children,
@@ -24,7 +26,7 @@ export default function DashboardLayout({
       {/* RIGHT: Content area with scroll */}
       <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] ml-[14%] md:ml-[8%] lg:ml-[16%] overflow-y-auto flex flex-col">
         <Navbar />
-        {children}
+        <Suspense fallback={<Loading />}>{children}</Suspense>
       </div>
     </div>
   );

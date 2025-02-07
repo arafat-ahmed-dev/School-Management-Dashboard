@@ -94,6 +94,12 @@ const Menu = () => {
           visible: ["admin", "teacher", "student", "parent"],
         },
         {
+          icon: "/calendar.png",
+          label: "Calendar",
+          href: "/list/calendar",
+          visible: ["admin"],
+        },
+        {
           icon: "/announcement.png",
           label: "Announcements",
           href: "/list/announcements",
