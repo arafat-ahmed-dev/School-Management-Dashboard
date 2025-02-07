@@ -53,9 +53,13 @@ export const GET = async (request: NextRequest) => {
 
     // Generate new access token
     const accessToken = jwt.sign(
-      { userId, userType },
+      { userId: user.id, userType },
       process.env.ACCESS_TOKEN_SECRET!,
-      { expiresIn: process.env.ACCESS_TOKEN_EXPIRY! || "1h" }
+      {
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+          ? Number(process.env.ACCESS_TOKEN_EXPIRY)
+          : "1h",
+      }
     );
 
     // set new access token in cookie

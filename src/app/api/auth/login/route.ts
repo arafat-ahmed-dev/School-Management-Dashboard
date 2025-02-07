@@ -65,18 +65,25 @@ export const POST = async (request: NextRequest) => {
         );
       }
 
-
       // Generate Access and Refresh Tokens
       const accessToken = jwt.sign(
         { userId: user.id, userType },
         process.env.ACCESS_TOKEN_SECRET!,
-        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "1h" }
+        {
+          expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+            ? Number(process.env.ACCESS_TOKEN_EXPIRY)
+            : "1h",
+        }
       );
 
       const refreshToken = jwt.sign(
         { userId: user.id, userType },
         process.env.REFRESH_TOKEN_SECRET!,
-        { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "7d" }
+        {
+          expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+            ? Number(process.env.REFRESH_TOKEN_EXPIRY)
+            : "7d",
+        }
       );
 
       const response = NextResponse.json(
