@@ -1,6 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
 import { jwtVerify } from "jose"; // Use jose for JWT verification and signing
-import { handleRefreshToken } from "./lib/utils"; // Import the new function
 
 const matchers = [
   { matcher: /^\/admin(.*)$/, allowedRoles: ["admin"] },
@@ -49,44 +48,13 @@ export default async function middleware(req: NextRequest) {
 
   console.log("Requested Path:", requestedPath); // Add logging
 
-  // Allow public access to the landing page without checking refreshToken
+  // Allow public access to the landing page without checking accessToken
   if (requestedPath === "/") {
     return NextResponse.next();
   }
 
-  // Handle login path
-  if (requestedPath === "/login") {
-    const refreshToken = req.cookies.get("refreshToken")?.value;
-
-    // If refreshToken exists, verify it and redirect to the respective dashboard
-    if (refreshToken) {
-      try {
-        const response = await handleRefreshToken(refreshToken, req);
-        const accessToken = response.cookies.get("accessToken")?.value;
-
-        if (accessToken) {
-          const { payload } = await jwtVerify(
-            accessToken,
-            new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET!)
-          );
-          const userType = (
-            payload as { userType: string }
-          ).userType.toLowerCase();
-          return NextResponse.redirect(new URL(`/${userType}`, req.url));
-        }
-      } catch (error) {
-        console.error("Error verifying refresh token:", error);
-        // If refreshToken is invalid, proceed to the login page
-        return NextResponse.next();
-      }
-    }
-
-    // If no refreshToken, proceed to the login page
-    return NextResponse.next();
-  }
-
   // Extract accessToken from the cookies
-  const accessToken = req.cookies.get("accessToken")?.value; // Access the value property
+  const accessToken = req.cookies.get("accessToken")?.value;
 
   // Allow access to login, register, forgetpassword pages if no accessToken is provided
   if (
@@ -101,23 +69,15 @@ export default async function middleware(req: NextRequest) {
     accessToken &&
     ["/login", "/register", "/forgetpassword"].includes(requestedPath)
   ) {
-    let userType, userId;
+    let userType;
     try {
       const { payload } = await jwtVerify(
         accessToken,
         new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET!)
       );
       userType = (payload as { userType: string }).userType.toLowerCase(); // Convert to lowercase
-      userId = (payload as { userId: string }).userId;
       return NextResponse.redirect(new URL(`/${userType}`, req.url));
     } catch (error) {
-      if ((error as any).code === "ERR_JWT_EXPIRED") {
-        const refreshToken = req.cookies.get("refreshToken")?.value;
-        if (refreshToken) {
-          const response = await handleRefreshToken(refreshToken, req);
-          return response;
-        }
-      }
       console.error("Invalid access token:", error);
       return NextResponse.redirect(new URL("/login", req.url));
     }
@@ -129,23 +89,14 @@ export default async function middleware(req: NextRequest) {
   }
 
   // Verify the accessToken
-  let userType, userId;
+  let userType;
   try {
     const { payload } = await jwtVerify(
       accessToken,
       new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET!)
     );
     userType = (payload as { userType: string }).userType.toLowerCase(); // Convert to lowercase
-    userId = (payload as { userId: string }).userId;
   } catch (error) {
-    if ((error as any).code === "ERR_JWT_EXPIRED") {
-      const refreshToken = req.cookies.get("refreshToken")?.value;
-      if (refreshToken) {
-        const response = await handleRefreshToken(refreshToken, req);
-        console.log(response);
-        return response;
-      }
-    }
     console.error("Invalid access token:", error);
     return NextResponse.redirect(new URL("/login", req.url));
   }
