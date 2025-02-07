@@ -31,7 +31,6 @@ const CountChart = () => {
       {/* TTILE */}
       <div className="flex justify-between items-center">
         <h1 className="text-lg font-semibold">Student</h1>
-        <Image src="/moreDark.png" alt="moreDark" width={20} height={20} />
       </div>
       {/* CHART */}
       <div className="w-full h-[75%] relative">

@@ -29,7 +29,6 @@ const Announcements = () => {
     <div className="bg-white p-4 rounded-md">
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold my-4">Announcements</h1>
-        <Image src="/moreDark.png" width={20} height={20} alt="more" />
       </div>
       <div className="flex flex-col gap-4">
         {Announcement.map((event) => (
