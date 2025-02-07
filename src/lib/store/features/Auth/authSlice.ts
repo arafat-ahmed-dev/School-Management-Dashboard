@@ -7,30 +7,30 @@ interface UserState {
   error: string | null; // Error messages
 }
 
-// Utility functions for localStorage interactions
+// Utility functions for sessionstorage interactions
 const getUserDataFromStorage = (): any | null => {
   try {
-    const rawData = localStorage.getItem("userData");
+    const rawData = sessionStorage.getItem("userData");
     return rawData && rawData !== "undefined" ? JSON.parse(rawData) : null;
   } catch (error) {
-    console.error("Error parsing userData from localStorage:", error);
+    console.error("Error parsing userData from sessionstorage:", error);
     return null;
   }
 };
 
 const saveUserDataToStorage = (data: any) => {
   try {
-    localStorage.setItem("userData", JSON.stringify(data));
+    sessionStorage.setItem("userData", JSON.stringify(data));
   } catch (error) {
-    console.error("Error saving userData to localStorage:", error);
+    console.error("Error saving userData to sessionstorage:", error);
   }
 };
 
 const clearUserDataFromStorage = () => {
   try {
-    localStorage.removeItem("userData");
+    sessionStorage.removeItem("userData");
   } catch (error) {
-    console.error("Error clearing userData from localStorage:", error);
+    console.error("Error clearing userData from sessionstorage:", error);
   }
 };
 
@@ -50,13 +50,13 @@ export const userSlice = createSlice({
       state.userData = action.payload; // Set the user data
       state.status = true; // Set status to logged in
       state.error = null; // Clear errors
-      saveUserDataToStorage(action.payload); // Save to localStorage
+      saveUserDataToStorage(action.payload); // Save to sessionstorage
     },
     logout: (state) => {
       state.userData = null; // Clear user data
       state.status = false; // Set status to logged out
       state.error = null; // Clear errors
-      clearUserDataFromStorage(); // Remove from localStorage
+      clearUserDataFromStorage(); // Remove from sessionstorage
     },
     setError: (state, action: PayloadAction<string>) => {
       state.error = action.payload; // Set error message
