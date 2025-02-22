@@ -37,7 +37,7 @@ const columns = [
         {
           header: "Actions",
           accessor: "action",
-          className: "flex justify-center",
+          className: "text-center table-cell",
         },
       ]
     : []),
@@ -48,7 +48,7 @@ const renderRow = (item: AttendanceList) => (
     className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
   >
     <td className="flex items-center gap-4 p-4 px-2">{item.student?.name}</td>
-    <td>{item.student?.class?.name}</td>
+    <td className="capitalize">{item.student?.class?.name}</td>
     <td className="hidden md:table-cell p-2">
       {new Intl.DateTimeFormat("en-US").format(item.date)}
     </td>
@@ -56,7 +56,7 @@ const renderRow = (item: AttendanceList) => (
       {item.present ? "Present" : "Absent"}
     </td>
     <td>
-      <div className="flex items-center gap-2  justify-center">
+      <div className="flex items-center gap-2 w-fit justify-center">
         {role === "admin" && (
           <>
             <FormModel table="attendance" type="update" />

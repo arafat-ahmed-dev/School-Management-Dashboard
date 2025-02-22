@@ -2,7 +2,7 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { classesData, role } from "@/lib/data";
+import { role } from "@/lib/data";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import prisma from "../../../../../prisma";
@@ -14,6 +14,7 @@ const columns = [
   {
     header: "Class Name",
     accessor: "name",
+    className: "p-2",
   },
   {
     header: "Capacity",
@@ -35,7 +36,7 @@ const columns = [
         {
           header: "Actions",
           accessor: "action",
-          className: "flex justify-center",
+          className: "table-cell p-2",
         },
       ]
     : []),
@@ -50,7 +51,7 @@ const renderRow = (item: ClassList) => (
     <td className="hidden md:table-cell p-2">{item.grade.level}</td>
     <td className=" p-2">{item.supervisor?.name}</td>
     <td>
-      <div className="flex items-center gap-2  justify-center">
+      <div className="flex items-center gap-2 justify-center w-fit">
         {role === "admin" && (
           <>
             <FormModel table="class" type="update" />

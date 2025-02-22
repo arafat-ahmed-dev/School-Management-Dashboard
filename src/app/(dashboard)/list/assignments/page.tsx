@@ -2,7 +2,7 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { assignmentsData, role } from "@/lib/data";
+import { role } from "@/lib/data";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import prisma from "../../../../../prisma";
@@ -40,7 +40,7 @@ const columns = [
         {
           header: "Actions",
           accessor: "action",
-          className: "flex justify-center",
+          className: "table-cell",
         },
       ]
     : []),
@@ -53,13 +53,13 @@ const renderRow = (item: AssignmentList) => (
     <td className="flex items-center gap-4 p-4 px-2">
       {item.lesson.subject.name}
     </td>
-    <td>{item.lesson.class.name}</td>
+    <td className="capitalize">{item.lesson.class.name}</td>
     <td className="hidden md:table-cell p-2">{item.lesson.teacher.name}</td>
     <td className="hidden md:table-cell p-2">
       {new Intl.DateTimeFormat("en-US").format(item.dueDate)}
     </td>
     <td>
-      <div className="flex items-center gap-2  justify-center">
+      <div className="flex items-center gap-2 w-fit justify-center">
         {role === "admin" && (
           <>
             <FormModel table="assignment" type="update" />

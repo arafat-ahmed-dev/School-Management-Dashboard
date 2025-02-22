@@ -30,35 +30,35 @@ export default function EnhancedSchoolLandingPage() {
     (state: RootState) => state.darkMode.isDarkMode
   );
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // ✅ Use the authentication hook
   const { user, loading: authLoading } = useAuthSession();
   console.log(user)
 
-  useEffect(() => {
-    const getInitialTheme = () => {
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
-        return true;
-      }
-      return false;
-    };
+  // useEffect(() => {
+  //   const getInitialTheme = () => {
+  //     if (
+  //       window.matchMedia &&
+  //       window.matchMedia("(prefers-color-scheme: dark)").matches
+  //     ) {
+  //       return true;
+  //     }
+  //     return false;
+  //   };
 
-    dispatch(setDarkMode(getInitialTheme()));
-  }, [dispatch]);
+  //   dispatch(setDarkMode(getInitialTheme()));
+  // }, [dispatch]);
 
-  useEffect(() => {
-    document.body.classList.toggle("dark", isDarkMode);
-    // Simulate data fetching
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000); // Simulate a 2-second loading time
+  // useEffect(() => {
+  //   document.body.classList.toggle("dark", isDarkMode);
+  //   // Simulate data fetching
+  //   const timer = setTimeout(() => {
+  //     setLoading(false);
+  //   }, 2000); // Simulate a 2-second loading time
 
-    return () => clearTimeout(timer);
-  }, [isDarkMode]);
+  //   return () => clearTimeout(timer);
+  // }, [isDarkMode]);
 
   const handleToggleDarkMode = () => dispatch(toggleDarkMode());
 

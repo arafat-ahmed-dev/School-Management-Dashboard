@@ -15,18 +15,19 @@ const columns = [
   {
     header: "Subject Name",
     accessor: "subjectName",
+    className: "p-2",
   },
   {
     header: "Teachers",
     accessor: "teachers",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell p-2",
   },
   ...(role === "admin"
     ? [
         {
           header: "Actions",
           accessor: "action",
-          className: "flex justify-center",
+          className: "table-cell",
         },
       ]
     : []),
@@ -43,12 +44,7 @@ const renderRow = (item: SubjectList) => (
       {item.teachers.map((item) => item.name).join(", ")}
     </td>
     <td>
-      <div className="flex items-center gap-2">
-        <Link href={`/list/teachers/${item.id}`}>
-          <button className="w-7 h-7 flex items-center justify-center rounded-full bg-aamSky">
-            <Image src="/view.png" alt="" width={16} height={16} />
-          </button>
-        </Link>
+      <div className="w-fit">
         {role === "admin" && (
           <button className="w-7 h-7 flex items-center justify-center rounded-full bg-aamPurple">
             <Image src="/delete.png" alt="" width={16} height={16} />

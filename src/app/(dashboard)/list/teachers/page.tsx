@@ -46,7 +46,7 @@ const columns = [
         {
           header: "Actions",
           accessor: "action",
-          className: "flex justify-center",
+          className: "text-center table-cell",
         },
       ]
     : []),
@@ -72,7 +72,7 @@ const renderRow = (item: TeacherList) => (
     </td>
     <td className="hidden md:table-cell p-2">{item.id.substring(10)}</td>
     <td className="hidden md:table-cell p-2">
-      {item.subjects.map((item) => item.name).join(", ")}
+      {item.subjects.map((item) => item.subjectId).join(", ")}
     </td>
     <td className="hidden md:table-cell p-2">
       {item.classes.map((item) => item.name).join(", ")}

@@ -14,6 +14,7 @@ const columns = [
   {
     header: "Info",
     accessor: "info",
+    className: " p-2",
   },
   {
     header: "Student Names",
@@ -23,19 +24,19 @@ const columns = [
   {
     header: "Phone",
     accessor: "phone",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   {
     header: "Address",
     accessor: "address",
-    className: "hidden lg:table-cell",
+    className: "hidden md:table-cell",
   },
   ...(role === "admin"
     ? [
         {
           header: "Actions",
           accessor: "action",
-          className: "flex justify-center",
+          className: "flex justify-center table-cell p-2",
         },
       ]
     : []),

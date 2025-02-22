@@ -10,7 +10,7 @@ interface ClientComponentProps {
     id: number;
     name: string;
     class?: { name: string };
-    subjects?: { name: string }[];
+    subjects?: { subjectId: string }[];
     students?: { name: string }[];
     createdAt?: string;
     approved: string;
@@ -65,9 +65,9 @@ const ClientComponent = ({ item, role }: ClientComponentProps) => {
         {item.name}
       </td>
       {role !== "admin" && (
-        <td className="text-xs md:text-sm">
+        <td className="text-xs md:text-sm capitalize">
           {item.class?.name ||
-            item.subjects?.map((subject) => subject.name).join(", ") ||
+            item.subjects?.map((subject) => subject.subjectId).join(", ") ||
             item.students?.map((student) => student.name).join(", ")}
         </td>
       )}

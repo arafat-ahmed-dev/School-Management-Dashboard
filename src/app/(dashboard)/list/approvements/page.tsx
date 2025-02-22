@@ -91,7 +91,7 @@ const ApprovementListPage = async ({
       case "student":
         return { class: { select: { name: true } } };
       case "teacher":
-        return { subjects: { select: { name: true } } };
+        return { subjects: { select: { subjectId: true } } };
       case "parent":
         return { students: { select: { name: true } } };
       default:
@@ -146,7 +146,7 @@ const ApprovementListPage = async ({
           {
             header: "Actions",
             accessor: "action",
-            className: "flex justify-center",
+            className: "text-center table-cell",
           },
         ]
       : []),

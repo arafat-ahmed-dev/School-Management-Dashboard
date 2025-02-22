@@ -40,7 +40,7 @@ const columns = [
         {
           header: "Actions",
           accessor: "action",
-          className: "flex justify-center",
+          className: "table-cell",
         },
       ]
     : []),
@@ -53,13 +53,13 @@ const renderRow = (item: ExamList) => (
     <td className="flex items-center gap-4 p-4 px-2">
       {item.lesson.subject.name}
     </td>
-    <td>{item.lesson.class.name}</td>
+    <td className="capitalize">{item.lesson.class.name}</td>
     <td className="hidden md:table-cell p-2">{item.lesson.teacher.name}</td>
     <td className="hidden md:table-cell p-2">
       {new Intl.DateTimeFormat("en-US").format(item.startTime)}
     </td>
     <td>
-      <div className="flex items-center gap-2  justify-center">
+      <div className="flex items-center gap-2 w-fit justify-center">
         {role === "admin" && (
           <>
             <FormModel table="exam" type="update" />
