@@ -60,8 +60,11 @@ const subjectColors: Record<string, string> = {
 };
 
 type ViewType = "list" | "week" | "day";
-
-export default function ClassSchedule() {
+export default function ClassSchedule(
+  teacherName: any,
+  className: Array<{ name: string }>
+) {
+  console.log(className);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<ViewType>("week");
   const [events, setEvents] = useState<CalendarEvent[]>(calendarEvents);
@@ -131,56 +134,54 @@ export default function ClassSchedule() {
     </div>
   );
 
-const renderScheduleGrid = (days: number[]) => (
-  <div className="w-full overflow-x-auto">
-    <div className={cn("min-w-[600px]", days.length === 1 && "min-w-[300px]")}>
-      <div className={`grid grid-cols-${days.length} gap-1`}>
-        {/* Days columns */}
-        {days.map((day) => (
-          <div key={day} className="flex flex-col">
-            <div className="h-12 border-b flex items-center justify-center font-semibold">
-              {daysOfWeek[day]}
+  const renderScheduleGrid = (days: number[]) => (
+    <div className="w-full overflow-x-auto">
+      <div
+        className={cn("min-w-[600px]", days.length === 1 && "min-w-[300px]")}
+      >
+        <div className={`grid grid-cols-${days.length} gap-1`}>
+          {/* Days columns */}
+          {days.map((day) => (
+            <div key={day} className="flex flex-col">
+              <div className="h-12 border-b flex items-center justify-center font-semibold">
+                {daysOfWeek[day]}
+              </div>
+
+              {timeSlots.map((timeSlot) => {
+                const event = getEventForTimeSlot(day, timeSlot);
+                return (
+                  <div
+                    key={`${day}-${timeSlot}`}
+                    className="h-24 border-b border-gray-100 relative"
+                  >
+                    {event ? (
+                      <div
+                        className={cn(
+                          "absolute inset-1 p-2 rounded-md shadow-sm",
+                          subjectColors[event.title] || "bg-gray-100"
+                        )}
+                      >
+                        <div className="text-xs font-medium">{event.title}</div>
+                        <div className="text-xs opacity-75">
+                          {formatTime(event.startTime)} -{" "}
+                          {formatTime(event.endTime)}
+                        </div>
+                        <div className="text-xs truncate">
+                          Class: {event.class}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-sm text-center text-gray-500"></div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
-            
-            {timeSlots.map((timeSlot) => {
-              const event = getEventForTimeSlot(day, timeSlot);
-              return (
-                <div
-                  key={`${day}-${timeSlot}`}
-                  className="h-24 border-b border-gray-100 relative"
-                >
-                  {event ? (
-                    <div
-                      className={cn(
-                        "absolute inset-1 p-2 rounded-md shadow-sm",
-                        subjectColors[event.title] || "bg-gray-100"
-                      )}
-                    >
-                      <div className="text-xs font-medium">{event.title}</div>
-                      <div className="text-xs opacity-75">
-                        {formatTime(event.startTime)} -{" "}
-                        {formatTime(event.endTime)}
-                      </div>
-                      <div className="text-xs truncate">
-                        Class: {event.class}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-sm text-center text-gray-500">
-                      
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
-  </div>
-);
-
-
+  );
 
   return (
     <Card className="w-full shadow-lg">
@@ -210,11 +211,13 @@ const renderScheduleGrid = (days: number[]) => (
             onChange={(e) => setSelectedClass(e.target.value)}
             className="border p-2 rounded-md cursor-pointer text-sm"
           >
-            {classNames.map((cls) => (
-              <option key={cls} value={cls}>
-                {cls}
-              </option>
-            ))}
+            {className.length > 0
+              ? className.map(({name}) => (
+                  <option key={name} value={name}>
+                    {name}
+                  </option>
+                ))
+              : null}
           </select>
           <Button
             variant="outline"
@@ -251,6 +254,8 @@ const renderScheduleGrid = (days: number[]) => (
         {view === "day" && renderScheduleGrid([currentDate.getDay()])}
       </CardContent>
       <CreateScheduleModal
+        teacherName={teacherName.teacherName}
+        // className={className}
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onCreateSchedule={handleCreateSchedule}

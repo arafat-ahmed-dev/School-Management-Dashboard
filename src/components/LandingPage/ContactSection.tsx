@@ -4,7 +4,7 @@ import { Skeleton } from "../ui/skeleton";
 
 const ContactSection = ({ loading, isDarkMode }: { loading: boolean, isDarkMode: boolean }) => {
   return (
-    <div className={`container mx-auto px-4 py-12 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
+    <div className={` w-full px-4 py-12 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white text-black"}`}>
       <div className="text-center mb-8">
         <h2 className="text-3xl font-semibold mb-2">
           We&apos;d Love To Hear From You
@@ -15,7 +15,7 @@ const ContactSection = ({ loading, isDarkMode }: { loading: boolean, isDarkMode:
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-8">
+      <div className="grid lg:grid-cols-2 gap-8 container mx-auto">
         {/* Map Section */}
         <Card className="h-fit">
           <CardContent className="p-0">

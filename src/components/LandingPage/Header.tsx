@@ -29,7 +29,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header
       className={`sticky top-0 z-50 w-full border-b ${
-        isDarkMode ? "bg-gray-800" : "bg-background/95"
+        isDarkMode ? "bg-gray-800 text-white" : "bg-background/95"
       } backdrop-blur supports-[backdrop-filter]:bg-background/60 px-3 md:px-5 py-2 md:py-4`}
     >
       <div className="flex h-14 items-center justify-between">

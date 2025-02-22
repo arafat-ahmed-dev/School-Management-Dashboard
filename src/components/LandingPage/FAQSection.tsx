@@ -24,7 +24,7 @@ const FAQSection = ({ isDarkMode, loading }: { isDarkMode: boolean; loading: boo
           <Accordion
             type="single"
             collapsible
-            className="w-full max-w-5xl mx-auto"
+            className={`w-full max-w-5xl mx-auto ${isDarkMode ? "text-white" : "bg-white"}`}
           >
             <AccordionItem value="item-1">
               <AccordionTrigger>

@@ -29,7 +29,7 @@ const ImpactSection = ({
 
   return (
     <section
-      className={`w-full py-12 ${isDarkMode ? "bg-gray-800" : "bg-white"}`}
+      className={`w-full py-12 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white"}`}
     >
       
         {loading ? ( // Conditional rendering for skeleton

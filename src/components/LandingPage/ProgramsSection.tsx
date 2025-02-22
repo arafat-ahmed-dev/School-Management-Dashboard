@@ -20,8 +20,8 @@ const ProgramsSection = ({
 
   return (
     <section
-      id="programs"
-      className={`w-full py-12 ${isDarkMode ? "bg-gray-800" : "bg-white"}`}
+      id="programs" 
+      className={`w-full py-12 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white"}`}
     >
       <div className="px-4 md:px-6">
         {loading ? ( // Conditional rendering for skeleton

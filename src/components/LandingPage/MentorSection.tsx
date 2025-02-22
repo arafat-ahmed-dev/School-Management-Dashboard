@@ -43,7 +43,7 @@ export function MentorSection({ isDarkMode }: { isDarkMode: boolean }) {
   return (
     <section
       id="mentors"
-      className={`w-full py-12 ${isDarkMode ? "bg-gray-800" : "bg-gray-100"}`}
+      className={`w-full py-12 ${isDarkMode ? "bg-gray-800 text-white" : "bg-gray-100"}`}
     >
       <div className="px-4 md:px-6">
         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">

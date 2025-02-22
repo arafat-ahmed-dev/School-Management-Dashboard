@@ -8,7 +8,7 @@ const StayConnectedSection = ({ isDarkMode, loading }: { isDarkMode: boolean; lo
   };
   return (
     <section
-      className={`w-full py-12 ${isDarkMode ? "bg-gray-800" : "bg-white"}`}
+      className={`w-full py-12 ${isDarkMode ? "bg-gray-800 text-white" : "bg-white"}`}
     >
       <div className="px-4 md:px-6">
         {loading ? ( // Conditional rendering for skeleton

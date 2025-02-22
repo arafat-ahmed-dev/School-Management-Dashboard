@@ -16,12 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import { getTeacherData } from "@/lib/utils";
+type Teacher = { name: string };
 
 interface CreateScheduleModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateSchedule: (scheduleData: ScheduleData) => void;
+  teacherName: Teacher[]; 
 }
 
 interface ScheduleData {
@@ -34,14 +35,6 @@ interface ScheduleData {
 }
 
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-const teachers = [
-  "Tommy Wise",
-  "Rhoda Frank",
-  "Della Dunn",
-  "Bruce Rodriguez",
-  "Birdie Butler",
-  "Bettie Oliver",
-];
 const classNames = [
   "Class 7",
   "Class 8",
@@ -63,7 +56,10 @@ export function CreateScheduleModal({
   isOpen,
   onClose,
   onCreateSchedule,
+  teacherName,
 }: CreateScheduleModalProps) {
+  
+  console.log(teacherName)
   const [scheduleData, setScheduleData] = useState<ScheduleData>({
     title: "",
     dayOfWeek: "",
@@ -73,12 +69,6 @@ export function CreateScheduleModal({
     class: "",
   });
 
-  // const options = {
-  //   select: { name: true },
-  // };
-
-  // const teachersData = getTeacherData(options);
-  // console.log(teachersData);
 
   const handleChange = (name: keyof ScheduleData, value: string) => {
     setScheduleData((prev) => ({ ...prev, [name]: value }));
@@ -164,11 +154,17 @@ export function CreateScheduleModal({
                 <SelectValue placeholder="Select a teacher" />
               </SelectTrigger>
               <SelectContent>
-                {teachers.map((teacher) => (
-                  <SelectItem key={teacher} value={teacher}>
-                    {teacher}
+                {teacherName.length > 0 ? (
+                  teacherName.map(({ name }) => (
+                    <SelectItem key={name} value={name}>
+                      {name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="none" disabled>
+                    No teachers available
                   </SelectItem>
-                ))}
+                )}
               </SelectContent>
             </Select>
           </div>
