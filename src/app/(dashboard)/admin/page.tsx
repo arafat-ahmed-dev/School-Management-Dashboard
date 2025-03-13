@@ -1,41 +1,45 @@
 import Announcements from "@/components/Announcements";
-import AttendanceChart from "@/components/AttendanceChart";
-import CountChart from "@/components/CountChart";
-import EventCalender from "@/components/EventCalender";
+import CountChartContainer from "@/components/CountChartContainer";
 import FinanceChart from "@/components/FinanceChart";
 import UserCard from "@/components/UserCard";
+import AttendanceChartContainer from "@/components/AttendanceChartContainer";
+import EventCalenderContainer from "@/components/EventCalenderContainer";
 
-const AdminPage = () => {
+const AdminPage = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) => {
   return (
-    <div className="p-2 md:p-4 flex flex-col md:flex-row gap-4">
+    <div className="flex flex-col gap-4 p-2 md:flex-row md:p-4">
       {/* LEFT */}
-      <div className="w-full lg:w-2/3 flex flex-col gap-8">
+      <div className="flex w-full flex-col gap-8 lg:w-2/3">
         {/* USER CARDS */}
-        <div className="flex gap-4 justify-between flex-wrap">
+        <div className="flex flex-wrap justify-between gap-4">
+          <UserCard type="admin" />
           <UserCard type="student" />
           <UserCard type="teacher" />
           <UserCard type="parent" />
-          <UserCard type="staff" />
         </div>
         {/* MIDDLE CHART */}
-        <div className="flex gap-4 flex-col lg:flex-row">
-          <div className="w-full lg:w-1/3 min-h-[450px]">
-            <CountChart />
+        <div className="flex flex-col gap-4 lg:flex-row">
+          <div className="min-h-[450px] w-full lg:w-1/3">
+            <CountChartContainer />
           </div>
-          <div className="w-full lg:w-2/3 min-h-[450px]">
-            <AttendanceChart />
+          <div className="min-h-[450px] w-full lg:w-2/3">
+            <AttendanceChartContainer />
           </div>
         </div>
         {/* BOTTOM CHART */}
-        <div className="w-full min-h-[500px] h-full">
+        <div className="size-full min-h-[500px]">
           <FinanceChart />
         </div>
       </div>
       {/* RIGHT */}
-      <div className="w-full lg:w-1/3 flex flex-col gap-8">
+      <div className="flex w-full flex-col gap-8 lg:w-1/3">
         {/* CALENDER */}
-        <EventCalender />
-        <Announcements/>
+        <EventCalenderContainer searchParams={searchParams} />
+        <Announcements />
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import bcryptjs from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient, Approve } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -28,7 +28,7 @@ export const POST = async (request: NextRequest) => {
       studentUsername,
       parentContact,
       subjectsId,
-      additionalFields
+      additionalFields,
     );
 
     // Validate required fields
@@ -38,7 +38,7 @@ export const POST = async (request: NextRequest) => {
           message:
             "All fields (userType, username, password, name, email) are required.",
         },
-        { status: 422 }
+        { status: 422 },
       );
     }
 
@@ -50,7 +50,7 @@ export const POST = async (request: NextRequest) => {
           message:
             "Username must be at least 3 characters, password at least 6 characters, and email must be valid.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -95,21 +95,21 @@ export const POST = async (request: NextRequest) => {
             message:
               "Invalid user type. Must be one of Admin, Teacher, Student, or Parent.",
           },
-          { status: 400 }
+          { status: 400 },
         );
     }
 
     if (existingUserByUsername) {
       return NextResponse.json(
         { message: "A user with this username already exists." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (existingUserByEmail) {
       return NextResponse.json(
         { message: "A user with this email already exists." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -134,12 +134,12 @@ export const POST = async (request: NextRequest) => {
         if (!subjectsId || subjectsId.length === 0) {
           return NextResponse.json(
             { message: "At least one subject must be provided." },
-            { status: 400 }
+            { status: 400 },
           );
         }
-         const subjects = await prisma.subject.findUnique({
-           where: { subjectId: subjectsId[0] },
-         });
+        const subjects = await prisma.subject.findUnique({
+          where: { subjectId: subjectsId[0] },
+        });
         newUser = await prisma.teacher.create({
           data: {
             username,
@@ -147,7 +147,7 @@ export const POST = async (request: NextRequest) => {
             email,
             name,
             subjects: {
-              connect: subjects?.id
+              connect: subjects?.id,
             },
             ...additionalFields,
           },
@@ -160,7 +160,7 @@ export const POST = async (request: NextRequest) => {
         if (!studentClass) {
           return NextResponse.json(
             { message: "Invalid class name provided." },
-            { status: 400 }
+            { status: 400 },
           );
         }
         newUser = await prisma.student.create({
@@ -179,11 +179,13 @@ export const POST = async (request: NextRequest) => {
         const parentClass = await prisma.class.findUnique({
           where: { name: className },
         });
-        console.log(`Parent class ID: ${parentClass?.id}, Student username: ${studentUsername}`);
+        console.log(
+          `Parent class ID: ${parentClass?.id}, Student username: ${studentUsername}`,
+        );
         if (!parentClass) {
           return NextResponse.json(
             { message: "Invalid class name provided." },
-            { status: 400 }
+            { status: 400 },
           );
         }
         const parentStudent = await prisma.student.findUnique({
@@ -194,13 +196,15 @@ export const POST = async (request: NextRequest) => {
         });
         console.log(`Parent student: ${JSON.stringify(parentStudent)}`);
         if (!parentStudent) {
-          console.log(`Student with username ${studentUsername} not found in class ID ${parentClass.id}`);
+          console.log(
+            `Student with username ${studentUsername} not found in class ID ${parentClass.id}`,
+          );
           return NextResponse.json(
             {
               message:
                 "Invalid student username or the student is not in the specified class.",
             },
-            { status: 400 }
+            { status: 400 },
           );
         }
         newUser = await prisma.parent.create({
@@ -219,7 +223,7 @@ export const POST = async (request: NextRequest) => {
       {
         message: "User created successfully.",
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     // Log error and return a generic error message
@@ -227,9 +231,9 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json(
       {
         message: "Internal Server Error in Registration.",
-        error: error,
+        error,
       },
-      { status: 500 }
+      { status: 500 },
     );
   } finally {
     // Ensure proper database disconnection after operations

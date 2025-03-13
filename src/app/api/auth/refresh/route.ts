@@ -16,7 +16,7 @@ export const GET = async (request: NextRequest) => {
   if (!refreshToken) {
     return NextResponse.json(
       { message: "Refresh token is missing" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -24,7 +24,7 @@ export const GET = async (request: NextRequest) => {
     // Check if refresh token is valid
     const decoded = jwt.verify(
       refreshToken,
-      process.env.REFRESH_TOKEN_SECRET!
+      process.env.REFRESH_TOKEN_SECRET!,
     ) as unknown as { userId: string; userType: string };
     const { userId, userType } = decoded;
 
@@ -50,7 +50,7 @@ export const GET = async (request: NextRequest) => {
       default:
         return NextResponse.json(
           { message: "Invalid user type" },
-          { status: 400 }
+          { status: 400 },
         );
     }
 
@@ -62,7 +62,7 @@ export const GET = async (request: NextRequest) => {
     const secretKey = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET);
     const accessToken = await new SignJWT({
       userId: user.id,
-      userType: userType,
+      userType,
     })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
@@ -88,7 +88,7 @@ export const GET = async (request: NextRequest) => {
     console.error(error); // Log for debugging
     return NextResponse.json(
       { message: "Invalid refresh token" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 };

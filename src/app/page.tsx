@@ -1,12 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/lib/store";
-import {
-  toggleDarkMode,
-  setDarkMode,
-} from "@/lib/store/features/DarkMode/darkModeSlice";
+import { toggleDarkMode } from "@/lib/store/features/DarkMode/darkModeSlice";
 import useAuthSession from "@/hooks/useAuthSession"; // Import the custom hook
 import Header from "@/components/LandingPage/Header";
 import HeroSection from "@/components/LandingPage/HeroSection";
@@ -23,19 +20,19 @@ import CallToActionSection from "@/components/LandingPage/CallToActionSection";
 import { FeaturesSection } from "@/components/LandingPage/FeaturesSection";
 import ContactSection from "@/components/LandingPage/ContactSection";
 import { MentorSection } from "@/components/LandingPage/MentorSection";
+import bcryptjs from "bcryptjs";
 
 export default function EnhancedSchoolLandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isDarkMode = useSelector(
-    (state: RootState) => state.darkMode.isDarkMode
+    (state: RootState) => state.darkMode.isDarkMode,
   );
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
   // ✅ Use the authentication hook
   const { user, loading: authLoading } = useAuthSession();
-  console.log(user)
-
+  console.log(user);
   // useEffect(() => {
   //   const getInitialTheme = () => {
   //     if (
@@ -64,7 +61,7 @@ export default function EnhancedSchoolLandingPage() {
 
   return (
     <div
-      className={`flex flex-col min-h-screen w-full relative ${
+      className={`relative flex min-h-screen w-full flex-col ${
         isDarkMode ? "dark" : ""
       }`}
     >

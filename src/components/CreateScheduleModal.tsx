@@ -22,7 +22,6 @@ interface CreateScheduleModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateSchedule: (scheduleData: ScheduleData) => void;
-  teacherName: Teacher[]; 
 }
 
 interface ScheduleData {
@@ -56,10 +55,8 @@ export function CreateScheduleModal({
   isOpen,
   onClose,
   onCreateSchedule,
-  teacherName,
 }: CreateScheduleModalProps) {
   
-  console.log(teacherName)
   const [scheduleData, setScheduleData] = useState<ScheduleData>({
     title: "",
     dayOfWeek: "",
@@ -141,32 +138,6 @@ export function CreateScheduleModal({
               onChange={(e) => handleChange("endTime", e.target.value)}
               className="col-span-3"
             />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="teacher" className="text-right">
-              Teacher
-            </Label>
-            <Select
-              value={scheduleData.teacher}
-              onValueChange={(value) => handleChange("teacher", value)}
-            >
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select a teacher" />
-              </SelectTrigger>
-              <SelectContent>
-                {teacherName.length > 0 ? (
-                  teacherName.map(({ name }) => (
-                    <SelectItem key={name} value={name}>
-                      {name}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem value="none" disabled>
-                    No teachers available
-                  </SelectItem>
-                )}
-              </SelectContent>
-            </Select>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="class" className="text-right">

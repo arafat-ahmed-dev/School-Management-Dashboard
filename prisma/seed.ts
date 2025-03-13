@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 async function main() {
   try {
     // Create 10 Admins
-    const admins = await Promise.all(
+    await Promise.all(
       Array.from({ length: 10 }, (_, i) =>
         prisma.admin.create({
           data: {
@@ -17,8 +17,8 @@ async function main() {
             refreshToken: `token${i + 1}`,
             approved: i % 2 === 0 ? "ACCEPTED" : "PENDING",
           },
-        })
-      )
+        }),
+      ),
     );
 
     // Create Grades
@@ -28,8 +28,8 @@ async function main() {
           data: {
             level: i + 7,
           },
-        })
-      )
+        }),
+      ),
     );
 
     // Create Classes
@@ -47,7 +47,7 @@ async function main() {
       "class11-com",
       "class12-sci",
       "class12-art",
-      "class12-com"
+      "class12-com",
     ];
 
     const classes = await Promise.all(
@@ -58,8 +58,8 @@ async function main() {
             gradeId: grades[Math.floor(i / 3)].id,
             capacity: 30,
           },
-        })
-      )
+        }),
+      ),
     );
 
     // Create 15 Subjects
@@ -104,23 +104,22 @@ async function main() {
       { id: "Civ-2", name: "Civics-2" },
       { id: "IHC-2", name: "Islamic History and Culture-2" },
     ];
- 
 
-   const subjects = await Promise.all(
-     subjectData.map((subject, index) =>
-       prisma.subject.create({
-         data: {
-           name: subject.name,
-           code: `SUB${index + 1}`,
-           subjectId: subject.id
-         },
-       })
-     )
-   );
+    const subjects = await Promise.all(
+      subjectData.map((subject, index) =>
+        prisma.subject.create({
+          data: {
+            name: subject.name,
+            code: `SUB${index + 1}`,
+            subjectId: subject.id,
+          },
+        }),
+      ),
+    );
 
     // Create 20 Teachers
     const teachers = await Promise.all(
-      Array.from({length: 20 }, (_, i) =>
+      Array.from({ length: 20 }, (_, i) =>
         prisma.teacher.create({
           data: {
             username: `teacher${i + 1}`,
@@ -140,8 +139,8 @@ async function main() {
                 .map((subject) => ({ id: subject.id })),
             },
           },
-        })
-      )
+        }),
+      ),
     );
 
     // Assign Teachers to Classes
@@ -152,8 +151,8 @@ async function main() {
           data: {
             supervisorId: teachers[index % teachers.length].id,
           },
-        })
-      )
+        }),
+      ),
     );
 
     // Create 20 Parents
@@ -171,8 +170,8 @@ async function main() {
             type: i % 3 === 0 ? "FATHER" : i % 3 === 1 ? "MOTHER" : "OTHER",
             refreshToken: `parentToken${i}`,
           },
-        })
-      )
+        }),
+      ),
     );
 
     // Create 30 Students
@@ -195,8 +194,8 @@ async function main() {
             gradeId: grades[i % grades.length].id,
             classId: classes[i % classes.length].id,
           },
-        })
-      )
+        }),
+      ),
     );
     // Create Lessons for each Class and Subject
     const lessons = await Promise.all(
@@ -211,8 +210,8 @@ async function main() {
             classId: classes[i % classes.length].id,
             teacherId: teachers[i % teachers.length].id,
           },
-        })
-      )
+        }),
+      ),
     );
 
     // Create Exams for Lessons
@@ -225,8 +224,8 @@ async function main() {
             endTime: new Date(),
             lessonId: lesson.id,
           },
-        })
-      )
+        }),
+      ),
     );
 
     // Create Assignments for Lessons
@@ -239,8 +238,8 @@ async function main() {
             dueDate: new Date(),
             lessonId: lesson.id,
           },
-        })
-      )
+        }),
+      ),
     );
 
     // Create Results for Exams
@@ -252,8 +251,8 @@ async function main() {
             examId: exam.id,
             studentId: students[i % students.length].id,
           },
-        })
-      )
+        }),
+      ),
     );
 
     // Create Results for Assignments
@@ -265,8 +264,8 @@ async function main() {
             assignmentId: assignment.id,
             studentId: students[i % students.length].id,
           },
-        })
-      )
+        }),
+      ),
     );
 
     // Create Events for Classes
@@ -280,8 +279,8 @@ async function main() {
             endTime: new Date(),
             classId: cls.id,
           },
-        })
-      )
+        }),
+      ),
     );
 
     // Create Announcements for Classes
@@ -294,24 +293,44 @@ async function main() {
             date: new Date(),
             classId: cls.id,
           },
-        })
-      )
+        }),
+      ),
     );
+
+    // Create Attendance records for each student and lesson
+    // Helper function to generate a random date between two given dates
+    // @ts-ignore
+    function getRandomDate(start: Date, end: Date): Date {
+      return new Date(
+        start.getTime() + Math.random() * (end.getTime() - start.getTime()),
+      );
+    }
+
+    // Define the date range for generating random dates
+    const startDate = new Date("2025-03-01");
+    const endDate = new Date("2025-04-31");
+
+    // Specify how many attendance records you want per student-lesson combination
+    const recordsPerCombination = 10;
 
     // Create Attendance records for each student and lesson
     await Promise.all(
       students.flatMap((student) =>
-        lessons.map((lesson) =>
-          prisma.attendance.create({
-            data: {
-              date: new Date(),
-              present: Math.random() > 0.5,
-              studentId: student.id,
-              lessonId: lesson.id,
-            },
-          })
-        )
-      )
+        lessons
+          .filter((lesson) => lesson.classId === student.classId) // Only lessons of the student's class
+          .flatMap((lesson) =>
+            Array.from({ length: recordsPerCombination }, () =>
+              prisma.attendance.create({
+                data: {
+                  date: getRandomDate(startDate, endDate),
+                  present: Math.random() > 0.2, // 80% chance of being present
+                  studentId: student.id,
+                  lessonId: lesson.id,
+                },
+              }),
+            ),
+          ),
+      ),
     );
 
     console.log("Seeding completed successfully!");

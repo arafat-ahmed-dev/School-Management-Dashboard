@@ -61,7 +61,6 @@ const subjectColors: Record<string, string> = {
 
 type ViewType = "list" | "week" | "day";
 export default function ClassSchedule(
-  teacherName: any,
   className: Array<{ name: string }>
 ) {
   console.log(className);
@@ -254,7 +253,6 @@ export default function ClassSchedule(
         {view === "day" && renderScheduleGrid([currentDate.getDay()])}
       </CardContent>
       <CreateScheduleModal
-        teacherName={teacherName.teacherName}
         // className={className}
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}

@@ -19,7 +19,7 @@ export default async function Home() {
   return (
     <main className="w-full p-4 ">
       <h1 className="text-2xl font-bold mb-4">Class Schedule</h1>
-      <ClassSchedule teacherName={teacherName} className={className} />
+      {/* <ClassSchedule className={className} /> */}
     </main>
   );
 }
