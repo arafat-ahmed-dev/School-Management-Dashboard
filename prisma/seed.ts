@@ -72,7 +72,7 @@ async function main() {
       { id: "GenSci", name: "General Science" },
       { id: "BGS", name: "Bangladesh and Global Studies" },
       { id: "ICT", name: "Information and Communication Technology" },
-      { id: "Rel", name: "Religion (Islamic Studies or Hindu Studies)" },
+      { id: "Rel", name: "Religion" },
       { id: "Phy", name: "Physics" },
       { id: "Bio", name: "Biology" },
       { id: "HM", name: "Home Management" },
