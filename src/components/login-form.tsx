@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { cn } from "../lib/utils"; // Adjusted path
-import { Button } from "./ui/button";
+import { cn } from "@/lib/utils"; // Adjusted path
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -20,9 +19,7 @@ import {
   SelectContent,
   SelectValue,
 } from "./ui/select"; // Import Select components
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { login } from "@/lib/store/features/Auth/authSlice";
+import { signIn } from "next-auth/react";
 
 export function LoginForm({
   className,
@@ -31,47 +28,6 @@ export function LoginForm({
   const router = useRouter(); // Initialize the Next.js router
   const [error, setError] = useState<string | null>(null); // State for error messages
   const [loading, setLoading] = useState(false); // State for loading
-  const dispatch = useDispatch();
-  interface Data {
-    username: string;
-    password: string;
-    userType: string;
-  }
-  enum Role {
-    Admin = "Admin",
-    Parent = "Parent",
-    Teacher = "Teacher",
-    Student = "Student",
-  }
-  const handleLogin = async (data: Data) => {
-    setLoading(true); // Set loading to true when login starts
-    try {
-      const response = await axios.post("/api/auth/login", data);
-      console.log("Login successful:", response.data);
-      // Handle successful login (e.g., store user data, redirect, etc.)
-      const validRoles = ["Admin", "Parent", "Teacher", "Student"];
-      const role: Role = response.data.userRole as Role;
-      if (validRoles.includes(role)) {
-        // Store user data (e.g., in Redux state)
-        dispatch(login(response.data));
-        const roleLowerCase = role.toLowerCase();
-        router.push(`/${roleLowerCase}`); // Redirect to the appropriate dashboard
-      }
-    } catch (err) {
-      console.error("Login failed:", err);
-      if (axios.isAxiosError(err) && err.response) {
-        const errorMessage =
-          err.response.data.message ||
-          "Login failed. Please check your credentials."; // Access message safely
-        console.error("Response data:", err.response.data); // Log response data for debugging
-        setError(errorMessage); // Set error message from response
-      } else {
-        setError("An unexpected error occurred.");
-      }
-    } finally {
-      setLoading(false); // Set loading to false when login ends
-    }
-  };
 
   const handleInputChange = () => {
     if (error) {
@@ -86,7 +42,7 @@ export function LoginForm({
     }
   }, [loading]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = {
@@ -95,7 +51,20 @@ export function LoginForm({
       password: formData.get("password") as string,
     };
     console.log("Form submitted--------->", data);
-    handleLogin(data); // Call handleLogin with the gathered data
+    const result = await signIn("credentials", {
+      redirect: false,
+      username: data.username,
+      password: data.password,
+      userType: data.userType,
+      callbackUrl: "/",
+    });
+    console.log(result);
+    if (result?.error) {
+      setError(result?.error);
+      console.log(result?.error);
+    } else {
+      router.push(result?.url || "/");
+    }
   };
 
   return (
@@ -166,15 +135,12 @@ export function LoginForm({
               {error && <p className="text-red-500">{error}</p>}{" "}
               {/* Display error message */}
               <button
-                className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]"
+                className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900"
                 type="submit"
                 disabled={loading} // Disable button when loading
               >
                 Login &larr;
               </button>
-              <Button variant="outline" className="w-full" disabled={loading}>
-                Login with Google
-              </Button>
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}

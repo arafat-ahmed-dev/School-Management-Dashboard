@@ -1,6 +1,7 @@
 import bcryptjs from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { hashPassword } from "@/lib/argon2";
 
 const prisma = new PrismaClient();
 
@@ -114,7 +115,7 @@ export const POST = async (request: NextRequest) => {
     }
 
     // Hash password before saving to database (security best practice)
-    const hashedPassword = await bcryptjs.hash(password, 10);
+    const hashedPassword = await hashPassword(password);
 
     // Create new user in the database
     let newUser;

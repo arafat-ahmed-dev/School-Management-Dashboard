@@ -13,7 +13,6 @@ import {
   SelectValue,
 } from "./ui/select"; // Import Select components
 import Link from "next/link";
-import { Button } from "./ui/button";
 import { classNames, subjectData } from "@/lib/setting";
 
 export function RegisterForm() {
@@ -23,7 +22,7 @@ export function RegisterForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
+
     const data = {
       name: formData.get("name"), // Merge first name and last name
       username: formData.get("username"),
@@ -49,28 +48,28 @@ export function RegisterForm() {
       console.log("Registration successful", response);
       setError(null); // Clear error message on success
       toast.success(
-        "Your registration request has been accepted. You will be notified soon."
+        "Your registration request has been accepted. You will be notified soon.",
       ); // Show success toast
     } catch (err) {
       const error = err as any; // Type assertion
       console.error("Registration error", error);
       setError(
         error.response?.data?.message ||
-          "An error occurred during registration."
+          "An error occurred during registration.",
       ); // Set error message
     }
   };
 
   return (
-    <div className="max-w-md w-full mx-auto rounded-lg p-4 md:p-8 shadow-input bg-white dark:bg-black">
-      <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
+    <div className="mx-auto w-full max-w-md rounded-lg bg-white p-4 shadow-input dark:bg-black md:p-8">
+      <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
         Register
       </h2>
-      <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
+      <p className="mt-2 max-w-sm text-sm text-neutral-600 dark:text-neutral-300">
         Enter your details below to register to your account
       </p>
 
-      {error && <div className="text-red-500 text-sm my-4">{error}</div>}
+      {error && <div className="my-4 text-sm text-red-500">{error}</div>}
 
       <form className="my-8" onSubmit={handleSubmit}>
         <LabelInputContainer className="mb-4">
@@ -122,7 +121,7 @@ export function RegisterForm() {
         {/* Conditional Fields */}
         {role === "Student" && (
           <>
-            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+            <div className="mb-4 flex flex-col space-y-2 md:flex-row md:space-x-2 md:space-y-0">
               <LabelInputContainer className="mb-4">
                 <Label htmlFor="class">Class</Label>
                 <Select name="class">
@@ -211,16 +210,12 @@ export function RegisterForm() {
         )}
         <div className="flex flex-col space-y-4">
           <button
-            className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset]"
+            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900"
             type="submit"
           >
             Sign up &rarr;
             <BottomGradient />
           </button>
-
-          <Button variant="outline" className="w-full">
-            Login with Google
-          </Button>
         </div>
       </form>
       <p className="text-center text-sm text-neutral-600 dark:text-neutral-300">
@@ -236,8 +231,8 @@ export function RegisterForm() {
 const BottomGradient = () => {
   return (
     <>
-      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
-      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
+      <span className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100" />
+      <span className="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100" />
     </>
   );
 };

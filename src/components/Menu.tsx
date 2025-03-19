@@ -6,17 +6,27 @@ import Link from "next/link";
 import _ from "lodash";
 import { LogoutModal } from "./LogoutModal";
 import { useAppSelector } from "@/lib/store/hooks";
+import axios from "axios";
 
 const Menu = () => {
   const [isClient, setIsClient] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
+  const [role, setRole] = useState<string | null>(null);
+
   useEffect(() => {
     setIsClient(true);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/session");
+        setRole(response.data?.user?.role || null);
+      } catch (error) {
+        console.error("Error fetching role:", error);
+        setRole(null);
+      }
+    };
+    fetchData();
   }, []);
-
-  const response = useAppSelector((state) => state.auth?.userData?.userRole);
-  const role = _.toLower(response);
   const menuItems = [
     {
       title: "MENU",
@@ -145,23 +155,23 @@ const Menu = () => {
   return (
     <>
       <div
-        className={`mt-4 text-sm pb-4 ${
+        className={`mt-4 pb-4 text-sm ${
           showLogoutModal ? "opacity-50" : ""
-        } overflow-y-auto max-h-[80vh] sm:max-h-[90vh] `}
+        } max-h-[80vh] overflow-y-auto sm:max-h-[90vh] `}
       >
         {" "}
         {/* Add opacity when modal is visible */}
         {menuItems.map((i) => (
           <div className="flex flex-col gap-2" key={i.title}>
-            <span className="hidden lg:block text-gray-400 font-light my-2">
+            <span className="my-2 hidden font-light text-gray-400 lg:block">
               {i.title}
             </span>
             {i.items.map((item) => {
-              if (item.visible.includes(role)) {
+              if (item.visible.includes(role as string)) {
                 return item.label === "Logout" ? (
                   <button
                     key={item.label}
-                    className="flex items-center justify-center lg:justify-start gap-3 text-gray-500 py-2 md:px-2 rounded-md hover:bg-aamSkyLight"
+                    className="flex items-center justify-center gap-3 rounded-md py-2 text-gray-500 hover:bg-aamSkyLight md:px-2 lg:justify-start"
                     onClick={() => setShowLogoutModal(true)} // Show LogoutModal on click
                   >
                     <Image
@@ -169,7 +179,7 @@ const Menu = () => {
                       alt=""
                       width={20} // Default size for mobile
                       height={20}
-                      className="sm:w-5 sm:h-5" // Adjust size based on screen size
+                      className="sm:size-5" // Adjust size based on screen size
                     />
                     <span className="hidden lg:block">{item.label}</span>
                   </button>
@@ -177,14 +187,14 @@ const Menu = () => {
                   <Link
                     href={item.href}
                     key={item.label}
-                    className="flex items-center justify-center lg:justify-start gap-3 text-gray-500 py-2 md:px-2 rounded-md hover:bg-aamSkyLight"
+                    className="flex items-center justify-center gap-3 rounded-md py-2 text-gray-500 hover:bg-aamSkyLight md:px-2 lg:justify-start"
                   >
                     <Image
                       src={item.icon}
                       alt=""
                       width={20} // Default size for mobile
                       height={20}
-                      className="sm:w-5 sm:h-5 md:w-6 md:h-6 " // Adjust size based on screen size
+                      className="sm:size-5 md:size-6 " // Adjust size based on screen size
                     />
                     <span className="hidden lg:block">{item.label}</span>
                   </Link>

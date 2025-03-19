@@ -7,11 +7,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import axios from "axios"; // Import axios
-import { useAppDispatch } from "@/lib/store/hooks"; // Import useAppDispatch
-import { logout } from "@/lib/store/features/Auth/authSlice"; // Import logout action
 import { useRouter } from "next/navigation"; // Import useRouter
-import { useState } from "react"; // Import useState
+import { useState } from "react";
+import { signOut } from "next-auth/react";
 
 interface LogoutModalProps {
   isOpen: boolean;
@@ -19,19 +17,13 @@ interface LogoutModalProps {
 }
 
 export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
-  const dispatch = useAppDispatch(); // Initialize dispatch
   const router = useRouter(); // Initialize router
   const [loading, setLoading] = useState(false); // Initialize loading state
 
   const onConfirm = async () => {
     setLoading(true); // Set loading to true when logout starts
     try {
-      const response = await axios.post("/api/auth/logout");
-      console.log("Logout successful:", response);
-      dispatch(logout());
-      // Clear cookies manually
-      document.cookie = "accessToken=; Max-Age=0; path=/";
-      document.cookie = "refreshToken=; Max-Age=0; path=/";
+      await signOut();
       router.push("/login"); // Redirect to login page
     } catch (error) {
       console.error("Logout failed:", error);
@@ -45,25 +37,25 @@ export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
       <DialogContent className="max-w-sm rounded-md">
         <DialogHeader>
           <DialogTitle>Confirm Logout</DialogTitle>
-          <DialogDescription className="text-sm text-gray-600 mt-2">
+          <DialogDescription className="mt-2 text-sm text-gray-600">
             Are you sure you want to log out? You will be redirected to the
             login page.
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter className="flex justify-end gap-3 mt-4">
+        <DialogFooter className="mt-4 flex justify-end gap-3">
           <Button
             variant="outline"
             onClick={onClose}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+            className="rounded-md bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
           >
             Cancel
           </Button>
           <Button
             onClick={onConfirm}
-            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+            className="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600"
             disabled={loading} // Disable button when loading
           >
-            {loading ? "Logging out..." : "Logout"} 
+            {loading ? "Logging out..." : "Logout"}
           </Button>
         </DialogFooter>
       </DialogContent>
