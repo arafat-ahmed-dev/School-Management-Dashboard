@@ -1,5 +1,5 @@
-import { NextResponse, NextRequest } from "next/server";
-import { jwtVerify } from "jose"; // Use jose for JWT verification and signing
+import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 const matchers = [
   { matcher: /^\/admin(.*)$/, allowedRoles: ["admin"] },
@@ -42,78 +42,40 @@ const matchers = [
   },
 ];
 
-export default async function middleware(req: NextRequest) {
-  const url = new URL(req.url);
-  const requestedPath = url.pathname;
+export async function middleware(req: NextRequest) {
+  const token = await getToken({ req });
+  const requestedPath = req.nextUrl.pathname;
+  console.log(token?.role);
+  console.log("Requested Path:", requestedPath);
 
-  console.log("Requested Path:", requestedPath); // Add logging
-
-  // Allow public access to the landing page without checking accessToken
   if (requestedPath === "/") {
     return NextResponse.next();
   }
 
-  // Extract accessToken from the cookies
-  const accessToken = req.cookies.get("accessToken")?.value;
-
-  // Allow access to login, register, forgetpassword pages if no accessToken is provided
-  if (
-    !accessToken &&
-    ["/login", "/register", "/forgetpassword"].includes(requestedPath)
-  ) {
-    return NextResponse.next();
-  }
-
-  // Redirect logged-in users away from the login, register, forgetpassword page
-  if (
-    accessToken &&
-    ["/login", "/register", "/forgetpassword"].includes(requestedPath)
-  ) {
-    let userType;
-    try {
-      const { payload } = await jwtVerify(
-        accessToken,
-        new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET!)
-      );
-      userType = (payload as { userType: string }).userType.toLowerCase(); // Convert to lowercase
-      return NextResponse.redirect(new URL(`/${userType}`, req.url));
-    } catch (error) {
-      console.error("Invalid access token:", error);
-      return NextResponse.redirect(new URL("/login", req.url));
+  if (!token) {
+    if (["/login", "/register", "/forgetpassword"].includes(requestedPath)) {
+      return NextResponse.next();
     }
-  }
-
-  // Redirect to login if no accessToken is provided
-  if (!accessToken) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Verify the accessToken
-  let userType;
-  try {
-    const { payload } = await jwtVerify(
-      accessToken,
-      new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET!)
-    );
-    userType = (payload as { userType: string }).userType.toLowerCase(); // Convert to lowercase
-  } catch (error) {
-    console.error("Invalid access token:", error);
-    return NextResponse.redirect(new URL("/login", req.url));
+  if (
+    token &&
+    ["/login", "/register", "/forgetpassword"].includes(requestedPath)
+  ) {
+    return NextResponse.redirect(new URL(`/${token.role}`, req.url));
   }
 
-  // Redirect public users to the landing page if they try to access restricted paths
-  if (userType === "public" && requestedPath !== "/") {
+  if (token.role === "public" && requestedPath !== "/") {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  // Check access for protected routes
   for (const { matcher, allowedRoles } of matchers) {
     if (matcher.test(requestedPath)) {
-      // Match the route using requestedPath
-      if (!allowedRoles.includes(userType)) {
-        return NextResponse.redirect(new URL(`/${userType}`, req.url)); // Redirect to their dashboard
+      if (!allowedRoles.includes(token.role as string)) {
+        return NextResponse.redirect(new URL(`/${token.role}`, req.url));
       }
-      break; // If a match is found and userType is allowed, no further checks are needed
+      break;
     }
   }
 
@@ -132,5 +94,30 @@ export const config = {
     "/login",
     "/register",
     "/forgetpassword",
-  ], // Paths to apply the middleware
+  ],
 };
+
+// import { NextRequest, NextResponse } from "next/server";
+// // import { verifyAccessToken } from "./token";
+// import { getToken } from "next-auth/jwt";
+
+// export async function middleware(req: NextRequest) {
+//   const token = await getToken({ req });
+//   const currentURL = req.nextUrl;
+//   if (currentURL === "/") {
+//     return NextResponse.next();
+//   }
+//   if (!token) {
+//     return NextResponse.redirect(new URL("/login", req.url));
+//   }
+//
+//   try {
+//     const user = verifyAccessToken(token);
+//     if (!user || user.approved !== "ACCEPTED") {
+//       return NextResponse.redirect(new URL("/unauthorized", req.url));
+//     }
+//     return NextResponse.next();
+//   } catch {
+//     return NextResponse.redirect(new URL("/login", req.url));
+//   }
+// }
