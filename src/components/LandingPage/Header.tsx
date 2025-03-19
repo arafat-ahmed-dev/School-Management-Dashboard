@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { GraduationCap } from "lucide-react";
 import { Button } from "../ui/button";
-import { Sun, Moon, ChevronUp, ChevronDown } from "lucide-react";
-import { useAppSelector } from "@/lib/store/hooks";
-import _ from "lodash";
+import { Sun, Moon, ChevronUp, ChevronDown, GraduationCap } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 interface HeaderProps {
   isMenuOpen: boolean;
@@ -20,46 +19,61 @@ const Header: React.FC<HeaderProps> = ({
   isDarkMode,
   loading, // Use loading prop
 }) => {
+  const [role, setRole] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/session");
+        setRole(response.data?.user?.role || null);
+      } catch (error) {
+        console.error("Error fetching role:", error);
+        setRole(null);
+      }
+    };
+    fetchData();
+  }, []);
+
   const handleMenuClick = () => {
     setIsMenuOpen(false);
   };
-  const response = useAppSelector((state) => state.auth.userData?.userRole);
-  const role = _.toLower(response);
 
   return (
     <header
       className={`sticky top-0 z-50 w-full border-b ${
         isDarkMode ? "bg-gray-800 text-white" : "bg-background/95"
-      } backdrop-blur supports-[backdrop-filter]:bg-background/60 px-3 md:px-5 py-2 md:py-4`}
+      } px-3 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:px-5 md:py-4`}
     >
       <div className="flex h-14 items-center justify-between">
         {loading ? ( // Conditional rendering for skeleton
-          <div className="flex items-center justify-between w-full space-x-6">
+          <div className="flex w-full items-center justify-between space-x-6">
             <div
               className={`skeleton-header ${
                 isDarkMode ? "bg-gray-700" : "bg-gray-300"
               }`}
             >
-              <div className="h-6 w-24 bg-gray-400 rounded"></div>{" "}
+              <div className="h-6 w-24 rounded bg-gray-400"></div>{" "}
               {/* Skeleton for logo */}
             </div>
             <div className="flex items-center space-x-4">
-              <div className="h-6 w-20 bg-gray-400 rounded"></div>{" "}
+              <div className="h-6 w-20 rounded bg-gray-400"></div>{" "}
               {/* Skeleton for menu */}
-              <div className="h-6 w-10 bg-gray-400 rounded"></div>{" "}
+              <div className="h-6 w-10 rounded bg-gray-400"></div>{" "}
               {/* Skeleton for dark mode button */}
-              <div className="h-6 w-10 bg-gray-400 rounded"></div>{" "}
+              <div className="h-6 w-10 rounded bg-gray-400"></div>{" "}
               {/* Skeleton for mobile menu button */}
             </div>
           </div>
         ) : (
           <>
-            <Link className="flex items-center justify-center mr-6" href="#">
-              <GraduationCap className="h-6 w-6 text-primary" />
+            <Link className="mr-6 flex items-center justify-center" href="#">
+              <GraduationCap className="size-6 text-primary" />
               <span className="ml-2 text-xl font-bold">Acme School</span>
             </Link>
             <div className="flex items-center space-x-2">
-              <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+              <nav className="hidden items-center space-x-6 text-sm font-medium md:flex">
                 <Link
                   className="transition-colors hover:text-primary"
                   href="#programs"
@@ -97,8 +111,8 @@ const Header: React.FC<HeaderProps> = ({
                 </Link>
               ) : (
                 <Link href="/login">
-                <Button className="hidden md:block">Login</Button>
-              </Link>
+                  <Button className="hidden md:block">Login</Button>
+                </Link>
               )}
               <Button
                 variant="ghost"
@@ -107,9 +121,9 @@ const Header: React.FC<HeaderProps> = ({
                 onClick={toggleDarkMode}
               >
                 {isDarkMode ? (
-                  <Sun className="h-6 w-6" />
+                  <Sun className="size-6" />
                 ) : (
-                  <Moon className="h-6 w-6" />
+                  <Moon className="size-6" />
                 )}
               </Button>
               <Button
@@ -118,9 +132,9 @@ const Header: React.FC<HeaderProps> = ({
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? (
-                  <ChevronUp className="h-6 w-6" />
+                  <ChevronUp className="size-6" />
                 ) : (
-                  <ChevronDown className="h-6 w-6" />
+                  <ChevronDown className="size-6" />
                 )}
               </Button>
             </div>
