@@ -95,6 +95,7 @@ model Class {
   supervisorId  String?        @db.ObjectId
   supervisor    Teacher?       @relation(fields: [supervisorId], references: [id])
   students      Student[]
+  classId       String         @unique
   lessons       Lesson[]
   capacity      Int
   events        Event[]

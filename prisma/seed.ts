@@ -33,34 +33,36 @@ async function main() {
     );
 
     // Create Classes
-    const classNames = [
-      "class7",
-      "class8",
-      "class9-sci",
-      "class9-art",
-      "class9-com",
-      "class10-sci",
-      "class10-art",
-      "class10-com",
-      "class11-sci",
-      "class11-art",
-      "class11-com",
-      "class12-sci",
-      "class12-art",
-      "class12-com",
-    ];
+   const classNames = [
+  { key: "class7", label: "Class 7" },
+  { key: "class8", label: "Class 8" },
+  { key: "class9-sci", label: "Class 9 Science" },
+  { key: "class9-art", label: "Class 9 Arts" },
+  { key: "class9-com", label: "Class 9 Commerce" },
+  { key: "class10-sci", label: "Class 10 Science" },
+  { key: "class10-art", label: "Class 10 Arts" },
+  { key: "class10-com", label: "Class 10 Commerce" },
+  { key: "class11-sci", label: "Class 11 Science" },
+  { key: "class11-art", label: "Class 11 Arts" },
+  { key: "class11-com", label: "Class 11 Commerce" },
+  { key: "class12-sci", label: "Class 12 Science" },
+  { key: "class12-art", label: "Class 12 Arts" },
+  { key: "class12-com", label: "Class 12 Commerce" },
+];
 
-    const classes = await Promise.all(
-      classNames.map((name, i) =>
-        prisma.class.create({
-          data: {
-            name,
-            gradeId: grades[Math.floor(i / 3)].id,
-            capacity: 30,
-          },
-        }),
-      ),
-    );
+
+   const classes = await Promise.all(
+  classNames.map((classObj, i) =>
+    prisma.class.create({
+      data: {
+        classId: classObj.key, 
+        name: classObj.label, 
+        gradeId: grades[Math.floor(i / 3)].id,
+        capacity: 30,
+      },
+    }),
+  ),
+);
 
     // Create 15 Subjects
     const subjectData = [
