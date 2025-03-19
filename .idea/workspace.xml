@@ -1,7 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="2db3cc4d-b671-4efa-8e5e-d127cd2bbfb0" name="Changes" comment="" />
+    <list default="true" id="2db3cc4d-b671-4efa-8e5e-d127cd2bbfb0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/app/actions/lesson-actions.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/auth/[...nextauth]/option.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/auth/[...nextauth]/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/api/session/route.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/BigCalenderContainer.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/argon2.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/types/next-auth.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prisma/seed.ts" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/seed.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(dashboard)/list/calendar/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(dashboard)/list/calendar/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(dashboard)/teacher/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(dashboard)/teacher/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/api/auth/login/route.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/api/auth/register/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/auth/register/route.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/storeProvider.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/BigCalender.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/BigCalender.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ClassSchedule.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ClassSchedule.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/LandingPage/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LandingPage/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/LogoutModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LogoutModal.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Menu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Menu.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Register-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Register-form.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/login-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/login-form.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ui/dialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ui/dialog.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ui/select.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ui/select.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hooks/useAuthSession.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/data.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/store/features/Auth/authSlice.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/store/features/DarkMode/darkModeSlice.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/store/hooks/index.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/store/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/middleware.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/SetCalendar.tsx" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,25 +52,42 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 3
-}]]></component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/prisma/seed.ts" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/types/next-auth.d.ts" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2tOARbht7YhgM8bdqxWwkDUulZG" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;js.linters.configure.manually.selectedeslint&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/arafa/Documents/Arafat/full-stack-school/next-dashboard-ui/node_modules/prettier&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;C:\\Users\\arafa\\Documents\\Arafat\\full-stack-school\\next-dashboard-ui\\node_modules\\eslint&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\arafa\\Documents\\Arafat\\full-stack-school\\next-dashboard-ui\\node_modules\\prettier&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.javascript.linters.eslint&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\arafa\\Documents\\Arafat\\full-stack-school\\next-dashboard-ui\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactDesignerToolWindowState">
     <option name="myId2Visible">
       <map>
@@ -37,6 +96,11 @@
         <entry key="com.intellij.reactbuddy.storybook" value="false" />
       </map>
     </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\arafa\Documents\Arafat\full-stack-school\next-dashboard-ui\src\app\api\auth\[...nextauth]" />
+    </key>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -54,10 +118,40 @@
       <option name="presentableId" value="Default" />
       <updated>1740212741193</updated>
       <workItem from="1740212742739" duration="4000" />
+      <workItem from="1741798554590" duration="2477000" />
+      <workItem from="1741801088730" duration="37000" />
+      <workItem from="1741818816044" duration="2565000" />
+      <workItem from="1741848227731" duration="9173000" />
+      <workItem from="1741870209389" duration="4361000" />
+      <workItem from="1741931178110" duration="2284000" />
+      <workItem from="1741939300110" duration="1928000" />
+      <workItem from="1741977957641" duration="858000" />
+      <workItem from="1742060157550" duration="1896000" />
+      <workItem from="1742123938515" duration="1007000" />
+      <workItem from="1742146855831" duration="10125000" />
+      <workItem from="1742207152199" duration="1762000" />
+      <workItem from="1742229612920" duration="3591000" />
+      <workItem from="1742277266102" duration="1270000" />
+      <workItem from="1742294523919" duration="795000" />
+      <workItem from="1742302205290" duration="760000" />
+      <workItem from="1742317651853" duration="1195000" />
+      <workItem from="1742327077684" duration="900000" />
+      <workItem from="1742371136017" duration="488000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
