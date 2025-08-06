@@ -61,7 +61,8 @@ export function RegisterForm() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-md rounded-lg bg-white p-4 shadow-input dark:bg-black md:p-8">
+    // eslint-disable-next-line tailwindcss/no-custom-classname
+    <div className="shadow-input mx-auto w-full max-w-md rounded-lg bg-white p-4 md:p-8 dark:bg-black">
       <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
         Register
       </h2>
@@ -130,8 +131,8 @@ export function RegisterForm() {
                   </SelectTrigger>
                   <SelectContent>
                     {classNames.map((className) => (
-                      <SelectItem key={className} value={className}>
-                        {className}
+                      <SelectItem key={className.key} value={className.key}>
+                        {className.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -190,8 +191,8 @@ export function RegisterForm() {
                 </SelectTrigger>
                 <SelectContent>
                   {classNames.map((className) => (
-                    <SelectItem key={className} value={className}>
-                      {className}
+                    <SelectItem key={className.key} value={className.key}>
+                      {className.label}
                     </SelectItem>
                   ))}
                 </SelectContent>

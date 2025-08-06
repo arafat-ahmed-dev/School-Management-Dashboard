@@ -1,4 +1,4 @@
-export let role = "admin";
+export const role = "admin";
 export const teachersData = [
   {
     id: 1,
@@ -1557,248 +1557,1005 @@ export const messagesData = [
 //     dayOfWeek: 5 // Friday
 //   },
 // ];
-export interface CalendarEvent {
-  title: string;
-  class: string;
-  teacher: string;
-  dayOfWeek: number; // 0 for Sunday, 1 for Monday, etc.
-  startTime: string; // Format: "HH:mm"
-  endTime: string; // Format: "HH:mm"
+// export interface CalendarEvent {
+//   title: string;
+//   class: string;
+//   teacher: string;
+//   dayOfWeek: number; // 0 for Sunday, 1 for Monday, etc.
+//   startTime: string; // Format: "HH:mm"
+//   endTime: string; // Format: "HH:mm"
+// }
+
+// export const calendarEvents: CalendarEvent[] = [
+//   {
+//     title: "Math",
+//     class: "1A",
+//     teacher: "Tommy Wise",
+//     dayOfWeek: 1, // Monday
+//     startTime: "09:00",
+//     endTime: "09:50",
+//   },
+//   {
+//     title: "English",
+//     class: "2A",
+//     teacher: "Rhoda Frank",
+//     dayOfWeek: 1, // Monday
+//     startTime: "12:00",
+//     endTime: "12:50",
+//   },
+//   {
+//     title: "Biology",
+//     class: "3A",
+//     teacher: "Della Dunn",
+//     dayOfWeek: 1, // Monday
+//     startTime: "10:00",
+//     endTime: "10:50",
+//   },
+//   {
+//     title: "Physics",
+//     class: "4A",
+//     teacher: "Bruce Rodriguez",
+//     dayOfWeek: 1, // Monday
+//     startTime: "11:00",
+//     endTime: "11:50",
+//   },
+//   {
+//     title: "Chemistry",
+//     class: "5A",
+//     teacher: "Birdie Butler",
+//     dayOfWeek: 1, // Monday
+//     startTime: "13:00",
+//     endTime: "13:50",
+//   },
+//   {
+//     title: "History",
+//     class: "6A",
+//     teacher: "Bettie Oliver",
+//     dayOfWeek: 1, // Monday
+//     startTime: "14:00",
+//     endTime: "14:50",
+//   },
+//   {
+//     title: "English",
+//     class: "2A",
+//     teacher: "Rhoda Frank",
+//     dayOfWeek: 2, // Tuesday
+//     startTime: "09:00",
+//     endTime: "09:50",
+//   },
+//   {
+//     title: "Biology",
+//     class: "3A",
+//     teacher: "Della Dunn",
+//     dayOfWeek: 2, // Tuesday
+//     startTime: "10:00",
+//     endTime: "10:50",
+//   },
+//   {
+//     title: "Physics",
+//     class: "4A",
+//     teacher: "Bruce Rodriguez",
+//     dayOfWeek: 2, // Tuesday
+//     startTime: "11:00",
+//     endTime: "11:50",
+//   },
+//   {
+//     title: "History",
+//     class: "6A",
+//     teacher: "Bettie Oliver",
+//     dayOfWeek: 2, // Tuesday
+//     startTime: "14:00",
+//     endTime: "14:50",
+//   },
+//   {
+//     title: "Math",
+//     class: "1A",
+//     teacher: "Tommy Wise",
+//     dayOfWeek: 3, // Wednesday
+//     startTime: "09:00",
+//     endTime: "09:50",
+//   },
+//   {
+//     title: "Biology",
+//     class: "3A",
+//     teacher: "Della Dunn",
+//     dayOfWeek: 3, // Wednesday
+//     startTime: "10:00",
+//     endTime: "10:50",
+//   },
+//   {
+//     title: "Chemistry",
+//     class: "5A",
+//     teacher: "Birdie Butler",
+//     dayOfWeek: 3, // Wednesday
+//     startTime: "13:00",
+//     endTime: "13:50",
+//   },
+//   {
+//     title: "History",
+//     class: "6A",
+//     teacher: "Bettie Oliver",
+//     dayOfWeek: 3, // Wednesday
+//     startTime: "14:00",
+//     endTime: "14:50",
+//   },
+//   {
+//     title: "English",
+//     class: "2A",
+//     teacher: "Rhoda Frank",
+//     dayOfWeek: 4, // Thursday
+//     startTime: "09:00",
+//     endTime: "09:50",
+//   },
+//   {
+//     title: "Biology",
+//     class: "3A",
+//     teacher: "Della Dunn",
+//     dayOfWeek: 4, // Thursday
+//     startTime: "10:00",
+//     endTime: "10:50",
+//   },
+//   {
+//     title: "Physics",
+//     class: "4A",
+//     teacher: "Bruce Rodriguez",
+//     dayOfWeek: 4, // Thursday
+//     startTime: "11:00",
+//     endTime: "11:50",
+//   },
+//   {
+//     title: "History",
+//     class: "6A",
+//     teacher: "Bettie Oliver",
+//     dayOfWeek: 4, // Thursday
+//     startTime: "14:00",
+//     endTime: "14:50",
+//   },
+//   {
+//     title: "Math",
+//     class: "1A",
+//     teacher: "Tommy Wise",
+//     dayOfWeek: 5, // Friday
+//     startTime: "09:00",
+//     endTime: "09:50",
+//   },
+//   {
+//     title: "Physics",
+//     class: "4A",
+//     teacher: "Bruce Rodriguez",
+//     dayOfWeek: 5, // Friday
+//     startTime: "11:00",
+//     endTime: "11:50",
+//   },
+//   {
+//     title: "Chemistry",
+//     class: "5A",
+//     teacher: "Birdie Butler",
+//     dayOfWeek: 5, // Friday
+//     startTime: "13:00",
+//     endTime: "13:50",
+//   },
+//   {
+//     title: "History",
+//     class: "6A",
+//     teacher: "Bettie Oliver",
+//     dayOfWeek: 5, // Friday
+//     startTime: "14:00",
+//     endTime: "14:50",
+//   },
+// ];
+
+// interface ScheduleBlock {
+//   time: string;
+//   subject: string;
+// }
+
+// interface DaySchedule {
+//   date: string;
+//   blocks: ScheduleBlock[];
+// }
+// export const schedule: DaySchedule[] = [
+//   {
+//     date: "January 27",
+//     blocks: [
+//       { time: "9:00 AM – 9:50 AM", subject: "Math" },
+//       { time: "10:00 AM – 10:50 AM", subject: "Biology" },
+//       { time: "11:00 AM – 11:50 AM", subject: "Physics" },
+//       { time: "12:00 PM – 12:50 PM", subject: "English" },
+//       { time: "1:00 PM – 1:50 PM", subject: "Chemistry" },
+//       { time: "2:00 PM – 2:50 PM", subject: "History" },
+//     ],
+//   },
+//   {
+//     date: "January 28",
+//     blocks: [
+//       { time: "9:00 AM – 9:50 AM", subject: "English" },
+//       { time: "10:00 AM – 10:50 AM", subject: "Biology" },
+//       { time: "11:00 AM – 11:50 AM", subject: "Physics" },
+//       { time: "2:00 PM – 2:50 PM", subject: "History" },
+//     ],
+//   },
+//   {
+//     date: "January 29",
+//     blocks: [
+//       { time: "9:00 AM – 9:50 AM", subject: "Math" },
+//       { time: "10:00 AM – 10:50 AM", subject: "Biology" },
+//       { time: "2:00 PM – 2:50 PM", subject: "History" },
+//     ],
+//   },
+//   {
+//     date: "January 30",
+//     blocks: [
+//       { time: "9:00 AM – 9:50 AM", subject: "English" },
+//       { time: "10:00 AM – 10:50 AM", subject: "Biology" },
+//       { time: "11:00 AM – 11:50 AM", subject: "Physics" },
+//       { time: "2:00 PM – 2:50 PM", subject: "History" },
+//     ],
+//   },
+//   {
+//     date: "January 31",
+//     blocks: [
+//       { time: "9:00 AM – 9:50 AM", subject: "Math" },
+//       { time: "11:00 AM – 11:50 AM", subject: "Physics" },
+//       { time: "1:00 PM – 1:50 PM", subject: "Chemistry" },
+//       { time: "2:00 PM – 2:50 PM", subject: "History" },
+//     ],
+//   },
+// ];
+export type CalendarEvent = {
+  title: string
+  startTime: string
+  endTime: string
+  dayOfWeek: number
+  class: string
+  teacher: string
+}
+
+// List of available classes
+export const classes = [
+  { name: "Class 7" },
+  { name: "Class 8" },
+  { name: "Class 9" },
+  { name: "Class 10" },
+  { name: "Class 11" },
+  { name: "Class 12" },
+]
+
+// Define teachers by subject
+const teachers = {
+  Math: "Dr. Alan Turing",
+  "Advanced Math": "Dr. Katherine Johnson",
+  Mathematics: "Prof. Ramanujan",
+  English: "Ms. Jane Austen",
+  "English Literature": "Dr. William Shakespeare",
+  Biology: "Dr. Rachel Carson",
+  Physics: "Dr. Richard Feynman",
+  "Physics Lab": "Dr. Marie Curie",
+  Chemistry: "Dr. Rosalind Franklin",
+  History: "Prof. Howard Zinn",
+  Geography: "Dr. Jane Goodall",
+  "Computer Science": "Prof. Ada Lovelace",
+  Economics: "Dr. Adam Smith",
+  "Social Studies": "Ms. Eleanor Roosevelt",
 }
 
 export const calendarEvents: CalendarEvent[] = [
+  // Class 7 - Monday
   {
     title: "Math",
-    class: "1A",
-    teacher: "Tommy Wise",
-    dayOfWeek: 1, // Monday
-    startTime: "09:00",
-    endTime: "09:50",
+    startTime: "8:00 AM",
+    endTime: "8:45 AM",
+    dayOfWeek: 1,
+    class: "Class 7",
+    teacher: teachers.Math,
   },
   {
     title: "English",
-    class: "2A",
-    teacher: "Rhoda Frank",
-    dayOfWeek: 1, // Monday
-    startTime: "12:00",
-    endTime: "12:50",
+    startTime: "9:00 AM",
+    endTime: "9:45 AM",
+    dayOfWeek: 1,
+    class: "Class 7",
+    teacher: teachers.English,
   },
   {
     title: "Biology",
-    class: "3A",
-    teacher: "Della Dunn",
-    dayOfWeek: 1, // Monday
-    startTime: "10:00",
-    endTime: "10:50",
+    startTime: "10:00 AM",
+    endTime: "10:45 AM",
+    dayOfWeek: 1,
+    class: "Class 7",
+    teacher: teachers.Biology,
   },
   {
     title: "Physics",
-    class: "4A",
-    teacher: "Bruce Rodriguez",
-    dayOfWeek: 1, // Monday
-    startTime: "11:00",
-    endTime: "11:50",
+    startTime: "11:00 AM",
+    endTime: "11:45 AM",
+    dayOfWeek: 1,
+    class: "Class 7",
+    teacher: teachers.Physics,
   },
   {
     title: "Chemistry",
-    class: "5A",
-    teacher: "Birdie Butler",
-    dayOfWeek: 1, // Monday
-    startTime: "13:00",
-    endTime: "13:50",
+    startTime: "1:00 PM",
+    endTime: "1:45 PM",
+    dayOfWeek: 1,
+    class: "Class 7",
+    teacher: teachers.Chemistry,
   },
   {
     title: "History",
-    class: "6A",
-    teacher: "Bettie Oliver",
-    dayOfWeek: 1, // Monday
-    startTime: "14:00",
-    endTime: "14:50",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 1,
+    class: "Class 7",
+    teacher: teachers.History,
   },
-  {
-    title: "English",
-    class: "2A",
-    teacher: "Rhoda Frank",
-    dayOfWeek: 2, // Tuesday
-    startTime: "09:00",
-    endTime: "09:50",
-  },
-  {
-    title: "Biology",
-    class: "3A",
-    teacher: "Della Dunn",
-    dayOfWeek: 2, // Tuesday
-    startTime: "10:00",
-    endTime: "10:50",
-  },
-  {
-    title: "Physics",
-    class: "4A",
-    teacher: "Bruce Rodriguez",
-    dayOfWeek: 2, // Tuesday
-    startTime: "11:00",
-    endTime: "11:50",
-  },
-  {
-    title: "History",
-    class: "6A",
-    teacher: "Bettie Oliver",
-    dayOfWeek: 2, // Tuesday
-    startTime: "14:00",
-    endTime: "14:50",
-  },
-  {
-    title: "Math",
-    class: "1A",
-    teacher: "Tommy Wise",
-    dayOfWeek: 3, // Wednesday
-    startTime: "09:00",
-    endTime: "09:50",
-  },
-  {
-    title: "Biology",
-    class: "3A",
-    teacher: "Della Dunn",
-    dayOfWeek: 3, // Wednesday
-    startTime: "10:00",
-    endTime: "10:50",
-  },
-  {
-    title: "Chemistry",
-    class: "5A",
-    teacher: "Birdie Butler",
-    dayOfWeek: 3, // Wednesday
-    startTime: "13:00",
-    endTime: "13:50",
-  },
-  {
-    title: "History",
-    class: "6A",
-    teacher: "Bettie Oliver",
-    dayOfWeek: 3, // Wednesday
-    startTime: "14:00",
-    endTime: "14:50",
-  },
-  {
-    title: "English",
-    class: "2A",
-    teacher: "Rhoda Frank",
-    dayOfWeek: 4, // Thursday
-    startTime: "09:00",
-    endTime: "09:50",
-  },
-  {
-    title: "Biology",
-    class: "3A",
-    teacher: "Della Dunn",
-    dayOfWeek: 4, // Thursday
-    startTime: "10:00",
-    endTime: "10:50",
-  },
-  {
-    title: "Physics",
-    class: "4A",
-    teacher: "Bruce Rodriguez",
-    dayOfWeek: 4, // Thursday
-    startTime: "11:00",
-    endTime: "11:50",
-  },
-  {
-    title: "History",
-    class: "6A",
-    teacher: "Bettie Oliver",
-    dayOfWeek: 4, // Thursday
-    startTime: "14:00",
-    endTime: "14:50",
-  },
-  {
-    title: "Math",
-    class: "1A",
-    teacher: "Tommy Wise",
-    dayOfWeek: 5, // Friday
-    startTime: "09:00",
-    endTime: "09:50",
-  },
-  {
-    title: "Physics",
-    class: "4A",
-    teacher: "Bruce Rodriguez",
-    dayOfWeek: 5, // Friday
-    startTime: "11:00",
-    endTime: "11:50",
-  },
-  {
-    title: "Chemistry",
-    class: "5A",
-    teacher: "Birdie Butler",
-    dayOfWeek: 5, // Friday
-    startTime: "13:00",
-    endTime: "13:50",
-  },
-  {
-    title: "History",
-    class: "6A",
-    teacher: "Bettie Oliver",
-    dayOfWeek: 5, // Friday
-    startTime: "14:00",
-    endTime: "14:50",
-  },
-];
 
-interface ScheduleBlock {
-  time: string;
-  subject: string;
+  // Class 7 - Tuesday
+  {
+    title: "English",
+    startTime: "9:00 AM",
+    endTime: "9:45 AM",
+    dayOfWeek: 2,
+    class: "Class 7",
+    teacher: teachers.English,
+  },
+  {
+    title: "Biology",
+    startTime: "10:00 AM",
+    endTime: "10:45 AM",
+    dayOfWeek: 2,
+    class: "Class 7",
+    teacher: teachers.Biology,
+  },
+  {
+    title: "Physics",
+    startTime: "11:00 AM",
+    endTime: "11:45 AM",
+    dayOfWeek: 2,
+    class: "Class 7",
+    teacher: teachers.Physics,
+  },
+  {
+    title: "History",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 2,
+    class: "Class 7",
+    teacher: teachers.History,
+  },
+
+  // Class 7 - Wednesday
+  {
+    title: "Math",
+    startTime: "8:00 AM",
+    endTime: "8:45 AM",
+    dayOfWeek: 3,
+    class: "Class 7",
+    teacher: teachers.Math,
+  },
+  {
+    title: "Biology",
+    startTime: "10:00 AM",
+    endTime: "10:45 AM",
+    dayOfWeek: 3,
+    class: "Class 7",
+    teacher: teachers.Biology,
+  },
+  {
+    title: "Chemistry",
+    startTime: "1:00 PM",
+    endTime: "1:45 PM",
+    dayOfWeek: 3,
+    class: "Class 7",
+    teacher: teachers.Chemistry,
+  },
+  {
+    title: "History",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 3,
+    class: "Class 7",
+    teacher: teachers.History,
+  },
+
+  // Class 7 - Thursday
+  {
+    title: "English",
+    startTime: "9:00 AM",
+    endTime: "9:45 AM",
+    dayOfWeek: 4,
+    class: "Class 7",
+    teacher: teachers.English,
+  },
+  {
+    title: "Biology",
+    startTime: "10:00 AM",
+    endTime: "10:45 AM",
+    dayOfWeek: 4,
+    class: "Class 7",
+    teacher: teachers.Biology,
+  },
+  {
+    title: "Physics",
+    startTime: "11:00 AM",
+    endTime: "11:45 AM",
+    dayOfWeek: 4,
+    class: "Class 7",
+    teacher: teachers.Physics,
+  },
+  {
+    title: "History",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 4,
+    class: "Class 7",
+    teacher: teachers.History,
+  },
+
+  // Class 7 - Friday
+  {
+    title: "Math",
+    startTime: "8:00 AM",
+    endTime: "8:45 AM",
+    dayOfWeek: 5,
+    class: "Class 7",
+    teacher: teachers.Math,
+  },
+  {
+    title: "English",
+    startTime: "9:00 AM",
+    endTime: "9:45 AM",
+    dayOfWeek: 5,
+    class: "Class 7",
+    teacher: teachers.English,
+  },
+  {
+    title: "Physics",
+    startTime: "11:00 AM",
+    endTime: "11:45 AM",
+    dayOfWeek: 5,
+    class: "Class 7",
+    teacher: teachers.Physics,
+  },
+  {
+    title: "Chemistry",
+    startTime: "1:00 PM",
+    endTime: "1:45 PM",
+    dayOfWeek: 5,
+    class: "Class 7",
+    teacher: teachers.Chemistry,
+  },
+  {
+    title: "History",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 5,
+    class: "Class 7",
+    teacher: teachers.History,
+  },
+
+  // Class 8 - Monday
+  {
+    title: "Physics",
+    startTime: "8:00 AM",
+    endTime: "8:45 AM",
+    dayOfWeek: 1,
+    class: "Class 8",
+    teacher: teachers.Physics,
+  },
+  {
+    title: "Math",
+    startTime: "9:00 AM",
+    endTime: "9:45 AM",
+    dayOfWeek: 1,
+    class: "Class 8",
+    teacher: teachers.Math,
+  },
+  {
+    title: "Chemistry",
+    startTime: "10:00 AM",
+    endTime: "10:45 AM",
+    dayOfWeek: 1,
+    class: "Class 8",
+    teacher: teachers.Chemistry,
+  },
+  {
+    title: "English",
+    startTime: "11:00 AM",
+    endTime: "11:45 AM",
+    dayOfWeek: 1,
+    class: "Class 8",
+    teacher: teachers.English,
+  },
+  {
+    title: "Biology",
+    startTime: "1:00 PM",
+    endTime: "1:45 PM",
+    dayOfWeek: 1,
+    class: "Class 8",
+    teacher: teachers.Biology,
+  },
+  {
+    title: "Geography",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 1,
+    class: "Class 8",
+    teacher: teachers.Geography,
+  },
+
+  // Class 8 - Tuesday
+  {
+    title: "Math",
+    startTime: "8:00 AM",
+    endTime: "8:45 AM",
+    dayOfWeek: 2,
+    class: "Class 8",
+    teacher: teachers.Math,
+  },
+  {
+    title: "Chemistry",
+    startTime: "10:00 AM",
+    endTime: "10:45 AM",
+    dayOfWeek: 2,
+    class: "Class 8",
+    teacher: teachers.Chemistry,
+  },
+  {
+    title: "English",
+    startTime: "11:00 AM",
+    endTime: "11:45 AM",
+    dayOfWeek: 2,
+    class: "Class 8",
+    teacher: teachers.English,
+  },
+  {
+    title: "Geography",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 2,
+    class: "Class 8",
+    teacher: teachers.Geography,
+  },
+
+  // Class 8 - Wednesday
+  {
+    title: "Physics",
+    startTime: "8:00 AM",
+    endTime: "8:45 AM",
+    dayOfWeek: 3,
+    class: "Class 8",
+    teacher: teachers.Physics,
+  },
+  {
+    title: "Chemistry",
+    startTime: "10:00 AM",
+    endTime: "10:45 AM",
+    dayOfWeek: 3,
+    class: "Class 8",
+    teacher: teachers.Chemistry,
+  },
+  {
+    title: "Biology",
+    startTime: "1:00 PM",
+    endTime: "1:45 PM",
+    dayOfWeek: 3,
+    class: "Class 8",
+    teacher: teachers.Biology,
+  },
+  {
+    title: "Geography",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 3,
+    class: "Class 8",
+    teacher: teachers.Geography,
+  },
+
+  // Class 8 - Thursday
+  {
+    title: "Math",
+    startTime: "8:00 AM",
+    endTime: "8:45 AM",
+    dayOfWeek: 4,
+    class: "Class 8",
+    teacher: teachers.Math,
+  },
+  {
+    title: "Chemistry",
+    startTime: "10:00 AM",
+    endTime: "10:45 AM",
+    dayOfWeek: 4,
+    class: "Class 8",
+    teacher: teachers.Chemistry,
+  },
+  {
+    title: "English",
+    startTime: "11:00 AM",
+    endTime: "11:45 AM",
+    dayOfWeek: 4,
+    class: "Class 8",
+    teacher: teachers.English,
+  },
+  {
+    title: "Geography",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 4,
+    class: "Class 8",
+    teacher: teachers.Geography,
+  },
+
+  // Class 8 - Friday
+  {
+    title: "Physics",
+    startTime: "8:00 AM",
+    endTime: "8:45 AM",
+    dayOfWeek: 5,
+    class: "Class 8",
+    teacher: teachers.Physics,
+  },
+  {
+    title: "Math",
+    startTime: "9:00 AM",
+    endTime: "9:45 AM",
+    dayOfWeek: 5,
+    class: "Class 8",
+    teacher: teachers.Math,
+  },
+  {
+    title: "English",
+    startTime: "11:00 AM",
+    endTime: "11:45 AM",
+    dayOfWeek: 5,
+    class: "Class 8",
+    teacher: teachers.English,
+  },
+  {
+    title: "Biology",
+    startTime: "1:00 PM",
+    endTime: "1:45 PM",
+    dayOfWeek: 5,
+    class: "Class 8",
+    teacher: teachers.Biology,
+  },
+  {
+    title: "Geography",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 5,
+    class: "Class 8",
+    teacher: teachers.Geography,
+  },
+
+  // Class 9 - Monday
+  {
+    title: "Computer Science",
+    startTime: "8:00 AM",
+    endTime: "8:45 AM",
+    dayOfWeek: 1,
+    class: "Class 9",
+    teacher: teachers["Computer Science"],
+  },
+  {
+    title: "Math",
+    startTime: "9:00 AM",
+    endTime: "9:45 AM",
+    dayOfWeek: 1,
+    class: "Class 9",
+    teacher: teachers.Math,
+  },
+  {
+    title: "Physics",
+    startTime: "10:00 AM",
+    endTime: "10:45 AM",
+    dayOfWeek: 1,
+    class: "Class 9",
+    teacher: teachers.Physics,
+  },
+  {
+    title: "English Literature",
+    startTime: "11:00 AM",
+    endTime: "11:45 AM",
+    dayOfWeek: 1,
+    class: "Class 9",
+    teacher: teachers["English Literature"],
+  },
+  {
+    title: "Chemistry",
+    startTime: "1:00 PM",
+    endTime: "1:45 PM",
+    dayOfWeek: 1,
+    class: "Class 9",
+    teacher: teachers.Chemistry,
+  },
+  {
+    title: "Economics",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 1,
+    class: "Class 9",
+    teacher: teachers.Economics,
+  },
+
+  // Class 9 - Tuesday
+  {
+    title: "Math",
+    startTime: "9:00 AM",
+    endTime: "9:45 AM",
+    dayOfWeek: 2,
+    class: "Class 9",
+    teacher: teachers.Math,
+  },
+  {
+    title: "Physics",
+    startTime: "10:00 AM",
+    endTime: "10:45 AM",
+    dayOfWeek: 2,
+    class: "Class 9",
+    teacher: teachers.Physics,
+  },
+  {
+    title: "English Literature",
+    startTime: "11:00 AM",
+    endTime: "11:45 AM",
+    dayOfWeek: 2,
+    class: "Class 9",
+    teacher: teachers["English Literature"],
+  },
+  {
+    title: "Economics",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 2,
+    class: "Class 9",
+    teacher: teachers.Economics,
+  },
+
+  // Class 9 - Wednesday
+  {
+    title: "Computer Science",
+    startTime: "8:00 AM",
+    endTime: "8:45 AM",
+    dayOfWeek: 3,
+    class: "Class 9",
+    teacher: teachers["Computer Science"],
+  },
+  {
+    title: "Physics",
+    startTime: "10:00 AM",
+    endTime: "10:45 AM",
+    dayOfWeek: 3,
+    class: "Class 9",
+    teacher: teachers.Physics,
+  },
+  {
+    title: "Chemistry",
+    startTime: "1:00 PM",
+    endTime: "1:45 PM",
+    dayOfWeek: 3,
+    class: "Class 9",
+    teacher: teachers.Chemistry,
+  },
+  {
+    title: "Economics",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 3,
+    class: "Class 9",
+    teacher: teachers.Economics,
+  },
+
+  // Class 9 - Thursday
+  {
+    title: "Math",
+    startTime: "9:00 AM",
+    endTime: "9:45 AM",
+    dayOfWeek: 4,
+    class: "Class 9",
+    teacher: teachers.Math,
+  },
+  {
+    title: "Physics",
+    startTime: "10:00 AM",
+    endTime: "10:45 AM",
+    dayOfWeek: 4,
+    class: "Class 9",
+    teacher: teachers.Physics,
+  },
+  {
+    title: "English Literature",
+    startTime: "11:00 AM",
+    endTime: "11:45 AM",
+    dayOfWeek: 4,
+    class: "Class 9",
+    teacher: teachers["English Literature"],
+  },
+  {
+    title: "Economics",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 4,
+    class: "Class 9",
+    teacher: teachers.Economics,
+  },
+
+  // Class 9 - Friday
+  {
+    title: "Computer Science",
+    startTime: "8:00 AM",
+    endTime: "8:45 AM",
+    dayOfWeek: 5,
+    class: "Class 9",
+    teacher: teachers["Computer Science"],
+  },
+  {
+    title: "Math",
+    startTime: "9:00 AM",
+    endTime: "9:45 AM",
+    dayOfWeek: 5,
+    class: "Class 9",
+    teacher: teachers.Math,
+  },
+  {
+    title: "English Literature",
+    startTime: "11:00 AM",
+    endTime: "11:45 AM",
+    dayOfWeek: 5,
+    class: "Class 9",
+    teacher: teachers["English Literature"],
+  },
+  {
+    title: "Chemistry",
+    startTime: "1:00 PM",
+    endTime: "1:45 PM",
+    dayOfWeek: 5,
+    class: "Class 9",
+    teacher: teachers.Chemistry,
+  },
+  {
+    title: "Economics",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 5,
+    class: "Class 9",
+    teacher: teachers.Economics,
+  },
+
+  // Class 10 - Monday
+  {
+    title: "Advanced Math",
+    startTime: "8:00 AM",
+    endTime: "8:45 AM",
+    dayOfWeek: 1,
+    class: "Class 10",
+    teacher: teachers["Advanced Math"],
+  },
+  {
+    title: "English",
+    startTime: "9:00 AM",
+    endTime: "9:45 AM",
+    dayOfWeek: 1,
+    class: "Class 10",
+    teacher: teachers.English,
+  },
+  {
+    title: "Physics",
+    startTime: "10:00 AM",
+    endTime: "10:45 AM",
+    dayOfWeek: 1,
+    class: "Class 10",
+    teacher: teachers.Physics,
+  },
+  {
+    title: "Chemistry",
+    startTime: "11:00 AM",
+    endTime: "11:45 AM",
+    dayOfWeek: 1,
+    class: "Class 10",
+    teacher: teachers.Chemistry,
+  },
+  {
+    title: "Computer Science",
+    startTime: "1:00 PM",
+    endTime: "1:45 PM",
+    dayOfWeek: 1,
+    class: "Class 10",
+    teacher: teachers["Computer Science"],
+  },
+  {
+    title: "Social Studies",
+    startTime: "2:00 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 1,
+    class: "Class 10",
+    teacher: teachers["Social Studies"],
+  },
+
+  // Class 11 - Science Stream
+  {
+    title: "Physics",
+    startTime: "8:00 AM",
+    endTime: "9:30 AM",
+    dayOfWeek: 1,
+    class: "Class 11",
+    teacher: teachers.Physics,
+  },
+  {
+    title: "Chemistry",
+    startTime: "9:45 AM",
+    endTime: "11:15 AM",
+    dayOfWeek: 1,
+    class: "Class 11",
+    teacher: teachers.Chemistry,
+  },
+  {
+    title: "Mathematics",
+    startTime: "11:30 AM",
+    endTime: "1:00 PM",
+    dayOfWeek: 1,
+    class: "Class 11",
+    teacher: teachers.Mathematics,
+  },
+  {
+    title: "English",
+    startTime: "1:30 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 1,
+    class: "Class 11",
+    teacher: teachers.English,
+  },
+
+  // Class 12 - Science Stream
+  {
+    title: "Physics Lab",
+    startTime: "8:00 AM",
+    endTime: "9:30 AM",
+    dayOfWeek: 1,
+    class: "Class 12",
+    teacher: teachers["Physics Lab"],
+  },
+  {
+    title: "Chemistry",
+    startTime: "9:45 AM",
+    endTime: "11:15 AM",
+    dayOfWeek: 1,
+    class: "Class 12",
+    teacher: teachers.Chemistry,
+  },
+  {
+    title: "Mathematics",
+    startTime: "11:30 AM",
+    endTime: "1:00 PM",
+    dayOfWeek: 1,
+    class: "Class 12",
+    teacher: teachers.Mathematics,
+  },
+  {
+    title: "Computer Science",
+    startTime: "1:30 PM",
+    endTime: "2:45 PM",
+    dayOfWeek: 1,
+    class: "Class 12",
+    teacher: teachers["Computer Science"],
+  },
+]
+
+// Additional subject colors
+export const subjectColors: Record<string, string> = {
+  "Math": "bg-blue-100 text-blue-800",
+  "Advanced Math": "bg-blue-200 text-blue-900",
+  "Mathematics": "bg-blue-100 text-blue-800",
+  "English": "bg-green-100 text-green-800",
+  "English Literature": "bg-green-200 text-green-900",
+  "Biology": "bg-yellow-100 text-yellow-800",
+  "Physics": "bg-purple-100 text-purple-800",
+  "Physics Lab": "bg-purple-200 text-purple-900",
+  "Chemistry": "bg-pink-100 text-pink-800",
+  "History": "bg-orange-100 text-orange-800",
+  "Geography": "bg-amber-100 text-amber-800",
+  "Computer Science": "bg-cyan-100 text-cyan-800",
+  "Economics": "bg-emerald-100 text-emerald-800",
+  "Social Studies": "bg-indigo-100 text-indigo-800",
 }
 
-interface DaySchedule {
-  date: string;
-  blocks: ScheduleBlock[];
-}
-export const schedule: DaySchedule[] = [
-  {
-    date: "January 27",
-    blocks: [
-      { time: "9:00 AM – 9:50 AM", subject: "Math" },
-      { time: "10:00 AM – 10:50 AM", subject: "Biology" },
-      { time: "11:00 AM – 11:50 AM", subject: "Physics" },
-      { time: "12:00 PM – 12:50 PM", subject: "English" },
-      { time: "1:00 PM – 1:50 PM", subject: "Chemistry" },
-      { time: "2:00 PM – 2:50 PM", subject: "History" },
-    ],
-  },
-  {
-    date: "January 28",
-    blocks: [
-      { time: "9:00 AM – 9:50 AM", subject: "English" },
-      { time: "10:00 AM – 10:50 AM", subject: "Biology" },
-      { time: "11:00 AM – 11:50 AM", subject: "Physics" },
-      { time: "2:00 PM – 2:50 PM", subject: "History" },
-    ],
-  },
-  {
-    date: "January 29",
-    blocks: [
-      { time: "9:00 AM – 9:50 AM", subject: "Math" },
-      { time: "10:00 AM – 10:50 AM", subject: "Biology" },
-      { time: "2:00 PM – 2:50 PM", subject: "History" },
-    ],
-  },
-  {
-    date: "January 30",
-    blocks: [
-      { time: "9:00 AM – 9:50 AM", subject: "English" },
-      { time: "10:00 AM – 10:50 AM", subject: "Biology" },
-      { time: "11:00 AM – 11:50 AM", subject: "Physics" },
-      { time: "2:00 PM – 2:50 PM", subject: "History" },
-    ],
-  },
-  {
-    date: "January 31",
-    blocks: [
-      { time: "9:00 AM – 9:50 AM", subject: "Math" },
-      { time: "11:00 AM – 11:50 AM", subject: "Physics" },
-      { time: "1:00 PM – 1:50 PM", subject: "Chemistry" },
-      { time: "2:00 PM – 2:50 PM", subject: "History" },
-    ],
-  },
-];

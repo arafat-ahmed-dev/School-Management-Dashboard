@@ -6,43 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="2db3cc4d-b671-4efa-8e5e-d127cd2bbfb0" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/src/app/actions/lesson-actions.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/api/auth/[...nextauth]/option.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/api/auth/[...nextauth]/route.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/api/session/route.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/BigCalenderContainer.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/lib/argon2.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/types/next-auth.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/seed.ts" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/seed.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(dashboard)/list/calendar/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(dashboard)/list/calendar/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(dashboard)/teacher/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(dashboard)/teacher/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/api/auth/login/route.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/api/auth/register/route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/api/auth/register/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/storeProvider.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/BigCalender.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/BigCalender.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/ClassSchedule.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ClassSchedule.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/LandingPage/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LandingPage/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/LogoutModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/LogoutModal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Menu.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Menu.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Register-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Register-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/login-form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/login-form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ui/dialog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ui/dialog.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ui/select.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ui/select.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/hooks/useAuthSession.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/data.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/store/features/Auth/authSlice.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/store/features/DarkMode/darkModeSlice.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/store/hooks/index.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/store/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/setting.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/setting.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/middleware.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/middleware.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/SetCalendar.tsx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,26 +40,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;js.linters.configure.manually.selectedeslint&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/arafa/Documents/Arafat/full-stack-school/next-dashboard-ui/node_modules/prettier&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;C:\\Users\\arafa\\Documents\\Arafat\\full-stack-school\\next-dashboard-ui\\node_modules\\eslint&quot;,
-    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\arafa\\Documents\\Arafat\\full-stack-school\\next-dashboard-ui\\node_modules\\prettier&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.javascript.linters.eslint&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\arafa\\Documents\\Arafat\\full-stack-school\\next-dashboard-ui\\node_modules\\typescript\\lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "js.linters.configure.manually.selectedeslint": "true",
+    "last_opened_file_path": "C:/Users/arafa/Documents/Arafat/ai-interview-agent",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "C:\\Users\\arafa\\Documents\\Arafat\\full-stack-school\\next-dashboard-ui\\node_modules\\eslint",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\arafa\\Documents\\Arafat\\full-stack-school\\next-dashboard-ui\\node_modules\\prettier",
+    "settings.editor.selected.configurable": "settings.javascript.linters.eslint",
+    "ts.external.directory.path": "C:\\Users\\arafa\\Documents\\Arafat\\full-stack-school\\next-dashboard-ui\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="ReactDesignerToolWindowState">
     <option name="myId2Visible">
       <map>
@@ -99,6 +71,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\arafa\Documents\Arafat\full-stack-school\next-dashboard-ui\src\components" />
       <recent name="C:\Users\arafa\Documents\Arafat\full-stack-school\next-dashboard-ui\src\app\api\auth\[...nextauth]" />
     </key>
   </component>
@@ -137,6 +110,13 @@
       <workItem from="1742317651853" duration="1195000" />
       <workItem from="1742327077684" duration="900000" />
       <workItem from="1742371136017" duration="488000" />
+      <workItem from="1742407085838" duration="3208000" />
+      <workItem from="1742446998813" duration="4626000" />
+      <workItem from="1742509441305" duration="1071000" />
+      <workItem from="1742557714505" duration="948000" />
+      <workItem from="1742590063498" duration="732000" />
+      <workItem from="1742620914989" duration="589000" />
+      <workItem from="1742822949583" duration="83000" />
     </task>
     <servers />
   </component>
