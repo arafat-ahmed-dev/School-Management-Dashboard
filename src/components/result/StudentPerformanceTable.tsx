@@ -91,16 +91,16 @@ export default function StudentPerformanceTable({
   ]);
 
   return (
-    <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300">
+    <Card className="bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl dark:bg-gray-800">
       <CardHeader>
-        <CardTitle className="text-lg sm:text-xl font-semibold">
+        <CardTitle className="text-lg font-semibold sm:text-xl">
           Student Performance
         </CardTitle>
         <CardDescription>Individual student results</CardDescription>
       </CardHeader>
-      <CardContent className="py-0 px-2 md:px-6">
-        <div className="flex flex-wrap gap-4 mb-4 justify-center md:justify-start md:flex-row">
-          <div className="flex-1 min-w-[200px]">
+      <CardContent className="px-2 py-0 md:px-6">
+        <div className="mb-4 flex flex-wrap justify-center gap-4 md:flex-row md:justify-start">
+          <div className="min-w-[200px] flex-1 ">
             <Input
               type="text"
               placeholder="Search students..."
@@ -109,27 +109,6 @@ export default function StudentPerformanceTable({
               className="w-full"
             />
           </div>
-          <Select
-            value={gradeFilter}
-            onValueChange={(value) =>
-              setGradeFilter(
-                value as "All" | "A+" | "A" | "B" | "C" | "D" | "F"
-              )
-            }
-          >
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Filter by Grade" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="All">All Grades</SelectItem>
-              <SelectItem value="A+">Grade A+</SelectItem>
-              <SelectItem value="A">Grade A</SelectItem>
-              <SelectItem value="B">Grade B</SelectItem>
-              <SelectItem value="C">Grade C</SelectItem>
-              <SelectItem value="D">Grade D</SelectItem>
-              <SelectItem value="F">Grade F</SelectItem>
-            </SelectContent>
-          </Select>
 
           <Select value={classFilter} onValueChange={setClassFilter}>
             <SelectTrigger className="w-[150px]">
@@ -159,16 +138,37 @@ export default function StudentPerformanceTable({
               <SelectItem value="Arts">Arts</SelectItem>
             </SelectContent>
           </Select>
-          <div className="flex-1 min-w-[200px]">
+          <Select
+            value={gradeFilter}
+            onValueChange={(value) =>
+              setGradeFilter(
+                value as "All" | "A+" | "A" | "B" | "C" | "D" | "F"
+              )
+            }
+          >
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Filter by Grade" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="All">All Grades</SelectItem>
+              <SelectItem value="A+">Grade A+</SelectItem>
+              <SelectItem value="A">Grade A</SelectItem>
+              <SelectItem value="B">Grade B</SelectItem>
+              <SelectItem value="C">Grade C</SelectItem>
+              <SelectItem value="D">Grade D</SelectItem>
+              <SelectItem value="F">Grade F</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="min-w-[200px] flex-1">
             <Slider
               min={0}
               max={100}
               step={1}
               value={scoreRange}
               onValueChange={(value: [number, number]) => setScoreRange(value)} // Ensure the type matches [number, number]
-              className="w-full mb-2 md:mb-0"
+              className="mb-2 w-full md:mb-0"
             />
-            <div className="text-sm text-gray-500 mt-1">
+            <div className="mt-1 text-sm text-gray-500">
               Score Range: {scoreRange[0]} - {scoreRange[1]}
             </div>
           </div>
@@ -177,53 +177,53 @@ export default function StudentPerformanceTable({
           <table className="w-full">
             <thead>
               <tr className="border-b text-xs sm:text-sm md:text-base">
-                <th className="md:px-4 py-2 text-left">Name</th>
-                <th className="md:px-4 py-2 text-left  hidden md:table-cell p-2">
+                <th className="py-2 text-left md:px-4">Name</th>
+                <th className="hidden p-2 text-left  md:table-cell md:px-4">
                   Grade
                 </th>
-                <th className="md:px-4 py-2 text-left">Class</th>
-                <th className="md:px-4 py-2 text-left hidden md:table-cell p-2">
+                <th className="py-2 text-left md:px-4">Class</th>
+                <th className="hidden p-2 text-left md:table-cell md:px-4">
                   Group
                 </th>
-                <th className="md:px-4 py-2 text-left">
+                <th className="py-2 text-center md:px-4 md:text-left">
                   <button
                     onClick={() =>
                       setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"))
                     }
-                    className="flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-700 px-2 py-1 rounded"
+                    className="size-full rounded px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     Average Score
                     {sortOrder === "desc" ? "▼" : "▲"}
                   </button>
                 </th>
-                <th className="md:px-4 py-2 text-left">Actions</th>
+                <th className="py-2 text-center md:px-4 md:text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredStudents.map((student) => (
                 <tr key={student.id} className="border-b text-xs md:text-base">
-                  <td className="md:px-4 py-2">{student.name}</td>
-                  <td className="md:px-4 py-2  hidden md:table-cell p-2">
+                  <td className="py-2 md:px-4">{student.name}</td>
+                  <td className="hidden p-2  md:table-cell md:px-4">
                     {student.grade}
                   </td>
-                  <td className="md:px-4 py-2 text-center md:text-left">
+                  <td className="py-2 text-center md:px-4 md:text-left">
                     {student.class}
                   </td>
-                  <td className="md:px-4 py-2  hidden md:table-cell p-2">
+                  <td className="hidden p-2  md:table-cell md:px-4">
                     {student.group || "N/A"}
                   </td>
-                  <td className="md:px-4 py-2 text-center md:text-left">
+                  <td className="py-2 text-center md:px-4">
                     {student.averageScore}
                   </td>
-                  <td className="md:px-4 py-2">
+                  <td className="py-2 hover:shadow-sm md:px-4">
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button
                           variant="outline"
                           size="sm"
-                          className="text-xs sm:text-sm px-1"
+                          className="px-1 text-xs sm:text-sm"
                         >
-                          View Details
+                          PDF
                         </Button>
                       </DialogTrigger>
                       <DialogContent>
@@ -236,14 +236,14 @@ export default function StudentPerformanceTable({
                           </DialogDescription>
                         </DialogHeader>
                         <div className="mt-4">
-                          <h4 className="text-base sm:text-lg font-semibold mb-2">
+                          <h4 className="mb-2 text-base font-semibold sm:text-lg">
                             Subject Scores:
                           </h4>
                           {Object.entries(student.subjects).map(
                             ([subject, score]) => (
                               <div
                                 key={subject}
-                                className="flex justify-between items-center mb-2"
+                                className="mb-2 flex items-center justify-between"
                               >
                                 <span>{subject}:</span>
                                 <Badge
@@ -251,8 +251,8 @@ export default function StudentPerformanceTable({
                                     score >= 80
                                       ? "default"
                                       : score >= 70
-                                      ? "secondary"
-                                      : "destructive"
+                                        ? "secondary"
+                                        : "destructive"
                                   }
                                 >
                                   {score}

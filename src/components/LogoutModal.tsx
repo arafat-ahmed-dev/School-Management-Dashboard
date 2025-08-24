@@ -24,7 +24,7 @@ export function LogoutModal({ isOpen, onClose }: LogoutModalProps) {
     setLoading(true); // Set loading to true when logout starts
     try {
       await signOut();
-      router.push("/login"); // Redirect to login page
+      router.push("/"); // Redirect to login page
     } catch (error) {
       console.error("Logout failed:", error);
     } finally {

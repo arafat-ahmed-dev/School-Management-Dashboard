@@ -2,7 +2,7 @@ import Menu from "@/components/Menu";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
+import React, { Suspense } from "react";
 import Loading from "@/components/Loading";
 
 export default function DashboardLayout({
@@ -11,12 +11,12 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-screen flex">
+    <div className="flex h-screen">
       {/* LEFT: Fixed Sidebar */}
-      <div className="w-[14%] md:w-[8%] lg:w-[16%] lg:p-4 p-2 fixed top-0 left-0 h-full bg-white">
+      <div className="fixed left-0 top-0 h-full w-[14%] bg-white p-2 md:w-[8%] lg:w-[16%] lg:p-4">
         <Link
           href={"/"}
-          className="flex flex-1 items-center justify-center lg:justify-start gap-2"
+          className="flex flex-1 items-center justify-center gap-2 lg:justify-start"
         >
           <Image src={"/logo.png"} alt={"Logo"} width={30} height={30} />
           <span className="hidden lg:block">Achme</span>
@@ -24,7 +24,7 @@ export default function DashboardLayout({
         <Menu />
       </div>
       {/* RIGHT: Content area with scroll */}
-      <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] ml-[14%] md:ml-[8%] lg:ml-[16%] overflow-y-auto flex flex-col">
+      <div className="ml-[14%] flex w-[86%] flex-col overflow-y-auto bg-[#F7F8FA] md:ml-[8%] md:w-[92%] lg:ml-[16%] lg:w-[84%] xl:w-[86%]">
         <Navbar />
         <Suspense fallback={<Loading />}>{children}</Suspense>
       </div>

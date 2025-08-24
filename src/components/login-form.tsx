@@ -44,6 +44,7 @@ export function LoginForm({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true when starting login
     const formData = new FormData(e.currentTarget);
     const data = {
       userType: formData.get("userType") as string, // Include userType in the data object
@@ -56,21 +57,23 @@ export function LoginForm({
       username: data.username,
       password: data.password,
       userType: data.userType,
-      callbackUrl: "/",
     });
     console.log(result);
+    setLoading(false); // Set loading to false when login completes
     if (result?.error) {
       setError(result?.error);
       console.log(result?.error);
     } else {
-      router.push(result?.url || "/");
+      // Redirect to user's dashboard based on their role
+      const userRole = data.userType.toLowerCase();
+      router.push(`/${userRole}`);
     }
   };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <video ref={videoRef} autoPlay loop muted width={100} height={100}>
             <source src="/loading.webm" type="video/webm" />
             Your browser does not support the video tag.

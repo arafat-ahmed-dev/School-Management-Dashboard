@@ -1,7 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "../../../../../prisma";
 import { verifyPassword } from "@/lib/argon2";
-// import { Admin, Parent, Student, Teacher } from "@prisma/client";
 import { NextAuthOptions } from "next-auth"; // ✅ Updated from bcrypt to argon2
 
 type UserType = "Admin" | "Student" | "Teacher" | "Parent";
@@ -86,7 +85,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/login",
+    signIn: "/",
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

@@ -55,14 +55,14 @@ export function RegisterForm() {
       console.error("Registration error", error);
       setError(
         error.response?.data?.message ||
-          "An error occurred during registration.",
+        "An error occurred during registration.",
       ); // Set error message
     }
   };
 
   return (
     // eslint-disable-next-line tailwindcss/no-custom-classname
-    <div className="shadow-input mx-auto w-full max-w-md rounded-lg bg-white p-4 md:p-8 dark:bg-black">
+    <div className="mx-auto w-full max-w-md rounded-lg bg-white p-4 shadow-input dark:bg-black md:p-8">
       <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">
         Register
       </h2>
@@ -221,7 +221,7 @@ export function RegisterForm() {
       </form>
       <p className="text-center text-sm text-neutral-600 dark:text-neutral-300">
         Already have an account?{" "}
-        <Link href="/login" className="underline underline-offset-4">
+        <Link href="/" className="underline underline-offset-4">
           Login here
         </Link>
       </p>

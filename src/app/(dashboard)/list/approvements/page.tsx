@@ -157,20 +157,21 @@ const ApprovementListPage = async ({
   });
 
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="m-4 mt-0 flex-1 rounded-md bg-white p-4">
       <Toaster /> {/* Add Toaster component */}
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">All Approvals</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+        <h1 className="hidden text-lg font-semibold md:block">All Approvals</h1>
+        <div className="flex w-full flex-col items-center gap-4 md:w-auto md:flex-row">
           <TableSearch />
-          <div className="flex items-center gap-4 justify-between md:self-end w-full">
-            <h1 className="md:hidden block text-sm font-semibold">
+          <div className="flex w-full items-center justify-between gap-4 md:self-end">
+            <h1 className="block text-sm font-semibold md:hidden">
               All Approvals
             </h1>
             <div className="flex items-center gap-4 self-end">
               <FilterPopover filterGroups={filterGroups} />
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
+              {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
+              <button className="bg-aamYellow flex size-8 items-center justify-center rounded-full">
                 <Image src="/sort.png" alt="" width={14} height={14} />
               </button>
             </div>

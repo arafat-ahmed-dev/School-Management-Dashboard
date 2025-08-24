@@ -48,21 +48,28 @@ export async function middleware(req: NextRequest) {
   console.log(token?.role);
   console.log("Requested Path:", requestedPath);
 
-  if (requestedPath === "/") {
+  // If user is authenticated and visits root path, redirect to their dashboard
+  if (requestedPath === "/" && token) {
+    return NextResponse.redirect(new URL(`/${token.role}`, req.url));
+  }
+
+  // If user is not authenticated and visits root path, show login page
+  if (requestedPath === "/" && !token) {
     return NextResponse.next();
   }
 
   if (!token) {
-    if (["/login", "/register", "/forgetpassword"].includes(requestedPath)) {
+    if (["/register", "/forgetpassword"].includes(requestedPath)) {
       return NextResponse.next();
     }
-    return NextResponse.redirect(new URL("/login", req.url));
+    // Allow access to root path (which now shows login)
+    if (requestedPath === "/") {
+      return NextResponse.next();
+    }
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (
-    token &&
-    ["/login", "/register", "/forgetpassword"].includes(requestedPath)
-  ) {
+  if (token && ["/register", "/forgetpassword"].includes(requestedPath)) {
     return NextResponse.redirect(new URL(`/${token.role}`, req.url));
   }
 
@@ -91,7 +98,6 @@ export const config = {
     "/parent/:path*",
     "/list/:path*",
     "/profile",
-    "/login",
     "/register",
     "/forgetpassword",
   ],

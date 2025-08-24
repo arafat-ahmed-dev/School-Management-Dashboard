@@ -510,7 +510,7 @@ const ResultPage = () => {
   };
 
   return (
-    <div className="bg-white md:p-4 rounded-md flex-1 m-2 md:m-4 mt-0 text-base md:text-lg">
+    <div className="m-2 mt-0 flex-1 rounded-md bg-white text-base md:m-4 md:p-4 md:text-lg">
       <Header
         dateRange={dateRange}
         setDateRange={setDateRange}
@@ -523,7 +523,7 @@ const ResultPage = () => {
         topSubject="Art"
         topSubjectScore={90}
       />
-      <div className="grid grid-cols-1 gap-6 mb-6 w-full">
+      <div className="mb-6 grid w-full grid-cols-1 gap-6">
         <StudentGrowthChart data={studentGrowthData} />
         <AverageMarksChart data={averageMarksData} />
       </div>
