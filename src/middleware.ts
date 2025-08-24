@@ -59,18 +59,12 @@ export async function middleware(req: NextRequest) {
   }
 
   if (!token) {
-    if (["/register", "/forgetpassword"].includes(requestedPath)) {
-      return NextResponse.next();
-    }
+    
     // Allow access to root path (which now shows login)
     if (requestedPath === "/") {
       return NextResponse.next();
     }
     return NextResponse.redirect(new URL("/", req.url));
-  }
-
-  if (token && ["/register", "/forgetpassword"].includes(requestedPath)) {
-    return NextResponse.redirect(new URL(`/${token.role}`, req.url));
   }
 
   if (token.role === "public" && requestedPath !== "/") {
@@ -98,32 +92,5 @@ export const config = {
     "/parent/:path*",
     "/list/:path*",
     "/profile",
-    "/register",
-    "/forgetpassword",
   ],
 };
-
-// import { NextRequest, NextResponse } from "next/server";
-// // import { verifyAccessToken } from "./token";
-// import { getToken } from "next-auth/jwt";
-
-// export async function middleware(req: NextRequest) {
-//   const token = await getToken({ req });
-//   const currentURL = req.nextUrl;
-//   if (currentURL === "/") {
-//     return NextResponse.next();
-//   }
-//   if (!token) {
-//     return NextResponse.redirect(new URL("/login", req.url));
-//   }
-//
-//   try {
-//     const user = verifyAccessToken(token);
-//     if (!user || user.approved !== "ACCEPTED") {
-//       return NextResponse.redirect(new URL("/unauthorized", req.url));
-//     }
-//     return NextResponse.next();
-//   } catch {
-//     return NextResponse.redirect(new URL("/login", req.url));
-//   }
-// }

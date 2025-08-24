@@ -11,7 +11,6 @@ import {
 } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import Link from "next/link";
 import {
   Select,
   SelectItem,
@@ -51,7 +50,6 @@ export function LoginForm({
       username: formData.get("username") as string,
       password: formData.get("password") as string,
     };
-    console.log("Form submitted--------->", data);
     const result = await signIn("credentials", {
       redirect: false,
       username: data.username,
@@ -119,12 +117,6 @@ export function LoginForm({
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/forget-password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
                 </div>
                 <Input
                   id="password"
@@ -144,12 +136,6 @@ export function LoginForm({
               >
                 Login &larr;
               </button>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link href="/register" className="underline underline-offset-4">
-                Sign up
-              </Link>
             </div>
           </form>
         </CardContent>

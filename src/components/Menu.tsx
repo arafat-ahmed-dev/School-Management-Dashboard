@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import _ from "lodash";
 import { LogoutModal } from "./LogoutModal";
-import { useAppSelector } from "@/lib/store/hooks";
 import axios from "axios";
 
 const Menu = () => {

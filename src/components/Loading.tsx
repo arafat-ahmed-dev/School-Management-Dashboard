@@ -3,9 +3,9 @@ import { motion } from "framer-motion";
 
 const Loading = () => {
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-900">
+    <div className="flex h-screen items-center justify-center bg-gray-900">
       <motion.div
-        className="w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full"
+        className="size-16 rounded-full border-t-4 border-solid border-blue-500"
         animate={{ rotate: 360 }}
         transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
       />
