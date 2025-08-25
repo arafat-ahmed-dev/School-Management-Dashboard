@@ -2,7 +2,7 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { eventsData, role } from "@/lib/data";
+import { role } from "@/lib/data";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import prisma from "../../../../../prisma";
@@ -36,12 +36,12 @@ const columns = [
   },
   ...(role === "admin"
     ? [
-        {
-          header: "Actions",
-          accessor: "action",
-          className: "table-cell",
-        },
-      ]
+      {
+        header: "Actions",
+        accessor: "action",
+        className: "table-cell",
+      },
+    ]
     : []),
 ];
 const renderRow = (item: EventList) => (

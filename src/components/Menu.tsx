@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import _ from "lodash";
 import { LogoutModal } from "./LogoutModal";
 import axios from "axios";
 
@@ -154,9 +153,8 @@ const Menu = () => {
   return (
     <>
       <div
-        className={`mt-4 pb-4 text-sm ${
-          showLogoutModal ? "opacity-50" : ""
-        } max-h-[80vh] overflow-y-auto sm:max-h-[90vh] `}
+        className={`mt-4 pb-4 text-sm ${showLogoutModal ? "opacity-50" : ""
+          } max-h-[80vh] overflow-y-auto sm:max-h-[90vh] `}
       >
         {" "}
         {/* Add opacity when modal is visible */}
@@ -199,6 +197,7 @@ const Menu = () => {
                   </Link>
                 );
               }
+              return null;
             })}
           </div>
         ))}

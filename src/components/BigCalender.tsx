@@ -91,7 +91,7 @@ function formatTimeRange(timeRange: string) {
 
 export default function Schedule() {
   const [view, setView] = useState<"week" | "day">("week");
-  const [currentDayIndex, setCurrentDayIndex] = useState(0);
+  const [currentDayIndex] = useState(0);
 
   const currentSchedule =
     view === "week" ? schedule : [schedule[currentDayIndex]];
@@ -99,8 +99,8 @@ export default function Schedule() {
   return (
     <div className="max-w-full">
       <div className="p-2">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-end justify-between gap-4 mb-6">
-          <div className="bg-purple-100 rounded-lg w-fit flex-end p-1 flex gap-1">
+        <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center sm:justify-end">
+          <div className="flex w-fit justify-end gap-1 rounded-lg bg-purple-100 p-1">
             <Button
               variant="ghost"
               className={cn("rounded", view === "week" && "bg-white")}

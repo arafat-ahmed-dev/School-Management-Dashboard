@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import "next-auth";
 declare module "next-auth" {
   interface User {
@@ -13,5 +14,11 @@ declare module "next-auth" {
       email?: string | null;
       role: string;
     };
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    role: string;
   }
 }

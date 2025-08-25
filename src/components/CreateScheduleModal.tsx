@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -16,13 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-type Teacher = { name: string };
-
-interface CreateScheduleModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onCreateSchedule: (scheduleData: ScheduleData) => void;
-}
 
 interface ScheduleData {
   title: string;
@@ -31,6 +24,12 @@ interface ScheduleData {
   endTime: string;
   teacher: string;
   class: string;
+}
+
+interface CreateScheduleModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onCreateSchedule: (scheduleData: ScheduleData) => void;
 }
 
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -56,7 +55,7 @@ export function CreateScheduleModal({
   onClose,
   onCreateSchedule,
 }: CreateScheduleModalProps) {
-  
+
   const [scheduleData, setScheduleData] = useState<ScheduleData>({
     title: "",
     dayOfWeek: "",

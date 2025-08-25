@@ -1,5 +1,4 @@
 import Announcements from "@/components/Announcements";
-import BigCalender from "@/components/BigCalender";
 import EventCalender from "@/components/EventCalender";
 import BigCalenderContainer from "@/components/BigCalenderContainer";
 

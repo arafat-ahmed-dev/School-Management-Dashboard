@@ -2,11 +2,11 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { examsData, role } from "@/lib/data";
+import { role } from "@/lib/data";
 import Image from "next/image";
 import prisma from "../../../../../prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Prisma, Exam, Lesson, Subject, Class, Teacher } from "@prisma/client";
+import { Prisma, Exam, Subject, Class, Teacher } from "@prisma/client";
 
 type ExamList = Exam & {
   lesson: {
@@ -37,12 +37,12 @@ const columns = [
   },
   ...(role === "admin"
     ? [
-        {
-          header: "Actions",
-          accessor: "action",
-          className: "table-cell",
-        },
-      ]
+      {
+        header: "Actions",
+        accessor: "action",
+        className: "table-cell",
+      },
+    ]
     : []),
 ];
 const renderRow = (item: ExamList) => (

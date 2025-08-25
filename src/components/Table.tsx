@@ -1,4 +1,5 @@
 import { role } from "@/lib/data";
+import React from "react";
 
 // const response = useAppSelector((state) => state.auth.userData?.userRole);
 // const role = _.toLower(response);
@@ -23,9 +24,9 @@ const Table = ({
   });
 
   return (
-    <table className="w-full mt-4">
+    <table className="mt-4 w-full">
       <thead>
-        <tr className="text-left text-gray-500 text-sm">
+        <tr className="text-left text-sm text-gray-500">
           {filteredColumns.map((col) => (
             <th key={col.accessor} className={col.className}>
               {col.header}

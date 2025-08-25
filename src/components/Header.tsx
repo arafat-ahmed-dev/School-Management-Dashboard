@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { GraduationCap, ChevronDown, ChevronUp, Sun, Moon } from "lucide-react";
-import React from "react";
 
 interface HeaderProps {
   isDarkMode: boolean;
