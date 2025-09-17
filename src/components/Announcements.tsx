@@ -1,8 +1,11 @@
 import prisma from "../../prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/option";
 
 const Announcements = async () => {
-  const userId = "67d2874ff735e667efa10164";
-  const role = "admin";
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  const role = session?.user?.role || "admin";
   const roleConditions = {
     teacher: { lessons: { some: { teacherId: userId! } } },
     student: { students: { some: { id: userId! } } },

@@ -1,4 +1,3 @@
-import { role } from "@/lib/data";
 import React from "react";
 
 // const response = useAppSelector((state) => state.auth.userData?.userRole);
@@ -9,11 +8,13 @@ const Table = ({
   renderRow,
   data,
   teacher,
+  role = "admin",
 }: {
   columns: { header: string; accessor: string; className?: string }[];
   renderRow: (item: any) => React.ReactNode;
   data: any[];
   teacher?: boolean;
+  role?: string;
 }) => {
   // Filter out the "action" column for non-admin/teacher roles
   const filteredColumns = columns.filter((col) => {

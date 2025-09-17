@@ -4,27 +4,18 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { LogoutModal } from "./LogoutModal";
-import axios from "axios";
+import { useSessionData } from "@/hooks/useSessionData";
 
 const Menu = () => {
   const [isClient, setIsClient] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-
-  const [role, setRole] = useState<string | null>(null);
+  const { user, isLoading } = useSessionData();
 
   useEffect(() => {
     setIsClient(true);
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("/api/session");
-        setRole(response.data?.user?.role || null);
-      } catch (error) {
-        console.error("Error fetching role:", error);
-        setRole(null);
-      }
-    };
-    fetchData();
   }, []);
+
+  const role = user?.role;
   const menuItems = [
     {
       title: "MENU",
@@ -146,8 +137,8 @@ const Menu = () => {
     },
   ];
 
-  if (!isClient) {
-    return null;
+  if (!isClient || isLoading) {
+    return <div>Loading...</div>;
   }
 
   return (

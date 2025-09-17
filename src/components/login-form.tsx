@@ -124,6 +124,7 @@ export function LoginForm({
                   type="password"
                   required
                   placeholder="••••••••"
+                  autoComplete="current-password"
                   onChange={handleInputChange} // Add onChange handler
                 />
               </div>

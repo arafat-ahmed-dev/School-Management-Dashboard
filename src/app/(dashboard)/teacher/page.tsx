@@ -1,8 +1,13 @@
 import Announcements from "@/components/Announcements";
 import EventCalender from "@/components/EventCalender";
 import BigCalenderContainer from "@/components/BigCalenderContainer";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/option";
 
-const StudentPage = () => {
+const TeacherPage = async () => {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id || "";
+
   return (
     <div className="flex flex-col gap-4 p-2 md:p-4 xl:flex-row">
       {/* LEFT */}
@@ -11,7 +16,7 @@ const StudentPage = () => {
           <h1 className="text-xl font-semibold">Schedule (4A)</h1>
           <BigCalenderContainer
             type={"teacherId"}
-            id={"67d27fa6d428b94e4852d887"}
+            id={userId}
           />
         </div>
       </div>
@@ -24,4 +29,4 @@ const StudentPage = () => {
   );
 };
 
-export default StudentPage;
+export default TeacherPage;

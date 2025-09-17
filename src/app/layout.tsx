@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import React from "react";
+import { NextAuthProvider } from "@/components/NextAuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,8 +23,10 @@ export default function RootLayout({
         <link rel="shortcut icon" href="/logo.png" />
       </head>
       <body className={inter.className}>
-        <Toaster />
-        <main>{children}</main>
+        <NextAuthProvider>
+          <Toaster />
+          <main>{children}</main>
+        </NextAuthProvider>
       </body>
     </html>
   );

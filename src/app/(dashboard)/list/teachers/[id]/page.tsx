@@ -4,45 +4,46 @@ import Performance from "@/components/Performance";
 import Image from "next/image";
 import Link from "next/link";
 
-const SingleTeacherPage = () => {
+const SingleTeacherPage = ({ params }: { params: { id: string } }) => {
+  const teacherId = params.id;
   return (
-    <div className="flex-1 p-4 flex flex-col gap-4 xl:flex-row">
+    <div className="flex flex-1 flex-col gap-4 p-4 xl:flex-row">
       {/* LEFT */}
       <div className="w-full xl:w-2/3">
         {/* TOP */}
-        <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex flex-col gap-4 lg:flex-row">
           {/* USER INFO CARD */}
-          <div className="bg-aamSky py-6 px-4 rounded-md flex-1 flex gap-4">
+          <div className="flex flex-1 gap-4 rounded-md bg-aamSky px-4 py-6">
             <div className="w-1/3">
               <Image
                 src="https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=1200"
                 alt=""
                 width={144}
                 height={144}
-                className="w-36 h-36 rounded-full object-cover sm:object-left-top object-top"
+                className="size-36 rounded-full object-cover object-top sm:object-left-top"
               />
             </div>
-            <div className="w-2/3 flex flex-col justify-between gap-4">
+            <div className="flex w-2/3 flex-col justify-between gap-4">
               <div className="flex items-center gap-4">
                 <h1 className="text-xl font-semibold">Leonard Snyder</h1>
               </div>
               <p className="text-sm text-gray-500">
                 Lorem ipsum, dolor sit amet consectetur adipisicing elit.
               </p>
-              <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
-                <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-medium">
+                <div className="flex w-full items-center gap-2 md:w-1/3 lg:w-full 2xl:w-1/3">
                   <Image src="/blood.png" alt="" width={14} height={14} />
                   <span>A+</span>
                 </div>
-                <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+                <div className="flex w-full items-center gap-2 md:w-1/3 lg:w-full 2xl:w-1/3">
                   <Image src="/date.png" alt="" width={14} height={14} />
                   <span>January 2025</span>
                 </div>
-                <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+                <div className="flex w-full items-center gap-2 md:w-1/3 lg:w-full 2xl:w-1/3">
                   <Image src="/mail.png" alt="" width={14} height={14} />
                   <span>user@gmail.com</span>
                 </div>
-                <div className="w-full md:w-1/3 lg:w-full 2xl:w-1/3 flex items-center gap-2">
+                <div className="flex w-full items-center gap-2 md:w-1/3 lg:w-full 2xl:w-1/3">
                   <Image src="/phone.png" alt="" width={14} height={14} />
                   <span>+1 234 567</span>
                 </div>
@@ -50,15 +51,15 @@ const SingleTeacherPage = () => {
             </div>
           </div>
           {/* SMALL CARDS */}
-          <div className="flex-1 flex gap-4 justify-between flex-wrap">
+          <div className="flex flex-1 flex-wrap justify-between gap-4">
             {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+            <div className="flex w-full gap-4 rounded-md bg-white p-4 md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
               <Image
                 src="/singleAttendance.png"
                 alt=""
                 width={24}
                 height={24}
-                className="w-6 h-6"
+                className="h-6 w-6"
               />
               <div className="">
                 <h1 className="text-xl font-semibold">90%</h1>
@@ -66,13 +67,13 @@ const SingleTeacherPage = () => {
               </div>
             </div>
             {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+            <div className="flex w-full gap-4 rounded-md bg-white p-4 md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
               <Image
                 src="/singleBranch.png"
                 alt=""
                 width={24}
                 height={24}
-                className="w-6 h-6"
+                className="h-6 w-6"
               />
               <div className="">
                 <h1 className="text-xl font-semibold">2</h1>
@@ -80,13 +81,13 @@ const SingleTeacherPage = () => {
               </div>
             </div>
             {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+            <div className="flex w-full gap-4 rounded-md bg-white p-4 md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
               <Image
                 src="/singleLesson.png"
                 alt=""
                 width={24}
                 height={24}
-                className="w-6 h-6"
+                className="h-6 w-6"
               />
               <div className="">
                 <h1 className="text-xl font-semibold">6</h1>
@@ -94,13 +95,13 @@ const SingleTeacherPage = () => {
               </div>
             </div>
             {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
+            <div className="flex w-full gap-4 rounded-md bg-white p-4 md:w-[48%] xl:w-[45%] 2xl:w-[48%]">
               <Image
                 src="/singleClass.png"
                 alt=""
                 width={24}
                 height={24}
-                className="w-6 h-6"
+                className="h-6 w-6"
               />
               <div className="">
                 <h1 className="text-xl font-semibold">6</h1>
@@ -110,45 +111,45 @@ const SingleTeacherPage = () => {
           </div>
         </div>
         {/* BOTTOM */}
-        <div className="mt-4 bg-white rounded-md p-4 min-h-[800px]">
-          <h1 className="text-center md:text-left font-semibold">
+        <div className="mt-4 min-h-[800px] rounded-md bg-white p-4">
+          <h1 className="text-center font-semibold md:text-left">
             Teacher&apos;s Schedule
           </h1>
           <BigCalendar />
         </div>
       </div>
       {/* RIGHT */}
-      <div className="w-full xl:w-1/3 flex flex-col gap-4">
-        <div className="bg-white p-4 rounded-md">
+      <div className="flex w-full flex-col gap-4 xl:w-1/3">
+        <div className="rounded-md bg-white p-4">
           <h1 className="text-xl font-semibold">Shortcuts</h1>
-          <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
+          <div className="mt-4 flex flex-wrap gap-4 text-xs text-gray-500">
             <Link
-              className="p-3 rounded-md bg-aamSkyLight"
-              href={`/list/classes?teacherId=${"6790a3258d9a372b7c1d6f22"}`}
+              className="rounded-md bg-aamSkyLight p-3"
+              href={`/list/classes?teacherId=${teacherId}`}
             >
               Teacher&apos;s Classes
             </Link>
             <Link
-              className="p-3 rounded-md bg-aamPurpleLight"
-              href={`/list/students?teacherId=${"6790a3258d9a372b7c1d6f22"}`}
+              className="rounded-md bg-aamPurpleLight p-3"
+              href={`/list/students?teacherId=${teacherId}`}
             >
               Teacher&apos;s Students
             </Link>
             <Link
-              className="p-3 rounded-md bg-aamYellowLight"
-              href={`/list/lessons?teacherId=${"6790a3258d9a372b7c1d6f22"}`}
+              className="rounded-md bg-aamYellowLight p-3"
+              href={`/list/lessons?teacherId=${teacherId}`}
             >
               Teacher&apos;s Lessons
             </Link>
             <Link
-              className="p-3 rounded-md bg-pink-50"
-              href={`/list/exams?teacherId=${"6790a3258d9a372b7c1d6f22"}`}
+              className="rounded-md bg-pink-50 p-3"
+              href={`/list/exams?teacherId=${teacherId}`}
             >
               Teacher&apos;s Exams
             </Link>
             <Link
-              className="p-3 rounded-md bg-aamSkyLight"
-              href={`/list/assignments?teacherId=${"6790a3258d9a372b7c1d6f22"}`}
+              className="rounded-md bg-aamSkyLight p-3"
+              href={`/list/assignments?teacherId=${teacherId}`}
             >
               Teacher&apos;s Assignments
             </Link>

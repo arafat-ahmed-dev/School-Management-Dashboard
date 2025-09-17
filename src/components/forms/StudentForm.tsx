@@ -49,10 +49,10 @@ const StudentForm = ({
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
       <h1 className="text-xl font-semibold">Create a new student</h1>
-      <span className="text-xs text-gray-400 font-medium">
+      <span className="text-xs font-medium text-gray-400">
         Authentication Information
       </span>
-      <div className="flex justify-between flex-wrap gap-4">
+      <div className="flex flex-wrap justify-between gap-4">
         <InputField
           label="Username"
           name="username"
@@ -74,12 +74,15 @@ const StudentForm = ({
           defaultValue={data?.password}
           register={register}
           error={errors?.password}
+          inputProps={{
+            autoComplete: type === "update" ? "new-password" : "current-password"
+          }}
         />
       </div>
-      <span className="text-xs text-gray-400 font-medium">
+      <span className="text-xs font-medium text-gray-400">
         Personal Information
       </span>
-      <div className="flex justify-between flex-wrap gap-4">
+      <div className="flex flex-wrap justify-between gap-4">
         <InputField
           label="First Name"
           name="firstName"
@@ -123,10 +126,10 @@ const StudentForm = ({
           error={errors.birthday}
           type="date"
         />
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex w-full flex-col gap-2 md:w-1/4">
           <label className="text-xs text-gray-500">Sex</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="w-full rounded-md p-2 text-sm ring-[1.5px] ring-gray-300"
             {...register("sex")}
             defaultValue={data?.sex}
           >
@@ -139,9 +142,9 @@ const StudentForm = ({
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
+        <div className="flex w-full flex-col justify-center gap-2 md:w-1/4">
           <label
-            className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
+            className="flex cursor-pointer items-center gap-2 text-xs text-gray-500"
             htmlFor="img"
           >
             <Image src="/upload.png" alt="" width={28} height={28} />
@@ -155,7 +158,7 @@ const StudentForm = ({
           )}
         </div>
       </div>
-      <button className="bg-blue-400 text-white p-2 rounded-md">
+      <button className="rounded-md bg-blue-400 p-2 text-white">
         {type === "create" ? "Create" : "Update"}
       </button>
     </form>
