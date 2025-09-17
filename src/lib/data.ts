@@ -1,28 +1,192 @@
+export type CalendarEvent = {
+  title: string;
+  startTime: string;
+  endTime: string;
+  dayOfWeek: number;
+  class: string;
+  teacher: string;
+};
 
 export const role = "admin";
 
-// export const calendarEvents = [
-//   {
-//     title: "Math",
-//     class: "1A",
-//     teacher: "Tommy Wise",
-//     allDay: false,
-//     startTime: new Date(
-//       new Date().getFullYear(),
-//       new Date().getMonth(),
-//       new Date().getDate(),
-//       9,
-//       0
-//     ),
-//     endTime: new Date(
-//       new Date().getFullYear(),
-//       new Date().getMonth(),
-//       new Date().getDate(),
-//       9,
-//       50
-//     ),
-//     dayOfWeek: 1 // Monday
-//   },
+export const calendarEvents: CalendarEvent[] = [
+  {
+    title: "Math",
+    class: "1A",
+    teacher: "Tommy Wise",
+    dayOfWeek: 1, // Monday
+    startTime: "09:00",
+    endTime: "09:50",
+  },
+  {
+    title: "English",
+    class: "2A",
+    teacher: "Rhoda Frank",
+    dayOfWeek: 1, // Monday
+    startTime: "12:00",
+    endTime: "12:50",
+  },
+  {
+    title: "Biology",
+    class: "3A",
+    teacher: "Della Dunn",
+    dayOfWeek: 1, // Monday
+    startTime: "10:00",
+    endTime: "10:50",
+  },
+  {
+    title: "Physics",
+    class: "4A",
+    teacher: "Bruce Rodriguez",
+    dayOfWeek: 1, // Monday
+    startTime: "11:00",
+    endTime: "11:50",
+  },
+  {
+    title: "Chemistry",
+    class: "5A",
+    teacher: "Birdie Butler",
+    dayOfWeek: 1, // Monday
+    startTime: "13:00",
+    endTime: "13:50",
+  },
+  {
+    title: "History",
+    class: "6A",
+    teacher: "Bettie Oliver",
+    dayOfWeek: 1, // Monday
+    startTime: "14:00",
+    endTime: "14:50",
+  },
+  {
+    title: "English",
+    class: "2A",
+    teacher: "Rhoda Frank",
+    dayOfWeek: 2, // Tuesday
+    startTime: "09:00",
+    endTime: "09:50",
+  },
+  {
+    title: "Biology",
+    class: "3A",
+    teacher: "Della Dunn",
+    dayOfWeek: 2, // Tuesday
+    startTime: "10:00",
+    endTime: "10:50",
+  },
+  {
+    title: "Physics",
+    class: "4A",
+    teacher: "Bruce Rodriguez",
+    dayOfWeek: 2, // Tuesday
+    startTime: "11:00",
+    endTime: "11:50",
+  },
+  {
+    title: "History",
+    class: "6A",
+    teacher: "Bettie Oliver",
+    dayOfWeek: 2, // Tuesday
+    startTime: "14:00",
+    endTime: "14:50",
+  },
+  {
+    title: "Math",
+    class: "1A",
+    teacher: "Tommy Wise",
+    dayOfWeek: 3, // Wednesday
+    startTime: "09:00",
+    endTime: "09:50",
+  },
+  {
+    title: "Biology",
+    class: "3A",
+    teacher: "Della Dunn",
+    dayOfWeek: 3, // Wednesday
+    startTime: "10:00",
+    endTime: "10:50",
+  },
+  {
+    title: "Chemistry",
+    class: "5A",
+    teacher: "Birdie Butler",
+    dayOfWeek: 3, // Wednesday
+    startTime: "13:00",
+    endTime: "13:50",
+  },
+  {
+    title: "History",
+    class: "6A",
+    teacher: "Bettie Oliver",
+    dayOfWeek: 3, // Wednesday
+    startTime: "14:00",
+    endTime: "14:50",
+  },
+  {
+    title: "English",
+    class: "2A",
+    teacher: "Rhoda Frank",
+    dayOfWeek: 4, // Thursday
+    startTime: "09:00",
+    endTime: "09:50",
+  },
+  {
+    title: "Biology",
+    class: "3A",
+    teacher: "Della Dunn",
+    dayOfWeek: 4, // Thursday
+    startTime: "10:00",
+    endTime: "10:50",
+  },
+  {
+    title: "Physics",
+    class: "4A",
+    teacher: "Bruce Rodriguez",
+    dayOfWeek: 4, // Thursday
+    startTime: "11:00",
+    endTime: "11:50",
+  },
+  {
+    title: "History",
+    class: "6A",
+    teacher: "Bettie Oliver",
+    dayOfWeek: 4, // Thursday
+    startTime: "14:00",
+    endTime: "14:50",
+  },
+  {
+    title: "Math",
+    class: "1A",
+    teacher: "Tommy Wise",
+    dayOfWeek: 5, // Friday
+    startTime: "09:00",
+    endTime: "09:50",
+  },
+  {
+    title: "Physics",
+    class: "4A",
+    teacher: "Bruce Rodriguez",
+    dayOfWeek: 5, // Friday
+    startTime: "11:00",
+    endTime: "11:50",
+  },
+  {
+    title: "Chemistry",
+    class: "5A",
+    teacher: "Birdie Butler",
+    dayOfWeek: 5, // Friday
+    startTime: "13:00",
+    endTime: "13:50",
+  },
+  {
+    title: "History",
+    class: "6A",
+    teacher: "Bettie Oliver",
+    dayOfWeek: 5, // Friday
+    startTime: "14:00",
+    endTime: "14:50",
+  },
+];
 //   {
 //     title: "English",
 //     class: "2A",
@@ -735,14 +899,6 @@ export const role = "admin";
 //     ],
 //   },
 // ];
-export type CalendarEvent = {
-  title: string;
-  startTime: string;
-  endTime: string;
-  dayOfWeek: number;
-  class: string;
-  teacher: string;
-};
 
 // List of available classes
 export const classes = [
@@ -753,7 +909,6 @@ export const classes = [
   { name: "Class 11" },
   { name: "Class 12" },
 ];
-
 
 // Additional subject colors
 export const subjectColors: Record<string, string> = {
