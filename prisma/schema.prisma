@@ -9,7 +9,7 @@ datasource db {
 
 model Admin {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  name         String // Ensure this line is included
+  name         String
   username     String   @unique
   password     String   @unique
   email        String   @unique
@@ -20,32 +20,33 @@ model Admin {
 }
 
 model Student {
-  id            String       @id @default(auto()) @map("_id") @db.ObjectId
-  username      String       @unique
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  username      String         @unique
   password      String
   name          String
-  Parent        Parent?      @relation(fields: [parentId], references: [id])
-  parentId      String?      @db.ObjectId
-  email         String       @unique
+  Parent        Parent?        @relation(fields: [parentId], references: [id])
+  parentId      String?        @db.ObjectId
+  email         String         @unique
   parentContact String?
   phone         String?
   address       String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   img           String?
   bloodType     String?
   sex           UserSex?
   birthDate     DateTime?
-  gradeId       String?      @db.ObjectId
-  grade         Grade?       @relation(fields: [gradeId], references: [id])
-  classId       String?      @db.ObjectId
-  class         Class?       @relation(fields: [classId], references: [id])
-  subjectId     String?      @db.ObjectId
-  subject       Subject?     @relation(fields: [subjectId], references: [id])
+  gradeId       String?        @db.ObjectId
+  grade         Grade?         @relation(fields: [gradeId], references: [id])
+  classId       String?        @db.ObjectId
+  class         Class?         @relation(fields: [classId], references: [id])
+  subjectId     String?        @db.ObjectId
+  subject       Subject?       @relation(fields: [subjectId], references: [id])
   attendances   Attendance[]
   result        Result[]
   refreshToken  String?
-  approved      Approve?     @default(PENDING)
+  group        StudentStream?
+  approved      Approve?       @default(PENDING)
 }
 
 model Teacher {
@@ -139,6 +140,7 @@ model Exam {
   lessonId String   @db.ObjectId
   lesson   Lesson   @relation(fields: [lessonId], references: [id])
   results  Result[]
+  examType ExamType @default(ASSIGNMENT)
 }
 
 model Grade {
@@ -162,6 +164,7 @@ model Assignment {
 model Result {
   id           String      @id @default(auto()) @map("_id") @db.ObjectId
   score        Int
+  maxScore     Int
   examId       String?     @db.ObjectId
   exam         Exam?       @relation(fields: [examId], references: [id])
   assignmentId String?     @db.ObjectId
@@ -226,4 +229,17 @@ enum Approve {
   PENDING
   ACCEPTED
   CANCEL
+}
+
+enum StudentStream {
+  SCIENCE
+  COMMERCE
+  ARTS
+}
+
+enum ExamType {
+  MONTHLY
+  MIDTERM
+  FINAL
+  ASSIGNMENT
 }

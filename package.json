@@ -69,6 +69,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.0.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/lodash": "^4.17.14",
