@@ -36,10 +36,6 @@ const matchers = [
     allowedRoles: ["admin", "teacher", "student", "parent"],
   },
   { matcher: /^\/list\/approvements$/, allowedRoles: ["admin"] },
-  {
-    matcher: /^\/profile$/,
-    allowedRoles: ["admin", "teacher", "student", "parent"],
-  },
 ];
 
 export async function middleware(req: NextRequest) {
@@ -91,6 +87,5 @@ export const config = {
     "/teacher/:path*",
     "/parent/:path*",
     "/list/:path*",
-    "/profile",
   ],
 };

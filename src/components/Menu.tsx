@@ -116,12 +116,6 @@ const Menu = () => {
       title: "OTHER",
       items: [
         {
-          icon: "/profile.png",
-          label: "Profile",
-          href: "/profile",
-          visible: ["admin", "teacher", "student", "parent"],
-        },
-        {
           icon: "/setting.png",
           label: "Settings",
           href: "/settings",

@@ -21,7 +21,6 @@ export const routeAccessMap: RouteAccessMap = {
   "/list/events": ["admin", "teacher", "student", "parent"],
   "/list/announcements": ["admin", "teacher", "student", "parent"],
   "/list/approvements": ["admin"],
-  "/profile": ["admin", "teacher", "student", "parent"],
 };
 export const subjectData = [
   { id: "Ban-1", name: "Bangla-1" },

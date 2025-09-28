@@ -27,7 +27,6 @@ const Navbar = () => {
           <span className="text-xs font-medium leading-3">Arafat Ahmed</span>
           <span className="text-right text-[10px] text-gray-500">Admin</span>
         </div>
-        <Link href="/profile">
           <Image
             src="/avatar.png"
             alt="user"
@@ -35,7 +34,6 @@ const Navbar = () => {
             height={36}
             className="rounded-full"
           />
-        </Link>
       </div>
     </div>
   );
