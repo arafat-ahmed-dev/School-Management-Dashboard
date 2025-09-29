@@ -34,6 +34,10 @@ const StudentForm = ({
   type: "create" | "update";
   data?: any;
 }) => {
+  // Split name for edit mode
+  const initialFirstName = data?.name ? data.name.split(" ")[0] : data?.firstName;
+  const initialLastName = data?.name ? data.name.split(" ").slice(1).join(" ") : data?.lastName;
+
   const {
     register,
     handleSubmit,
@@ -42,8 +46,13 @@ const StudentForm = ({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
+  const onSubmit = handleSubmit((formData) => {
+    // Combine firstName and lastName for backend
+    const studentData = {
+      ...formData,
+      name: `${formData.firstName} ${formData.lastName}`.trim(),
+    };
+    console.log(studentData);
   });
 
   return (
@@ -86,14 +95,14 @@ const StudentForm = ({
         <InputField
           label="First Name"
           name="firstName"
-          defaultValue={data?.firstName}
+          defaultValue={initialFirstName}
           register={register}
           error={errors.firstName}
         />
         <InputField
           label="Last Name"
           name="lastName"
-          defaultValue={data?.lastName}
+          defaultValue={initialLastName}
           register={register}
           error={errors.lastName}
         />

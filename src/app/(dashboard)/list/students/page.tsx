@@ -39,19 +39,19 @@ const columns = [
   },
   ...(role === "admin" || role === "teacher"
     ? [
-        {
-          header: "Actions",
-          accessor: "action",
-          className: "flex justify-center table-cell ",
-        },
-      ]
+      {
+        header: "Actions",
+        accessor: "action",
+        className: "flex justify-center table-cell ",
+      },
+    ]
     : []),
 ];
 
 const renderRow = (item: StudnetList) => (
   <tr
     key={item.id}
-    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
+    className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
   >
     <td className="flex items-center gap-4 p-4 px-2">
       <Image
@@ -59,27 +59,27 @@ const renderRow = (item: StudnetList) => (
         alt=""
         width={40}
         height={40}
-        className="md:hidden xl:block w-10 h-10 rounded-full object-cover"
+        className="size-10 rounded-full object-cover md:hidden xl:block"
       />
       <div className="flex flex-col">
         <h3 className="font-semibold">{item.name}</h3>
         <p className="text-xs text-gray-500">{item.class.name}</p>
       </div>
     </td>
-    <td className="hidden md:table-cell p-2">{item.id.substring(10)}</td>
-    <td className="hidden md:table-cell p-2">{item.grade?.level ?? "N/A"}</td>
-    <td className="hidden md:table-cell p-2">{item.phone}</td>
-    <td className="hidden md:table-cell p-2">{item.address}</td>
+    <td className="hidden p-2 md:table-cell">{item.id.substring(10)}</td>
+    <td className="hidden p-2 md:table-cell">{item.grade?.level ?? "N/A"}</td>
+    <td className="hidden p-2 md:table-cell">{item.phone}</td>
+    <td className="hidden p-2 md:table-cell">{item.address}</td>
     <td>
-      <div className="flex items-center gap-2  justify-center">
+      <div className="flex items-center justify-center  gap-2">
         <Link href={`/list/students/${item.id}`}>
-          <button className="w-7 h-7 flex items-center justify-center rounded-full bg-aamSky">
+          <button className="flex size-7 items-center justify-center rounded-full bg-aamSky">
             <Image src="/view.png" alt="" width={16} height={16} />
           </button>
         </Link>
         {role === "admin" && (
           <>
-            <FormModel table="student" type="update" />
+            <FormModel table="student" type="update" data={item} id={parseInt(item.id)} />
             <FormModel table="student" type="delete" id={parseInt(item.id)} />
           </>
         )}
@@ -133,7 +133,7 @@ const StudentListPage = async ({
         class: true,
         grade: true, // Ensure grade is included in the query
       },
-      
+
       take: ITEM_PER_PAGE,
       skip: (p - 1) * ITEM_PER_PAGE,
       orderBy: {
@@ -144,21 +144,21 @@ const StudentListPage = async ({
   ]);
 
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="m-4 mt-0 flex-1 rounded-md bg-white p-4">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">All Students</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+        <h1 className="hidden text-lg font-semibold md:block">All Students</h1>
+        <div className="flex w-full flex-col items-center gap-4 md:w-auto md:flex-row">
           <TableSearch />
-          <div className="flex items-center gap-4 justify-between md:self-end w-full">
-            <h1 className="md:hidden block text-sm font-semibold">
+          <div className="flex w-full items-center justify-between gap-4 md:self-end">
+            <h1 className="block text-sm font-semibold md:hidden">
               All Students
             </h1>
             <div className="flex items-center gap-4 self-end">
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
+              <button className="flex size-8 items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/filter.png" alt="" width={14} height={14} />
               </button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
+              <button className="flex size-8 items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/sort.png" alt="" width={14} height={14} />
               </button>
               {role === "admin" && <FormModel table="student" type="create" />}

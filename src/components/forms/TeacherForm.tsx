@@ -52,6 +52,10 @@ const TeacherForm = ({
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Split name for edit mode
+  const initialFirstName = data?.name ? data.name.split(" ")[0] : data?.firstName;
+  const initialLastName = data?.name ? data.name.split(" ").slice(1).join(" ") : data?.lastName;
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -90,7 +94,7 @@ const TeacherForm = ({
         }
       }
 
-      // Prepare teacher data for server action
+      // Combine firstName and lastName for backend
       const teacherData: TeacherFormData = {
         username: formData.username,
         email: formData.email,
@@ -170,14 +174,14 @@ const TeacherForm = ({
         <InputField
           label="First Name"
           name="firstName"
-          defaultValue={data?.firstName}
+          defaultValue={initialFirstName}
           register={register}
           error={errors.firstName}
         />
         <InputField
           label="Last Name"
           name="lastName"
-          defaultValue={data?.lastName}
+          defaultValue={initialLastName}
           register={register}
           error={errors.lastName}
         />
