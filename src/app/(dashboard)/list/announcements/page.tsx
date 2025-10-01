@@ -26,12 +26,12 @@ const columns = [
   },
   ...(role === "admin"
     ? [
-        {
-          header: "Actions",
-          accessor: "action",
-          className: "table-cell",
-        },
-      ]
+      {
+        header: "Actions",
+        accessor: "action",
+        className: "table-cell",
+      },
+    ]
     : []),
 ];
 const renderRow = (item: AnnouncementList) => (
@@ -49,7 +49,7 @@ const renderRow = (item: AnnouncementList) => (
         {role === "admin" && (
           <>
             <FormModel table="parent" type="update" />
-            <FormModel table="parent" type="delete" id={parseInt(item.id)} />
+            <FormModel table="parent" type="delete" id={item.id.toString()} />
           </>
         )}
       </div>

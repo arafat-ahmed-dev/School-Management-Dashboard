@@ -116,7 +116,6 @@ const SubjectForm = ({
 
     const onSubmit = handleSubmit(async (formData) => {
         setIsSubmitting(true);
-        console.log("Form Data:", formData);
 
         try {
             if (type === "create") {

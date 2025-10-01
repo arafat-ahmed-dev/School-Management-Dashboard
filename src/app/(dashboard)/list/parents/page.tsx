@@ -59,8 +59,8 @@ const renderRow = (item: ParentList) => (
       <div className="flex items-center justify-center  gap-2">
         {role === "admin" && (
           <>
-            <FormModel table="parent" type="update" data={item} id={parseInt(item.id)} />
-            <FormModel table="parent" type="delete" id={parseInt(item.id)} />
+            <FormModel table="parent" type="update" data={item} id={item.id.toString()} />
+            <FormModel table="parent" type="delete" id={item.id.toString()} />
           </>
         )}
       </div>

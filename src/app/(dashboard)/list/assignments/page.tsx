@@ -37,12 +37,12 @@ const columns = [
   },
   ...(role === "admin" || role === "teacher"
     ? [
-        {
-          header: "Actions",
-          accessor: "action",
-          className: "table-cell",
-        },
-      ]
+      {
+        header: "Actions",
+        accessor: "action",
+        className: "table-cell",
+      },
+    ]
     : []),
 ];
 const renderRow = (item: AssignmentList) => (
@@ -66,7 +66,7 @@ const renderRow = (item: AssignmentList) => (
             <FormModel
               table="assignment"
               type="delete"
-              id={parseInt(item.id)}
+              id={item.id.toString()}
             />
           </>
         )}

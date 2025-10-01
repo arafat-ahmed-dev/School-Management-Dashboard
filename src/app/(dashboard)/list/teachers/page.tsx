@@ -95,8 +95,8 @@ const TeacherListPage = async ({
           </Link>
           {role === "admin" && (
             <>
-              <FormModel table="teacher" type="update" data={item} id={parseInt(item.id)} />
-              <FormModel table="teacher" type="delete" id={parseInt(item.id)} />
+              <FormModel table="teacher" type="update" data={item} id={item.id.toString()} />
+              <FormModel table="teacher" type="delete" id={item.id.toString()} />
             </>
           )}
         </div>

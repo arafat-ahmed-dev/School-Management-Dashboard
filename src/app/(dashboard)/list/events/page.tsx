@@ -73,7 +73,7 @@ const renderRow = (item: EventList) => (
         {role === "admin" && (
           <>
             <FormModel table="event" type="update" />
-            <FormModel table="event" type="delete" id={parseInt(item.id)} />
+            <FormModel table="event" type="delete" id={item.id.toString()} />
           </>
         )}
       </div>

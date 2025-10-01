@@ -62,7 +62,7 @@ const renderRow = (item: AttendanceList) => (
             <FormModel
               table="attendance"
               type="delete"
-              id={parseInt(item.id)}
+              id={item.id.toString()}
             />
           </>
         )}

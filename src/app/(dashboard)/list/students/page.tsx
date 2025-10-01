@@ -79,8 +79,8 @@ const renderRow = (item: StudnetList) => (
         </Link>
         {role === "admin" && (
           <>
-            <FormModel table="student" type="update" data={item} id={parseInt(item.id)} />
-            <FormModel table="student" type="delete" id={parseInt(item.id)} />
+            <FormModel table="student" type="update" data={item} id={item.id.toString()} />
+            <FormModel table="student" type="delete" id={item.id.toString()} />
           </>
         )}
       </div>
