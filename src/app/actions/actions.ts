@@ -7,7 +7,7 @@ import { hashPassword } from "@/lib/argon2";
 import { writeFile } from "fs/promises";
 import { join } from "path";
 
-// --- Class Actions ---
+// --- Get ALL Data Actions ---
 export async function getAllGrades(props?: Record<string, boolean>) {
   return await prisma.grade.findMany({
     select: { id: true, level: true, ...(props ?? {}) },
@@ -15,7 +15,6 @@ export async function getAllGrades(props?: Record<string, boolean>) {
   });
 }
 
-// --- Teacher Actions ---
 export async function getAllTeachers(props?: Record<string, boolean>) {
   return await prisma.teacher.findMany({
     select: { id: true, name: true, ...(props ?? {}) },
@@ -23,7 +22,6 @@ export async function getAllTeachers(props?: Record<string, boolean>) {
   });
 }
 
-// --- Subject Actions ---
 export async function getAllSubjects(props?: Record<string, boolean>) {
   const includeClasses = props?.classes;
   const otherProps = { ...props };
@@ -40,7 +38,6 @@ export async function getAllSubjects(props?: Record<string, boolean>) {
   });
 }
 
-// --- Class Actions ---
 export async function getAllClasses(props?: Record<string, boolean>) {
   return await prisma.class.findMany({
     select: {
@@ -53,8 +50,7 @@ export async function getAllClasses(props?: Record<string, boolean>) {
   });
 }
 
-// --- Lesson Actions ---
-export async function getLessons(props?: Record<string, boolean>) {
+export async function getAllLessons(props?: Record<string, boolean>) {
   try {
     const lessons = await prisma.lesson.findMany({
       include: {
@@ -125,6 +121,7 @@ export async function getSubjects(props?: Record<string, boolean>) {
   }
 } */
 
+// --- Lesson Actions ---
 type CreateLessonInput = {
   name: string;
   dayOfWeek: number;
@@ -484,7 +481,7 @@ export async function updateSubject(
   teacherIds: string[]
 ) {
   console.log(id, name, code, classIds, teacherIds);
-  
+
   try {
     const subject = await prisma.subject.update({
       where: { id },
@@ -548,10 +545,104 @@ export async function deleteSubject(id: string) {
   }
 }
 
+// --- Class Actions ---
+export type CreateClassInput = {
+  id?: string;
+  name: string;
+  gradeId: string;
+  supervisorId: string;
+  capacity: string | number;
+  classId: string;
+};
+export async function createClass({
+  name,
+  gradeId,
+  supervisorId,
+  capacity,
+  classId,
+}: CreateClassInput) {
+  try {
+    await prisma.class.create({
+      data: {
+        name,
+        grade: { connect: { id: gradeId } },
+        supervisor: { connect: { id: supervisorId } },
+        capacity: Number(capacity),
+        classId,
+      },
+    });
+    revalidatePath("/list/classes");
+    return { success: true };
+  } catch (error) {
+    console.error("Error creating class:", error);
+    return { success: false, error: "Failed to create class" };
+  }
+}
+export async function updateClass(
+  id: string,
+  name: string,
+  gradeId: string,
+  supervisorId: string,
+  capacity: string,
+  classId: string
+) {
+  try {
+    console.log("updateClass args:", {
+      id,
+      name,
+      gradeId,
+      supervisorId,
+      capacity,
+      classId,
+    });
+    await prisma.class.update({
+      where: { id },
+      data: {
+        name,
+        grade: { connect: { id: gradeId } },
+        supervisor: { connect: { id: supervisorId } },
+        capacity: Number(capacity),
+        classId,
+      },
+    });
+    revalidatePath("/list/classes");
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error updating class:", error);
+    return {
+      success: false,
+      error: error?.message || "Failed to update class",
+    };
+  }
+}
+export async function deleteClass(id: string) {
+  try {
+    await prisma.exam.deleteMany({
+      where: { lesson: { classId: id } },
+    });
+    await prisma.assignment.deleteMany({
+      where: { lesson: { classId: id } },
+    });
+    await prisma.attendance.deleteMany({
+      where: { lesson: { classId: id } },
+    });
+    await prisma.lesson.deleteMany({
+      where: { classId: id },
+    });
+    await prisma.class.delete({
+      where: { id },
+    });
+    revalidatePath("/list/classes");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting class:", error);
+    return { success: false, error: "Failed to delete class" };
+  }
+}
+
 // make all the deleted functions above available for import from this file
 export async function deleteStudent(id: string) {}
 export async function deleteParent(id: string) {}
-export async function deleteClass(id: string) {}
 export async function deleteExam(id: string) {}
 export async function deleteAssignment(id: string) {}
 export async function deleteResult(id: string) {}
