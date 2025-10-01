@@ -63,7 +63,7 @@ const SubjectForm = ({
     const selectedTeachers = watch("teachers");
     const selectedClasses = watch("classes");
     const watchAllFields = watch();
-    
+
     // Reset form when data changes (important for edit mode)
     useEffect(() => {
         if (data && type === "update") {
@@ -91,7 +91,7 @@ const SubjectForm = ({
                         subjectId: true,
                         classes: true
                     }),
-                ]);                
+                ]);
                 setTeachers(teachersResult || []);
                 setClasses((classesResult || []).map((cls: any) => ({
                     id: cls.id,
@@ -189,45 +189,37 @@ const SubjectForm = ({
                             error={errors?.name}
                             className="w-full"
                         />
-                        <InputField
-                            label="Subject ID"
-                            name="subjectId"
-                            defaultValue={data?.subjectId}
-                            register={register}
-                            error={errors?.subjectId}
-                            className="w-full"
-                        />
                     </>
                 ) : (
-                        <div className="col-span-1 flex flex-col">
-                            <label className="mb-1 text-xs font-medium text-gray-600">Subject</label>
-                            <select
-                                value={watch("name")}
-                                className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                onChange={(e) => {
-                                    const selected = subjects.find((s) => s.name === e.target.value);
-                                    if (selected) {
-                                        setValue("name", selected.name, { shouldValidate: true });
-                                        setValue("code", selected.code, { shouldValidate: true });
-                                        setValue("subjectId", selected.subjectId, { shouldValidate: true });
-                                        setValue("classes", selected.classIds, { shouldValidate: true });
-                                        setValue("teachers", data.teachers?.map((t: any) => t.id) || [], { shouldValidate: true });
-                                    }
-                                }}
-                            >
-                                <option value="" disabled>
-                                    Select a subject
+                    <div className="col-span-1 flex flex-col">
+                        <label className="mb-1 text-xs font-medium text-gray-600">Subject</label>
+                        <select
+                            value={watch("name")}
+                            className="w-full rounded-md border border-gray-300 bg-white p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            onChange={(e) => {
+                                const selected = subjects.find((s) => s.name === e.target.value);
+                                if (selected) {
+                                    setValue("name", selected.name, { shouldValidate: true });
+                                    setValue("code", selected.code, { shouldValidate: true });
+                                    setValue("subjectId", selected.subjectId, { shouldValidate: true });
+                                    setValue("classes", selected.classIds, { shouldValidate: true });
+                                    setValue("teachers", data.teachers?.map((t: any) => t.id) || [], { shouldValidate: true });
+                                }
+                            }}
+                        >
+                            <option value="" disabled>
+                                Select a subject
+                            </option>
+                            {subjects.map((subject) => (
+                                <option key={subject.id} value={subject.name}>
+                                    {subject.name}
                                 </option>
-                                {subjects.map((subject) => (
-                                    <option key={subject.id} value={subject.name}>
-                                        {subject.name}
-                                    </option>
-                                ))}
-                            </select>
-                            {errors.name && (
-                                <p className="text-xs text-red-400">{errors.name.message as string}</p>
-                            )}
-                        </div>
+                            ))}
+                        </select>
+                        {errors.name && (
+                            <p className="text-xs text-red-400">{errors.name.message as string}</p>
+                        )}
+                    </div>
                 )}
 
                 {/* Subject Code */}
