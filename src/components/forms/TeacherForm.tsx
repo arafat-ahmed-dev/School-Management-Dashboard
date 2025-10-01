@@ -6,7 +6,7 @@ import Image from "next/image";
 import InputField from "../InputField";
 import React, { useState } from "react";
 import { toast } from "sonner";
-import { createTeacher, updateTeacher, TeacherFormData, uploadTeacherImage } from "@/app/actions/teacher-actions";
+import { createTeacher, updateTeacher, TeacherFormData, uploadTeacherImage } from "@/app/actions/actions";
 
 const schema = z.object({
   username: z

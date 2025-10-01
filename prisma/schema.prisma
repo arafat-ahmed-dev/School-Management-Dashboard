@@ -14,7 +14,6 @@ model Admin {
   password     String   @unique
   email        String   @unique
   phone        String?
-  refreshToken String?
   approved     Approve? @default(PENDING)
   createdAt    DateTime @default(now())
 }
@@ -40,12 +39,10 @@ model Student {
   grade         Grade?         @relation(fields: [gradeId], references: [id])
   classId       String?        @db.ObjectId
   class         Class?         @relation(fields: [classId], references: [id])
-  subjectId     String?        @db.ObjectId
-  subject       Subject?       @relation(fields: [subjectId], references: [id])
   attendances   Attendance[]
   result        Result[]
   refreshToken  String?
-  group        StudentStream?
+  group         StudentStream?
   approved      Approve?       @default(PENDING)
 }
 
@@ -101,17 +98,20 @@ model Class {
   capacity      Int
   events        Event[]
   announcements Announcement[]
+  subjectsId    String[]       @db.ObjectId  // Add this
+  subjects      Subject[]      @relation(fields: [subjectsId], references: [id]) // Add this
 }
 
 model Subject {
   id         String    @id @default(auto()) @map("_id") @db.ObjectId
   name       String
-  code       String
+  code       String    @unique
   subjectId  String    @unique
   teachersId String[]  @db.ObjectId
   teachers   Teacher[] @relation(fields: [teachersId], references: [id])
   lessons    Lesson[]
-  Student    Student[]
+  classesId  String[]  @db.ObjectId  // Multiple classes can have this subject
+  classes    Class[]   @relation(fields: [classesId], references: [id])
 }
 
 model Lesson {
@@ -120,8 +120,8 @@ model Lesson {
   day         Day
   startTime   DateTime
   endTime     DateTime
-  subjectId   String       @db.ObjectId
-  subject     Subject      @relation(fields: [subjectId], references: [id])
+  subjectId   String?       @db.ObjectId
+  subject     Subject?      @relation(fields: [subjectId], references: [id]) 
   classId     String       @db.ObjectId
   class       Class        @relation(fields: [classId], references: [id])
   teacherId   String       @db.ObjectId

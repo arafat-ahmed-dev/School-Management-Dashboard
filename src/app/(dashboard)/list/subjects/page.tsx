@@ -43,11 +43,11 @@ const renderRow = (item: SubjectList) => (
       {item.teachers.map((item) => item.name).join(", ")}
     </td>
     <td>
-      <div className="w-fit">
+      <div className="flex w-fit gap-2">
         {role === "admin" && (
           <>
-            <FormModel table="subject" type="update" data={item} id={parseInt(item.id)} />
-            <FormModel table="subject" type="delete" id={parseInt(item.id)} />
+            <FormModel table="subject" type="update" data={item} id={item.id.toString()} />
+            <FormModel table="subject" type="delete" id={item.id.toString()} />
           </>
         )}
       </div>
@@ -88,6 +88,7 @@ const SubjectListPage = async ({
       where: query,
       include: {
         teachers: true,
+        classes: true,
       },
       take: ITEM_PER_PAGE,
       skip: (p - 1) * ITEM_PER_PAGE,

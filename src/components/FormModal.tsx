@@ -2,7 +2,10 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
+
+import * as actions from "@/app/actions/actions";
+import { toast } from "sonner";
 
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
   loading: () => <h1>Loading...</h1>,
@@ -66,7 +69,7 @@ const FormModal = ({
   | "announcement";
   type: "create" | "update" | "delete";
   data?: any;
-  id?: number;
+  id?: number | string;
 }) => {
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const bgColor =
@@ -96,14 +99,70 @@ const FormModal = ({
 
   const [open, setOpen] = useState(false);
 
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  const deleteActionMap: { [key: string]: (id: string) => Promise<any> } = {
+    teacher: actions.deleteTeacher,
+    student: actions.deleteStudent,
+    parent: actions.deleteParent,
+    subject: actions.deleteSubject,
+    class: actions.deleteClass,
+    lesson: actions.deleteLesson,
+    exam: actions.deleteExam,
+    assignment: actions.deleteAssignment,
+    result: actions.deleteResult,
+    attendance: actions.deleteAttendance,
+    event: actions.deleteEvent,
+    message: actions.deleteMessage,
+    announcement: actions.deleteAnnouncement,
+  };
+
+  // Import toast if not already imported
+
+  const handleDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    if (!id) return;
+    console.log(id);
+
+    const deleteFn = deleteActionMap[table];
+    if (!deleteFn) {
+      setError("Delete function not found.");
+      toast.error("Delete function not found.");
+      return;
+    }
+    startTransition(async () => {
+      try {
+        const res = await deleteFn(String(id));
+        if (res?.success) {
+          setOpen(false);
+          toast.success(`${table.charAt(0).toUpperCase() + table.slice(1)} deleted successfully.`);
+        } else {
+          setError(res?.error || "Delete failed.");
+          toast.error(res?.error || "Delete failed.");
+        }
+      } catch (err: any) {
+        setError(err?.message || "Delete failed.");
+        toast.error(err?.message || "Delete failed.");
+      }
+    });
+  };
+
   const Form = () => {
+    console.log(`Rendering form for table: ${table}, type: ${type}, id: ${id}`);
     return type === "delete" && id ? (
-      <form action="" className="flex flex-col gap-4 p-4">
+      <form onSubmit={handleDelete} className="flex flex-col gap-4 p-4">
         <span className="text-center font-medium">
           All data will be lost. Are you sure you want to delete this {table}?
         </span>
-        <button className="w-max self-center rounded-md border-none bg-red-700 px-4 py-2 text-white">
-          Delete
+        {error && <span className="text-center text-red-600">{error}</span>}
+        <button
+          type="submit"
+          disabled={isPending}
+          className="w-max self-center rounded-md border-none bg-red-700 px-4 py-2 text-white disabled:opacity-60"
+        >
+          {isPending ? "Deleting..." : "Delete"}
         </button>
       </form>
     ) : type === "create" || type === "update" ? (

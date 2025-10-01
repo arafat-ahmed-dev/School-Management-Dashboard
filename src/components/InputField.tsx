@@ -9,6 +9,8 @@ type InputFieldProps = {
   defaultValue?: string;
   error?: FieldError;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
+  className?: string;
+  readOnly?: boolean;
 };
 
 const InputField = ({
@@ -19,9 +21,11 @@ const InputField = ({
   defaultValue,
   error,
   inputProps,
+  className,
+  readOnly,
 }: InputFieldProps) => {
   return (
-    <div className="flex w-full flex-col gap-2 md:w-1/4">
+    <div className={`flex w-full flex-col gap-2 md:w-1/4 ${className}`}>
       <label className="text-xs text-gray-500">{label}</label>
       <input
         type={type}
@@ -29,6 +33,7 @@ const InputField = ({
         className="w-full rounded-md p-2 text-sm ring-[1.5px] ring-gray-300"
         {...inputProps}
         defaultValue={defaultValue}
+        readOnly={readOnly || false}
         autoComplete="on"
       />
       {error?.message && (
