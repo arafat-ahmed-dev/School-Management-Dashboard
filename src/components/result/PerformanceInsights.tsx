@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface PerformanceInsightsProps {
   insights: string[];
@@ -14,9 +14,9 @@ interface PerformanceInsightsProps {
 
 export function PerformanceInsights({ insights }: PerformanceInsightsProps) {
   return (
-    <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 mb-6">
+    <Card className="mb-6 bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl dark:bg-gray-800">
       <CardHeader>
-        <CardTitle className="text-lg sm:text-xl font-semibold">
+        <CardTitle className="text-lg font-semibold sm:text-xl">
           Performance Insights
         </CardTitle>
         <CardDescription>
@@ -27,7 +27,6 @@ export function PerformanceInsights({ insights }: PerformanceInsightsProps) {
         <div className="space-y-2">
           {insights.map((insight, index) => (
             <Alert key={index}>
-              <AlertTitle className="text-base sm:text-lg">Insight {index + 1}</AlertTitle>
               <AlertDescription className="text-sm sm:text-base">{insight}</AlertDescription>
             </Alert>
           ))}
