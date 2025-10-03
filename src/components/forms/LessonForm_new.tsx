@@ -5,7 +5,6 @@ import { z } from "zod";
 import InputField from "../InputField";
 import React, { useEffect, useState, useRef } from "react";
 import { getAllSubjects, getAllClasses, getAllTeachers, createLesson, updateLesson } from "@/app/actions/actions";
-import { toast } from "sonner";
 
 const schema = z.object({
     name: z.string().min(1, { message: "Lesson name is required!" }),
@@ -98,21 +97,21 @@ const LessonForm = ({ type, data }: { type: "create" | "update"; data?: any }) =
             if (type === "create") {
                 const result = await createLesson(lessonData);
                 if (result.error) {
-                    toast.error("Failed to create lesson: " + result.error);
+                    alert("Failed to create lesson: " + result.error);
                 } else {
-                    toast.success("Lesson created successfully!");
+                    alert("Lesson created successfully!");
                 }
             } else {
                 const result = await updateLesson(data?.id, lessonData);
                 if (result.error) {
-                    toast.error("Failed to update lesson: " + result.error);
+                    alert("Failed to update lesson: " + result.error);
                 } else {
-                    toast.success("Lesson updated successfully!");
+                    alert("Lesson updated successfully!");
                 }
             }
         } catch (error) {
             console.error("Unexpected error:", error);
-            toast.error("An unexpected error occurred. Please try again.");
+            alert("An unexpected error occurred. Please try again.");
         }
     });
 

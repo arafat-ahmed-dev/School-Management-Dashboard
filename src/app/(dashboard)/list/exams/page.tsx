@@ -18,22 +18,34 @@ type ExamList = Exam & {
 
 const columns = [
   {
-    header: "Subject Name",
-    accessor: "name",
+    header: "Exam Details",
+    accessor: "details",
+    className: "w-1/2 sm:w-auto",
+  },
+  {
+    header: "Subject",
+    accessor: "subject",
+    className: "hidden sm:table-cell",
   },
   {
     header: "Class",
     accessor: "class",
+    className: "w-1/4 sm:w-auto",
   },
   {
     header: "Teacher",
     accessor: "teacher",
-    className: "hidden md:table-cell p-2",
+    className: "hidden md:table-cell",
   },
   {
-    header: "Date",
-    accessor: "date",
-    className: "hidden md:table-cell p-2",
+    header: "Type",
+    accessor: "type",
+    className: "hidden lg:table-cell",
+  },
+  {
+    header: "Date & Time",
+    accessor: "datetime",
+    className: "hidden md:table-cell",
   },
   ...(role === "admin"
     ? [
@@ -48,21 +60,75 @@ const columns = [
 const renderRow = (item: ExamList) => (
   <tr
     key={item.id}
-    className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-aamPurpleLight"
+    className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
   >
-    <td className="flex items-center gap-4 p-4 px-2">
-      {item.lesson.subject.name}
+    {/* Exam Details - Always visible, responsive */}
+    <td className="p-2 sm:p-4">
+      <div className="space-y-1">
+        <div className="font-medium text-gray-900">{item.title}</div>
+        <div className="text-xs text-gray-500 sm:hidden">
+          {item.lesson.subject.name} • {item.lesson.class.name}
+        </div>
+        <div className="text-xs text-gray-500 sm:hidden">
+          <span className="inline-flex rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
+            {item.examType.charAt(0) + item.examType.slice(1).toLowerCase()}
+          </span>
+        </div>
+        <div className="text-xs text-gray-500 md:hidden">
+          {new Intl.DateTimeFormat("en-US", {
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }).format(item.startTime)}
+        </div>
+      </div>
     </td>
-    <td className="capitalize">{item.lesson.class.name}</td>
-    <td className="hidden md:table-cell p-2">{item.lesson.teacher.name}</td>
-    <td className="hidden md:table-cell p-2">
-      {new Intl.DateTimeFormat("en-US").format(item.startTime)}
+
+    {/* Subject - Hidden on mobile */}
+    <td className="hidden p-2 sm:table-cell">{item.lesson.subject.name}</td>
+
+    {/* Class - Always visible on small screens and up */}
+    <td className="p-2 capitalize">{item.lesson.class.name}</td>
+
+    {/* Teacher - Hidden on small screens */}
+    <td className="hidden p-2 md:table-cell">{item.lesson.teacher.name}</td>
+
+    {/* Type - Hidden on medium screens and below */}
+    <td className="hidden p-2 lg:table-cell">
+      <span className="inline-flex rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
+        {item.examType.charAt(0) + item.examType.slice(1).toLowerCase()}
+      </span>
     </td>
-    <td>
-      <div className="flex items-center gap-2 w-fit justify-center">
+
+    {/* Date & Time - Hidden on small screens */}
+    <td className="hidden p-2 md:table-cell">
+      <div className="text-xs">
+        <div className="font-medium">
+          {new Intl.DateTimeFormat("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }).format(item.startTime)}
+        </div>
+        <div className="text-gray-500">
+          {new Intl.DateTimeFormat("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }).format(item.startTime)} - {new Intl.DateTimeFormat("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }).format(item.endTime)}
+        </div>
+      </div>
+    </td>
+
+    {/* Actions - Always visible */}
+    <td className="p-2">
+      <div className="flex w-fit items-center justify-center gap-2">
         {role === "admin" && (
           <>
-            <FormModel table="exam" type="update" />
+            <FormModel table="exam" type="update" data={item} />
             <FormModel table="exam" type="delete" id={item.id.toString()} />
           </>
         )}
@@ -96,17 +162,24 @@ const ExamListPage = async ({
             query.lesson.teacherId = value;
             break;
           case "search":
-            query.lesson = {
-              OR: [
-                {
+            query.OR = [
+              { title: { contains: value, mode: "insensitive" } },
+              {
+                lesson: {
                   subject: { name: { contains: value, mode: "insensitive" } },
                 },
-                {
+              },
+              {
+                lesson: {
                   teacher: { name: { contains: value, mode: "insensitive" } },
                 },
-                { class: { name: { contains: value, mode: "insensitive" } } },
-              ],
-            };
+              },
+              {
+                lesson: {
+                  class: { name: { contains: value, mode: "insensitive" } },
+                },
+              },
+            ];
             break;
           default:
             break;
@@ -135,19 +208,19 @@ const ExamListPage = async ({
   ]);
 
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="m-4 mt-0 flex-1 rounded-md bg-white p-4">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">All Exams</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+        <h1 className="hidden text-lg font-semibold md:block">All Exams</h1>
+        <div className="flex w-full flex-col items-center gap-4 md:w-auto md:flex-row">
           <TableSearch />
-          <div className="flex items-center gap-4 justify-between md:self-end w-full">
-            <h1 className="md:hidden block text-sm font-semibold">All Exams</h1>
+          <div className="flex w-full items-center justify-between gap-4 md:self-end">
+            <h1 className="block text-sm font-semibold md:hidden">All Exams</h1>
             <div className="flex items-center gap-4 self-end">
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
+              <button className="flex size-8 items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/filter.png" alt="" width={14} height={14} />
               </button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-aamYellow">
+              <button className="flex size-8 items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/sort.png" alt="" width={14} height={14} />
               </button>
               {(role === "admin" || role === "teacher") && (

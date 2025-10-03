@@ -50,6 +50,24 @@ export async function getAllClasses(props?: Record<string, boolean>) {
   });
 }
 
+export async function getAllStudents(props?: Record<string, boolean>) {
+  return await prisma.student.findMany({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      class: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      ...(props ?? {}),
+    },
+    orderBy: { name: "asc" },
+  });
+}
+
 export async function getAllLessons(props?: Record<string, boolean>) {
   try {
     const lessons = await prisma.lesson.findMany({
@@ -67,6 +85,30 @@ export async function getAllLessons(props?: Record<string, boolean>) {
   } catch (error) {
     console.error("Failed to fetch lessons:", error);
     return { lessons: [], error: "Failed to fetch lessons. Please try again." };
+  }
+}
+
+export async function getAllExams(props?: Record<string, boolean>) {
+  try {
+    const exams = await prisma.exam.findMany({
+      include: {
+        lesson: {
+          include: {
+            subject: true,
+            class: true,
+            teacher: true,
+          },
+        },
+        ...(props ?? {}),
+      },
+      orderBy: {
+        startTime: "asc",
+      },
+    });
+    return { exams, error: null };
+  } catch (error) {
+    console.error("Failed to fetch exams:", error);
+    return { exams: [], error: "Failed to fetch exams. Please try again." };
   }
 }
 
@@ -174,13 +216,70 @@ export async function createLesson(input: CreateLessonInput) {
 
 export async function deleteLesson(id: string) {
   try {
+    // Validate the ID format
+    if (!id || id.trim() === "") {
+      return {
+        success: false,
+        error: "Invalid lesson ID provided.",
+      };
+    }
+
+    // First check if the lesson exists
+    const existingLesson = await prisma.lesson.findUnique({
+      where: { id },
+      include: {
+        exams: true,
+        assignments: true,
+        attendances: true,
+      },
+    });
+
+    if (!existingLesson) {
+      return {
+        success: false,
+        error: "Lesson not found.",
+      };
+    }
+
+    await prisma.exam.deleteMany({ where: { lessonId: id } });
+    await prisma.assignment.deleteMany({ where: { lessonId: id } });
+    await prisma.attendance.deleteMany({ where: { lessonId: id } });
+
+    // If no related records, proceed with deletion
     await prisma.lesson.delete({
       where: { id },
     });
+
     revalidatePath("/schedule");
     return { success: true, error: null };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to delete lesson:", error);
+
+    if (error.code === "P2025") {
+      console.log("Lesson record not found (P2025)");
+      return {
+        success: false,
+        error: "Lesson not found.",
+      };
+    }
+
+    if (error.code === "P2023") {
+      console.log("Invalid ObjectId format (P2023)");
+      return {
+        success: false,
+        error: "Invalid lesson ID format.",
+      };
+    }
+
+    if (error.code === "P2014") {
+      console.log("Foreign key constraint violation (P2014)");
+      return {
+        success: false,
+        error:
+          "Cannot delete lesson. It has related records that must be deleted first.",
+      };
+    }
+
     return {
       success: false,
       error: "Failed to delete lesson. Please try again.",
@@ -643,10 +742,820 @@ export async function deleteClass(id: string) {
 // make all the deleted functions above available for import from this file
 export async function deleteStudent(id: string) {}
 export async function deleteParent(id: string) {}
-export async function deleteExam(id: string) {}
-export async function deleteAssignment(id: string) {}
 export async function deleteResult(id: string) {}
-export async function deleteAttendance(id: string) {}
 export async function deleteEvent(id: string) {}
 export async function deleteMessage(id: string) {}
 export async function deleteAnnouncement(id: string) {}
+
+// --- Exam Actions ---
+type CreateExamInput = {
+  title: string;
+  startTime: string;
+  endTime: string;
+  lessonId: string;
+  examType: "MONTHLY" | "MIDTERM" | "FINAL" | "ASSIGNMENT";
+};
+
+export async function createExam(input: CreateExamInput) {
+  try {
+    // Validate the lessonId exists
+    if (!input.lessonId || input.lessonId.trim() === "") {
+      return {
+        exam: null,
+        error: "Lesson selection is required.",
+      };
+    }
+
+    const lesson = await prisma.lesson.findUnique({
+      where: { id: input.lessonId },
+    });
+
+    if (!lesson) {
+      return {
+        exam: null,
+        error: "The selected lesson does not exist.",
+      };
+    }
+
+    const exam = await prisma.exam.create({
+      data: {
+        title: input.title,
+        startTime: new Date(input.startTime),
+        endTime: new Date(input.endTime),
+        lessonId: input.lessonId,
+        examType: input.examType,
+      },
+    });
+    return { exam, error: null };
+  } catch (error: any) {
+    console.error("Failed to create exam:", error);
+
+    // Handle foreign key constraint errors
+    if (error.code === "P2003") {
+      return {
+        exam: null,
+        error: "The selected lesson does not exist.",
+      };
+    }
+
+    // Handle invalid ObjectId format
+    if (error.code === "P2023") {
+      return {
+        exam: null,
+        error: "Invalid lesson ID format.",
+      };
+    }
+
+    return {
+      exam: null,
+      error: "Failed to create exam. Please try again.",
+    };
+  }
+}
+
+export async function updateExam(id: string, input: CreateExamInput) {
+  try {
+    // Validate the ID format
+    if (!id || id.trim() === "") {
+      return {
+        exam: null,
+        error: "Invalid exam ID provided.",
+      };
+    }
+
+    // First check if the exam exists
+    const existingExam = await prisma.exam.findUnique({
+      where: { id },
+    });
+
+    if (!existingExam) {
+      return {
+        exam: null,
+        error: "Exam not found. It may have been deleted.",
+      };
+    }
+
+    const exam = await prisma.exam.update({
+      where: { id },
+      data: {
+        title: input.title,
+        startTime: new Date(input.startTime),
+        endTime: new Date(input.endTime),
+        lessonId: input.lessonId,
+        examType: input.examType,
+      },
+    });
+    return { exam, error: null };
+  } catch (error: any) {
+    console.error("Failed to update exam:", error);
+
+    // Handle specific Prisma errors
+    if (error.code === "P2025") {
+      return {
+        exam: null,
+        error: "Exam not found. It may have been deleted.",
+      };
+    }
+
+    // Handle invalid ObjectId format
+    if (error.code === "P2023") {
+      return {
+        exam: null,
+        error: "Invalid exam ID format.",
+      };
+    }
+
+    // Handle foreign key constraint errors (invalid lessonId)
+    if (error.code === "P2003") {
+      return {
+        exam: null,
+        error: "The selected lesson does not exist.",
+      };
+    }
+
+    return {
+      exam: null,
+      error: "Failed to update exam. Please try again.",
+    };
+  }
+}
+
+export async function deleteExam(id: string) {
+  try {
+    console.log("Attempting to delete exam with ID:", id);
+
+    // Validate the ID format
+    if (!id || id.trim() === "") {
+      console.log("Invalid ID provided:", id);
+      return {
+        success: false,
+        error: "Invalid exam ID provided.",
+      };
+    }
+
+    // First check if the exam exists and has related records
+    const existingExam = await prisma.exam.findUnique({
+      where: { id },
+      include: {
+        results: true,
+      },
+    });
+
+    if (!existingExam) {
+      return {
+        success: false,
+        error: "Exam not found.",
+      };
+    }
+
+    // Check for related results that would prevent deletion
+    if (existingExam.results.length > 0) {
+      return {
+        success: false,
+        error: `Cannot delete exam. It has ${existingExam.results.length} result record(s). Please delete these results first.`,
+      };
+    }
+
+    // If no related records, proceed with deletion
+    await prisma.exam.delete({
+      where: { id },
+    });
+
+    console.log("Exam deleted successfully");
+
+    // Revalidate the exam list page to update the UI
+    revalidatePath("/list/exams");
+
+    return { success: true, error: null };
+  } catch (error: any) {
+    console.error("Failed to delete exam:", error);
+    console.log("Error code:", error.code);
+    console.log("Error message:", error.message);
+
+    // Handle specific Prisma errors
+    if (error.code === "P2025") {
+      console.log("Exam not found (P2025)");
+      return {
+        success: false,
+        error: "Exam not found. It may have already been deleted.",
+      };
+    }
+
+    // Handle invalid ObjectId format (common with MongoDB)
+    if (error.code === "P2023") {
+      console.log("Invalid ObjectId format (P2023)");
+      return {
+        success: false,
+        error: "Invalid exam ID format.",
+      };
+    }
+
+    // Handle foreign key constraint violations
+    if (error.code === "P2014") {
+      console.log("Foreign key constraint violation (P2014)");
+      return {
+        success: false,
+        error:
+          "Cannot delete exam. It has related records that must be deleted first.",
+      };
+    }
+
+    console.log("Unknown error occurred");
+    return {
+      success: false,
+      error: "Failed to delete exam. Please try again.",
+    };
+  }
+}
+
+// --- Assignment Actions ---
+type CreateAssignmentInput = {
+  title: string;
+  startDate: string;
+  dueDate: string;
+  lessonId: string;
+};
+
+export async function getAllAssignments() {
+  try {
+    const assignments = await prisma.assignment.findMany({
+      include: {
+        lesson: {
+          include: {
+            subject: true,
+            class: true,
+            teacher: true,
+          },
+        },
+      },
+      orderBy: {
+        dueDate: "asc",
+      },
+    });
+    return assignments;
+  } catch (error) {
+    console.error("Failed to fetch assignments:", error);
+    return [];
+  }
+}
+
+export async function createAssignment(input: CreateAssignmentInput) {
+  try {
+    const startDate = new Date(input.startDate);
+    const dueDate = new Date(input.dueDate);
+
+    // Validate dates
+    if (isNaN(startDate.getTime()) || isNaN(dueDate.getTime())) {
+      return {
+        assignment: null,
+        error: "Invalid date format provided.",
+      };
+    }
+
+    if (dueDate <= startDate) {
+      return {
+        assignment: null,
+        error: "Due date must be after start date.",
+      };
+    }
+
+    // Check if lesson exists
+    const lesson = await prisma.lesson.findUnique({
+      where: { id: input.lessonId },
+    });
+
+    if (!lesson) {
+      return {
+        assignment: null,
+        error: "Selected lesson not found.",
+      };
+    }
+
+    const assignment = await prisma.assignment.create({
+      data: {
+        title: input.title,
+        startDate,
+        dueDate,
+        lessonId: input.lessonId,
+      },
+      include: {
+        lesson: {
+          include: {
+            subject: true,
+            class: true,
+            teacher: true,
+          },
+        },
+      },
+    });
+
+    return {
+      assignment,
+      error: null,
+    };
+  } catch (error) {
+    console.error("Failed to create assignment:", error);
+    return {
+      assignment: null,
+      error: "Failed to create assignment. Please try again.",
+    };
+  }
+}
+
+export async function updateAssignment(
+  id: string,
+  input: Partial<CreateAssignmentInput>
+) {
+  try {
+    // Validate the ID format
+    if (!id || id.trim() === "") {
+      return {
+        assignment: null,
+        error: "Invalid assignment ID provided.",
+      };
+    }
+
+    // First check if the assignment exists
+    const existingAssignment = await prisma.assignment.findUnique({
+      where: { id },
+    });
+
+    if (!existingAssignment) {
+      return {
+        assignment: null,
+        error: "Assignment not found.",
+      };
+    }
+
+    const updateData: any = {};
+
+    if (input.title) updateData.title = input.title;
+    if (input.startDate) {
+      const startDate = new Date(input.startDate);
+      if (isNaN(startDate.getTime())) {
+        return {
+          assignment: null,
+          error: "Invalid start date format.",
+        };
+      }
+      updateData.startDate = startDate;
+    }
+    if (input.dueDate) {
+      const dueDate = new Date(input.dueDate);
+      if (isNaN(dueDate.getTime())) {
+        return {
+          assignment: null,
+          error: "Invalid due date format.",
+        };
+      }
+      updateData.dueDate = dueDate;
+    }
+    if (input.lessonId) {
+      // Check if lesson exists
+      const lesson = await prisma.lesson.findUnique({
+        where: { id: input.lessonId },
+      });
+
+      if (!lesson) {
+        return {
+          assignment: null,
+          error: "Selected lesson not found.",
+        };
+      }
+      updateData.lessonId = input.lessonId;
+    }
+
+    // Validate dates if both are provided
+    if (updateData.startDate && updateData.dueDate) {
+      if (updateData.dueDate <= updateData.startDate) {
+        return {
+          assignment: null,
+          error: "Due date must be after start date.",
+        };
+      }
+    }
+
+    const assignment = await prisma.assignment.update({
+      where: { id },
+      data: updateData,
+      include: {
+        lesson: {
+          include: {
+            subject: true,
+            class: true,
+            teacher: true,
+          },
+        },
+      },
+    });
+
+    return {
+      assignment,
+      error: null,
+    };
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      console.log("Assignment record not found (P2025)");
+      return {
+        assignment: null,
+        error: "Assignment not found.",
+      };
+    }
+
+    if (error.code === "P2023") {
+      console.log("Invalid ObjectId format (P2023)");
+      return {
+        assignment: null,
+        error: "Invalid assignment ID format.",
+      };
+    }
+
+    console.error("Failed to update assignment:", error);
+    return {
+      assignment: null,
+      error: "Failed to update assignment. Please try again.",
+    };
+  }
+}
+
+export async function deleteAssignment(id: string) {
+  try {
+    // Validate the ID format
+    if (!id || id.trim() === "") {
+      return {
+        success: false,
+        error: "Invalid assignment ID provided.",
+      };
+    }
+
+    // First check if the assignment exists and has related records
+    const existingAssignment = await prisma.assignment.findUnique({
+      where: { id },
+      include: {
+        results: true,
+      },
+    });
+
+    if (!existingAssignment) {
+      return {
+        success: false,
+        error: "Assignment not found.",
+      };
+    }
+
+    // Check for related results that would prevent deletion
+    if (existingAssignment.results.length > 0) {
+      return {
+        success: false,
+        error: `Cannot delete assignment. It has ${existingAssignment.results.length} result record(s). Please delete these results first.`,
+      };
+    }
+
+    // If no related records, proceed with deletion
+    await prisma.assignment.delete({
+      where: { id },
+    });
+
+    return {
+      success: true,
+      error: null,
+    };
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      console.log("Assignment record not found (P2025)");
+      return {
+        success: false,
+        error: "Assignment not found.",
+      };
+    }
+
+    if (error.code === "P2023") {
+      console.log("Invalid ObjectId format (P2023)");
+      return {
+        success: false,
+        error: "Invalid assignment ID format.",
+      };
+    }
+
+    if (error.code === "P2014") {
+      console.log("Foreign key constraint violation (P2014)");
+      return {
+        success: false,
+        error:
+          "Cannot delete assignment. It has related records that must be deleted first.",
+      };
+    }
+
+    console.log("Unknown error occurred");
+    return {
+      success: false,
+      error: "Failed to delete assignment. Please try again.",
+    };
+  }
+}
+
+// --- Attendance Actions ---
+type CreateAttendanceInput = {
+  date: string;
+  present: boolean;
+  studentId: string;
+  lessonId: string;
+};
+
+export async function getAllAttendances() {
+  try {
+    const attendances = await prisma.attendance.findMany({
+      include: {
+        student: true,
+        lesson: {
+          include: {
+            subject: true,
+            class: true,
+            teacher: true,
+          },
+        },
+      },
+      orderBy: {
+        date: "desc",
+      },
+    });
+    return attendances;
+  } catch (error) {
+    console.error("Failed to fetch attendances:", error);
+    return [];
+  }
+}
+
+export async function createAttendance(input: CreateAttendanceInput) {
+  try {
+    const date = new Date(input.date);
+
+    // Validate date
+    if (isNaN(date.getTime())) {
+      return {
+        attendance: null,
+        error: "Invalid date format provided.",
+      };
+    }
+
+    // Check if student exists
+    const student = await prisma.student.findUnique({
+      where: { id: input.studentId },
+      include: { class: true },
+    });
+
+    if (!student) {
+      return {
+        attendance: null,
+        error: "Selected student not found.",
+      };
+    }
+
+    if (!student.class) {
+      return {
+        attendance: null,
+        error: "Selected student is not assigned to any class.",
+      };
+    }
+
+    // Check if lesson exists
+    const lesson = await prisma.lesson.findUnique({
+      where: { id: input.lessonId },
+    });
+
+    if (!lesson) {
+      return {
+        attendance: null,
+        error: "Selected lesson not found.",
+      };
+    }
+
+    // Check if attendance already exists for this student and lesson on this date
+    const existingAttendance = await prisma.attendance.findFirst({
+      where: {
+        studentId: input.studentId,
+        lessonId: input.lessonId,
+        date: {
+          gte: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
+          lt: new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1),
+        },
+      },
+    });
+
+    if (existingAttendance) {
+      return {
+        attendance: null,
+        error:
+          "Attendance already recorded for this student and lesson on this date.",
+      };
+    }
+
+    const attendance = await prisma.attendance.create({
+      data: {
+        date,
+        present: input.present,
+        studentId: input.studentId,
+        lessonId: input.lessonId,
+      },
+      include: {
+        student: true,
+        lesson: {
+          include: {
+            subject: true,
+            class: true,
+            teacher: true,
+          },
+        },
+      },
+    });
+
+    revalidatePath("/list/attendance");
+    return {
+      attendance,
+      error: null,
+    };
+  } catch (error) {
+    console.error("Failed to create attendance:", error);
+    return {
+      attendance: null,
+      error: "Failed to create attendance. Please try again.",
+    };
+  }
+}
+
+export async function updateAttendance(
+  id: string,
+  input: Partial<CreateAttendanceInput>
+) {
+  try {
+    // Validate the ID format
+    if (!id || id.trim() === "") {
+      return {
+        attendance: null,
+        error: "Invalid attendance ID provided.",
+      };
+    }
+
+    // First check if the attendance exists
+    const existingAttendance = await prisma.attendance.findUnique({
+      where: { id },
+    });
+
+    if (!existingAttendance) {
+      return {
+        attendance: null,
+        error: "Attendance record not found.",
+      };
+    }
+
+    const updateData: any = {};
+
+    if (input.date) {
+      const date = new Date(input.date);
+      if (isNaN(date.getTime())) {
+        return {
+          attendance: null,
+          error: "Invalid date format.",
+        };
+      }
+      updateData.date = date;
+    }
+    if (input.present !== undefined) updateData.present = input.present;
+    if (input.studentId) {
+      // Check if student exists
+      const student = await prisma.student.findUnique({
+        where: { id: input.studentId },
+        include: { class: true },
+      });
+
+      if (!student) {
+        return {
+          attendance: null,
+          error: "Selected student not found.",
+        };
+      }
+
+      if (!student.class) {
+        return {
+          attendance: null,
+          error: "Selected student is not assigned to any class.",
+        };
+      }
+      updateData.studentId = input.studentId;
+    }
+    if (input.lessonId) {
+      // Check if lesson exists
+      const lesson = await prisma.lesson.findUnique({
+        where: { id: input.lessonId },
+      });
+
+      if (!lesson) {
+        return {
+          attendance: null,
+          error: "Selected lesson not found.",
+        };
+      }
+      updateData.lessonId = input.lessonId;
+    }
+
+    const attendance = await prisma.attendance.update({
+      where: { id },
+      data: updateData,
+      include: {
+        student: true,
+        lesson: {
+          include: {
+            subject: true,
+            class: true,
+            teacher: true,
+          },
+        },
+      },
+    });
+
+    revalidatePath("/list/attendance");
+    return {
+      attendance,
+      error: null,
+    };
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      console.log("Attendance record not found (P2025)");
+      return {
+        attendance: null,
+        error: "Attendance record not found.",
+      };
+    }
+
+    if (error.code === "P2023") {
+      console.log("Invalid ObjectId format (P2023)");
+      return {
+        attendance: null,
+        error: "Invalid attendance ID format.",
+      };
+    }
+
+    console.error("Failed to update attendance:", error);
+    return {
+      attendance: null,
+      error: "Failed to update attendance. Please try again.",
+    };
+  }
+}
+
+export async function deleteAttendance(id: string) {
+  try {
+    // Validate the ID format
+    if (!id || id.trim() === "") {
+      return {
+        success: false,
+        error: "Invalid attendance ID provided.",
+      };
+    }
+
+    // First check if the attendance exists
+    const existingAttendance = await prisma.attendance.findUnique({
+      where: { id },
+    });
+
+    if (!existingAttendance) {
+      return {
+        success: false,
+        error: "Attendance record not found.",
+      };
+    }
+
+    // Delete the attendance
+    await prisma.attendance.delete({
+      where: { id },
+    });
+
+    revalidatePath("/list/attendance");
+    return {
+      success: true,
+      error: null,
+    };
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      console.log("Attendance record not found (P2025)");
+      return {
+        success: false,
+        error: "Attendance record not found.",
+      };
+    }
+
+    if (error.code === "P2023") {
+      console.log("Invalid ObjectId format (P2023)");
+      return {
+        success: false,
+        error: "Invalid attendance ID format.",
+      };
+    }
+
+    console.log("Unknown error occurred");
+    return {
+      success: false,
+      error: "Failed to delete attendance. Please try again.",
+    };
+  }
+}
