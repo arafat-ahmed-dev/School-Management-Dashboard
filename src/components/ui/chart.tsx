@@ -300,7 +300,7 @@ const ChartLegendContent = React.forwardRef<
                 <itemConfig.icon />
               ) : (
                 <div
-                  className="h-2 w-2 shrink-0 rounded-[2px]"
+                  className="size-2 translate-x-px rounded-full bg-current"
                   style={{
                     backgroundColor: item.color,
                   }}

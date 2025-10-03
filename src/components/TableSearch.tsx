@@ -15,14 +15,14 @@ const TableSearch = () => {
   };
   return (
     <form
-      className="w-full md:w-auto flex items-center gap-2 text-xs rounded-full ring-[1.5px] ring-gray-300 px-2"
+      className="flex w-full items-center gap-2 rounded-full px-2 text-xs ring-[1.5px] ring-gray-300 md:w-auto"
       onSubmit={handleSubmit}
     >
       <Image src="/search.png" alt="" width={14} height={14} />
       <input
         type="text"
         placeholder="Search..."
-        className="w-[200px] p-2 bg-transparent outline-none"
+        className="w-[200px] bg-transparent p-2 outline-none"
       />
     </form>
   );

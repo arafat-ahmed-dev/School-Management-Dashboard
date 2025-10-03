@@ -31,9 +31,9 @@ export function ClassLevelOverview({ classData }: ClassLevelOverviewProps) {
   const [selectedClass, setSelectedClass] = useState<string>("7");
 
   return (
-    <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 mb-6">
+    <Card className="mb-6 bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl dark:bg-gray-800">
       <CardHeader>
-        <CardTitle className="text-lg sm:text-xl font-semibold">
+        <CardTitle className="text-lg font-semibold sm:text-xl">
           Class-Level Overview
         </CardTitle>
         <CardDescription>Performance summary for each class</CardDescription>
@@ -57,13 +57,13 @@ export function ClassLevelOverview({ classData }: ClassLevelOverviewProps) {
 
         {/* Class Data Content */}
         {classData[selectedClass] && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <Card>
               <CardHeader>
                 <CardTitle>Total Students</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-xl sm:text-2xl font-bold">
+                <p className="text-xl font-bold sm:text-2xl">
                   {classData[selectedClass].students}
                 </p>
               </CardContent>
@@ -73,7 +73,7 @@ export function ClassLevelOverview({ classData }: ClassLevelOverviewProps) {
                 <CardTitle>Average Score</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-xl sm:text-2xl font-bold">
+                <p className="text-xl font-bold sm:text-2xl">
                   {classData[selectedClass].averageScore}%
                 </p>
               </CardContent>

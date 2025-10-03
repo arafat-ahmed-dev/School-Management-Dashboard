@@ -29,8 +29,8 @@ export default function ScheduleDisplay({ schedule }: ScheduleDisplayProps) {
 
   return (
     <div className="mt-8">
-      <h2 className="text-xl font-semibold mb-4">Class Schedule</h2>
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <h2 className="mb-4 text-xl font-semibold">Class Schedule</h2>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
         {days.map((day) => (
           <Card key={day} className="col-span-1">
             <CardHeader>
@@ -44,7 +44,7 @@ export default function ScheduleDisplay({ schedule }: ScheduleDisplayProps) {
                 return classInfo ? (
                   <div
                     key={`${day}-${time}`}
-                    className="mb-4 p-2 bg-gray-100 rounded"
+                    className="mb-4 rounded bg-gray-100 p-2"
                   >
                     <p className="font-medium">
                       {time} - {classInfo.subject}
@@ -59,7 +59,7 @@ export default function ScheduleDisplay({ schedule }: ScheduleDisplayProps) {
                       Duration: {classInfo.duration} minutes
                     </p>
                     {classInfo.description && (
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="mt-1 text-sm text-gray-600">
                         {classInfo.description}
                       </p>
                     )}

@@ -201,6 +201,8 @@ export async function createLesson(input: CreateLessonInput) {
         subjectId,
         classId,
         teacherId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     });
     revalidatePath("/schedule");
@@ -321,6 +323,10 @@ export async function updateLesson(
     if (subjectId) updateData.subjectId = subjectId;
     if (classId) updateData.classId = classId;
     if (teacherId) updateData.teacherId = teacherId;
+
+    // Always update the updatedAt field
+    updateData.updatedAt = new Date();
+
     const lesson = await prisma.lesson.update({
       where: { id },
       data: updateData,

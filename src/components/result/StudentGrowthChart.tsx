@@ -19,14 +19,14 @@ interface StudentGrowthChartProps {
 
 export function StudentGrowthChart({ data }: StudentGrowthChartProps) {
   return (
-    <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300">
+    <Card className="bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl dark:bg-gray-800">
       <CardHeader>
         <CardTitle className="text-xl font-semibold">
           Student Growth Trend
         </CardTitle>
         <CardDescription>Performance improvement over time</CardDescription>
       </CardHeader>
-      <CardContent className="p-0 relative -left-5 md:-left-3">
+      <CardContent className="relative -left-5 p-0 md:-left-3">
         <ChartContainer
           config={{
             growth: {
@@ -39,7 +39,7 @@ export function StudentGrowthChart({ data }: StudentGrowthChartProps) {
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data}>
               <XAxis dataKey="month" stroke="#888888" />
-              <YAxis stroke="#888888"/>
+              <YAxis stroke="#888888" />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Area
                 type="monotone"

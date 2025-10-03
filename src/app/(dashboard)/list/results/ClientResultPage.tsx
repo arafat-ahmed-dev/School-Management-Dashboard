@@ -18,7 +18,7 @@ const ClientResultPage = ({ initialData }: ClientResultPageProps) => {
         <div className="m-2 mt-0 flex-1 rounded-md bg-white text-base md:m-4 md:p-4 md:text-lg">
             {/* Dashboard Title */}
             <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-800 sm:text-3xl lg:text-4xl dark:text-white">
+                <h1 className="text-2xl font-bold text-gray-800 dark:text-white sm:text-3xl lg:text-4xl">
                     Student Results Dashboard
                 </h1>
             </div>

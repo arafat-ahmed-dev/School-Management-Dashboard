@@ -8,14 +8,14 @@ datasource db {
 }
 
 model Admin {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  username     String   @unique
-  password     String   @unique
-  email        String   @unique
-  phone        String?
-  approved     Approve? @default(PENDING)
-  createdAt    DateTime @default(now())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  username  String   @unique
+  password  String   @unique
+  email     String   @unique
+  phone     String?
+  approved  Approve? @default(PENDING)
+  createdAt DateTime @default(now())
 }
 
 model Student {
@@ -98,7 +98,7 @@ model Class {
   capacity      Int
   events        Event[]
   announcements Announcement[]
-  subjectsId    String[]       @db.ObjectId  // Add this
+  subjectsId    String[]       @db.ObjectId // Add this
   subjects      Subject[]      @relation(fields: [subjectsId], references: [id]) // Add this
 }
 
@@ -110,7 +110,7 @@ model Subject {
   teachersId String[]  @db.ObjectId
   teachers   Teacher[] @relation(fields: [teachersId], references: [id])
   lessons    Lesson[]
-  classesId  String[]  @db.ObjectId  // Multiple classes can have this subject
+  classesId  String[]  @db.ObjectId // Multiple classes can have this subject
   classes    Class[]   @relation(fields: [classesId], references: [id])
 }
 
@@ -120,8 +120,8 @@ model Lesson {
   day         Day
   startTime   DateTime
   endTime     DateTime
-  subjectId   String?       @db.ObjectId
-  subject     Subject?      @relation(fields: [subjectId], references: [id]) 
+  subjectId   String?      @db.ObjectId
+  subject     Subject?     @relation(fields: [subjectId], references: [id])
   classId     String       @db.ObjectId
   class       Class        @relation(fields: [classId], references: [id])
   teacherId   String       @db.ObjectId
@@ -129,6 +129,8 @@ model Lesson {
   exams       Exam[]
   assignments Assignment[]
   attendances Attendance[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 model Exam {
