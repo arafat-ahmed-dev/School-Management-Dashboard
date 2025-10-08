@@ -1,6 +1,5 @@
 import Announcements from "@/components/Announcements";
 import CountChartContainer from "@/components/CountChartContainer";
-import FinanceChart from "@/components/FinanceChart";
 import UserCard from "@/components/UserCard";
 import AttendanceChartContainer from "@/components/AttendanceChartContainer";
 import EventCalenderContainer from "@/components/EventCalenderContainer";
@@ -29,10 +28,6 @@ const AdminPage = async ({
           <div className="min-h-[450px] w-full lg:w-2/3">
             <AttendanceChartContainer />
           </div>
-        </div>
-        {/* BOTTOM CHART */}
-        <div className="size-full min-h-[500px]">
-          <FinanceChart />
         </div>
       </div>
       {/* RIGHT */}

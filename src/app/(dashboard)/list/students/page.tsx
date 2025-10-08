@@ -63,7 +63,7 @@ const renderRow = (item: StudnetList) => (
       />
       <div className="flex flex-col">
         <h3 className="font-semibold">{item.name}</h3>
-        <p className="text-xs text-gray-500">{item.class.name}</p>
+        <p className="text-xs text-gray-500">{item.class?.name}</p>
       </div>
     </td>
     <td className="hidden p-2 md:table-cell">{item.id.substring(10)}</td>

@@ -1,8 +1,5 @@
 import React from "react";
 
-// const response = useAppSelector((state) => state.auth.userData?.userRole);
-// const role = _.toLower(response);
-
 const Table = ({
   columns,
   renderRow,
