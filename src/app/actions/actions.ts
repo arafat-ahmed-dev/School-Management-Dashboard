@@ -748,10 +748,907 @@ export async function deleteClass(id: string) {
 // make all the deleted functions above available for import from this file
 export async function deleteStudent(id: string) {}
 export async function deleteParent(id: string) {}
-export async function deleteResult(id: string) {}
-export async function deleteEvent(id: string) {}
 export async function deleteMessage(id: string) {}
-export async function deleteAnnouncement(id: string) {}
+
+// --- Result Actions ---
+type CreateResultInput = {
+  score: number;
+  maxScore: number;
+  examId: string; // Made required since we focus on exams for Bangladesh system
+  studentId: string;
+};
+
+export async function getAllResults() {
+  try {
+    const results = await prisma.result.findMany({
+      include: {
+        student: {
+          select: {
+            id: true,
+            name: true,
+            class: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        exam: {
+          include: {
+            lesson: {
+              include: {
+                subject: true,
+                class: true,
+              },
+            },
+          },
+        },
+        assignment: {
+          include: {
+            lesson: {
+              include: {
+                subject: true,
+                class: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        id: "desc",
+      },
+    });
+    return results;
+  } catch (error) {
+    console.error("Failed to fetch results:", error);
+    return [];
+  }
+}
+
+export async function createResult(input: CreateResultInput) {
+  try {
+    // Validate that examId is provided
+    if (!input.examId) {
+      return {
+        result: null,
+        error: "Exam must be selected.",
+      };
+    }
+
+    // Validate student exists
+    const student = await prisma.student.findUnique({
+      where: { id: input.studentId },
+    });
+
+    if (!student) {
+      return {
+        result: null,
+        error: "Selected student not found.",
+      };
+    }
+
+    // Validate exam exists
+    const exam = await prisma.exam.findUnique({
+      where: { id: input.examId },
+    });
+
+    if (!exam) {
+      return {
+        result: null,
+        error: "Selected exam not found.",
+      };
+    }
+
+    // Check if result already exists for this student and exam
+    const existingResult = await prisma.result.findFirst({
+      where: {
+        studentId: input.studentId,
+        examId: input.examId,
+      },
+    });
+
+    if (existingResult) {
+      return {
+        result: null,
+        error: "Result already exists for this student and exam.",
+      };
+    }
+
+    // Validate score
+    if (input.score < 0) {
+      return {
+        result: null,
+        error: "Score cannot be negative.",
+      };
+    }
+
+    if (input.score > input.maxScore) {
+      return {
+        result: null,
+        error: "Score cannot exceed maximum score.",
+      };
+    }
+
+    const result = await prisma.result.create({
+      data: {
+        score: input.score,
+        maxScore: input.maxScore,
+        studentId: input.studentId,
+        examId: input.examId,
+      },
+      include: {
+        student: {
+          select: {
+            id: true,
+            name: true,
+            class: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        exam: {
+          include: {
+            lesson: {
+              include: {
+                subject: true,
+                class: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    revalidatePath("/list/results");
+    return {
+      result,
+      error: null,
+    };
+  } catch (error) {
+    console.error("Failed to create result:", error);
+    return {
+      result: null,
+      error: "Failed to create result. Please try again.",
+    };
+  }
+}
+
+export async function updateResult(
+  id: string,
+  input: Partial<CreateResultInput>
+) {
+  try {
+    // Validate the ID format
+    if (!id || id.trim() === "") {
+      return {
+        result: null,
+        error: "Invalid result ID provided.",
+      };
+    }
+
+    // First check if the result exists
+    const existingResult = await prisma.result.findUnique({
+      where: { id },
+    });
+
+    if (!existingResult) {
+      return {
+        result: null,
+        error: "Result not found.",
+      };
+    }
+
+    const updateData: any = {};
+
+    // Validate score if provided
+    if (input.score !== undefined) {
+      if (input.score < 0) {
+        return {
+          result: null,
+          error: "Score cannot be negative.",
+        };
+      }
+      updateData.score = input.score;
+    }
+
+    // Validate maxScore if provided
+    if (input.maxScore !== undefined) {
+      if (input.maxScore <= 0) {
+        return {
+          result: null,
+          error: "Maximum score must be greater than zero.",
+        };
+      }
+      updateData.maxScore = input.maxScore;
+    }
+
+    // Validate that score doesn't exceed maxScore
+    const finalScore =
+      input.score !== undefined ? input.score : existingResult.score;
+    const finalMaxScore =
+      input.maxScore !== undefined ? input.maxScore : existingResult.maxScore;
+
+    if (finalScore > finalMaxScore) {
+      return {
+        result: null,
+        error: "Score cannot exceed maximum score.",
+      };
+    }
+
+    // Validate student if provided
+    if (input.studentId) {
+      const student = await prisma.student.findUnique({
+        where: { id: input.studentId },
+      });
+
+      if (!student) {
+        return {
+          result: null,
+          error: "Selected student not found.",
+        };
+      }
+      updateData.studentId = input.studentId;
+    }
+
+    // Validate exam if provided
+    if (input.examId) {
+      const exam = await prisma.exam.findUnique({
+        where: { id: input.examId },
+      });
+
+      if (!exam) {
+        return {
+          result: null,
+          error: "Selected exam not found.",
+        };
+      }
+      updateData.examId = input.examId;
+    }
+
+    const result = await prisma.result.update({
+      where: { id },
+      data: updateData,
+      include: {
+        student: {
+          select: {
+            id: true,
+            name: true,
+            class: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        exam: {
+          include: {
+            lesson: {
+              include: {
+                subject: true,
+                class: true,
+              },
+            },
+          },
+        },
+        assignment: {
+          include: {
+            lesson: {
+              include: {
+                subject: true,
+                class: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    revalidatePath("/list/results");
+    return {
+      result,
+      error: null,
+    };
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      return {
+        result: null,
+        error: "Result not found.",
+      };
+    }
+
+    if (error.code === "P2023") {
+      return {
+        result: null,
+        error: "Invalid result ID format.",
+      };
+    }
+
+    console.error("Failed to update result:", error);
+    return {
+      result: null,
+      error: "Failed to update result. Please try again.",
+    };
+  }
+}
+
+export async function deleteResult(id: string) {
+  try {
+    // Validate the ID format
+    if (!id || id.trim() === "") {
+      return {
+        success: false,
+        error: "Invalid result ID provided.",
+      };
+    }
+
+    // First check if the result exists
+    const existingResult = await prisma.result.findUnique({
+      where: { id },
+    });
+
+    if (!existingResult) {
+      return {
+        success: false,
+        error: "Result not found.",
+      };
+    }
+
+    // Delete the result
+    await prisma.result.delete({
+      where: { id },
+    });
+
+    revalidatePath("/list/results");
+    return {
+      success: true,
+      error: null,
+    };
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      return {
+        success: false,
+        error: "Result not found.",
+      };
+    }
+
+    if (error.code === "P2023") {
+      return {
+        success: false,
+        error: "Invalid result ID format.",
+      };
+    }
+
+    console.error("Failed to delete result:", error);
+    return {
+      success: false,
+      error: "Failed to delete result. Please try again.",
+    };
+  }
+}
+
+// --- Event Actions ---
+type CreateEventInput = {
+  title: string;
+  description: string;
+  startTime: string;
+  endTime: string;
+  classId?: string;
+};
+
+export async function getAllEvents() {
+  try {
+    const events = await prisma.event.findMany({
+      include: {
+        class: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        startTime: "asc",
+      },
+    });
+    return events;
+  } catch (error) {
+    console.error("Failed to fetch events:", error);
+    return [];
+  }
+}
+
+export async function createEvent(input: CreateEventInput) {
+  try {
+    // Validate dates
+    const startTime = new Date(input.startTime);
+    const endTime = new Date(input.endTime);
+
+    if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
+      return {
+        event: null,
+        error: "Invalid date format provided.",
+      };
+    }
+
+    if (startTime >= endTime) {
+      return {
+        event: null,
+        error: "Start time must be before end time.",
+      };
+    }
+
+    // Validate class if provided
+    if (input.classId) {
+      const classExists = await prisma.class.findUnique({
+        where: { id: input.classId },
+      });
+
+      if (!classExists) {
+        return {
+          event: null,
+          error: "Selected class not found.",
+        };
+      }
+    }
+
+    const event = await prisma.event.create({
+      data: {
+        title: input.title,
+        description: input.description,
+        startTime,
+        endTime,
+        ...(input.classId && { classId: input.classId }),
+      },
+      include: {
+        class: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    revalidatePath("/list/events");
+    return {
+      event,
+      error: null,
+    };
+  } catch (error) {
+    console.error("Failed to create event:", error);
+    return {
+      event: null,
+      error: "Failed to create event. Please try again.",
+    };
+  }
+}
+
+export async function updateEvent(
+  id: string,
+  input: Partial<CreateEventInput>
+) {
+  try {
+    // Validate the ID format
+    if (!id || id.trim() === "") {
+      return {
+        event: null,
+        error: "Invalid event ID provided.",
+      };
+    }
+
+    // First check if the event exists
+    const existingEvent = await prisma.event.findUnique({
+      where: { id },
+    });
+
+    if (!existingEvent) {
+      return {
+        event: null,
+        error: "Event not found.",
+      };
+    }
+
+    const updateData: any = {};
+
+    // Validate and update dates if provided
+    if (input.startTime) {
+      const startTime = new Date(input.startTime);
+      if (isNaN(startTime.getTime())) {
+        return {
+          event: null,
+          error: "Invalid start time format.",
+        };
+      }
+      updateData.startTime = startTime;
+    }
+
+    if (input.endTime) {
+      const endTime = new Date(input.endTime);
+      if (isNaN(endTime.getTime())) {
+        return {
+          event: null,
+          error: "Invalid end time format.",
+        };
+      }
+      updateData.endTime = endTime;
+    }
+
+    // Validate that start time is before end time
+    const finalStartTime = input.startTime
+      ? new Date(input.startTime)
+      : existingEvent.startTime;
+    const finalEndTime = input.endTime
+      ? new Date(input.endTime)
+      : existingEvent.endTime;
+
+    if (finalStartTime >= finalEndTime) {
+      return {
+        event: null,
+        error: "Start time must be before end time.",
+      };
+    }
+
+    // Update other fields
+    if (input.title) updateData.title = input.title;
+    if (input.description !== undefined)
+      updateData.description = input.description;
+
+    // Validate class if provided
+    if (input.classId) {
+      const classExists = await prisma.class.findUnique({
+        where: { id: input.classId },
+      });
+
+      if (!classExists) {
+        return {
+          event: null,
+          error: "Selected class not found.",
+        };
+      }
+      updateData.classId = input.classId;
+    }
+
+    const event = await prisma.event.update({
+      where: { id },
+      data: updateData,
+      include: {
+        class: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    revalidatePath("/list/events");
+    return {
+      event,
+      error: null,
+    };
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      return {
+        event: null,
+        error: "Event not found.",
+      };
+    }
+
+    if (error.code === "P2023") {
+      return {
+        event: null,
+        error: "Invalid event ID format.",
+      };
+    }
+
+    console.error("Failed to update event:", error);
+    return {
+      event: null,
+      error: "Failed to update event. Please try again.",
+    };
+  }
+}
+
+export async function deleteEvent(id: string) {
+  try {
+    // Validate the ID format
+    if (!id || id.trim() === "") {
+      return {
+        success: false,
+        error: "Invalid event ID provided.",
+      };
+    }
+
+    // First check if the event exists
+    const existingEvent = await prisma.event.findUnique({
+      where: { id },
+    });
+
+    if (!existingEvent) {
+      return {
+        success: false,
+        error: "Event not found.",
+      };
+    }
+
+    // Delete the event
+    await prisma.event.delete({
+      where: { id },
+    });
+
+    revalidatePath("/list/events");
+    return {
+      success: true,
+      error: null,
+    };
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      return {
+        success: false,
+        error: "Event not found.",
+      };
+    }
+
+    if (error.code === "P2023") {
+      return {
+        success: false,
+        error: "Invalid event ID format.",
+      };
+    }
+
+    console.error("Failed to delete event:", error);
+    return {
+      success: false,
+      error: "Failed to delete event. Please try again.",
+    };
+  }
+}
+
+// --- Announcement Actions ---
+type CreateAnnouncementInput = {
+  title: string;
+  description: string;
+  date: string;
+  classId?: string;
+};
+
+export async function getAllAnnouncements() {
+  try {
+    const announcements = await prisma.announcement.findMany({
+      include: {
+        class: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        date: "desc",
+      },
+    });
+    return announcements;
+  } catch (error) {
+    console.error("Failed to fetch announcements:", error);
+    return [];
+  }
+}
+
+export async function createAnnouncement(input: CreateAnnouncementInput) {
+  try {
+    // Validate date
+    const date = new Date(input.date);
+    if (isNaN(date.getTime())) {
+      return {
+        announcement: null,
+        error: "Invalid date format provided.",
+      };
+    }
+
+    // Validate class if provided
+    if (input.classId) {
+      const classExists = await prisma.class.findUnique({
+        where: { id: input.classId },
+      });
+
+      if (!classExists) {
+        return {
+          announcement: null,
+          error: "Selected class not found.",
+        };
+      }
+    }
+
+    const announcement = await prisma.announcement.create({
+      data: {
+        title: input.title,
+        description: input.description,
+        date,
+        ...(input.classId && { classId: input.classId }),
+      },
+      include: {
+        class: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    revalidatePath("/list/announcements");
+    return {
+      announcement,
+      error: null,
+    };
+  } catch (error) {
+    console.error("Failed to create announcement:", error);
+    return {
+      announcement: null,
+      error: "Failed to create announcement. Please try again.",
+    };
+  }
+}
+
+export async function updateAnnouncement(
+  id: string,
+  input: Partial<CreateAnnouncementInput>
+) {
+  try {
+    // Validate the ID format
+    if (!id || id.trim() === "") {
+      return {
+        announcement: null,
+        error: "Invalid announcement ID provided.",
+      };
+    }
+
+    // First check if the announcement exists
+    const existingAnnouncement = await prisma.announcement.findUnique({
+      where: { id },
+    });
+
+    if (!existingAnnouncement) {
+      return {
+        announcement: null,
+        error: "Announcement not found.",
+      };
+    }
+
+    const updateData: any = {};
+
+    // Validate and update date if provided
+    if (input.date) {
+      const date = new Date(input.date);
+      if (isNaN(date.getTime())) {
+        return {
+          announcement: null,
+          error: "Invalid date format.",
+        };
+      }
+      updateData.date = date;
+    }
+
+    // Update other fields
+    if (input.title) updateData.title = input.title;
+    if (input.description !== undefined)
+      updateData.description = input.description;
+
+    // Validate class if provided
+    if (input.classId) {
+      const classExists = await prisma.class.findUnique({
+        where: { id: input.classId },
+      });
+
+      if (!classExists) {
+        return {
+          announcement: null,
+          error: "Selected class not found.",
+        };
+      }
+      updateData.classId = input.classId;
+    }
+
+    const announcement = await prisma.announcement.update({
+      where: { id },
+      data: updateData,
+      include: {
+        class: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    revalidatePath("/list/announcements");
+    return {
+      announcement,
+      error: null,
+    };
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      return {
+        announcement: null,
+        error: "Announcement not found.",
+      };
+    }
+
+    if (error.code === "P2023") {
+      return {
+        announcement: null,
+        error: "Invalid announcement ID format.",
+      };
+    }
+
+    console.error("Failed to update announcement:", error);
+    return {
+      announcement: null,
+      error: "Failed to update announcement. Please try again.",
+    };
+  }
+}
+
+export async function deleteAnnouncement(id: string) {
+  try {
+    // Validate the ID format
+    if (!id || id.trim() === "") {
+      return {
+        success: false,
+        error: "Invalid announcement ID provided.",
+      };
+    }
+
+    // First check if the announcement exists
+    const existingAnnouncement = await prisma.announcement.findUnique({
+      where: { id },
+    });
+
+    if (!existingAnnouncement) {
+      return {
+        success: false,
+        error: "Announcement not found.",
+      };
+    }
+
+    // Delete the announcement
+    await prisma.announcement.delete({
+      where: { id },
+    });
+
+    revalidatePath("/list/announcements");
+    return {
+      success: true,
+      error: null,
+    };
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      return {
+        success: false,
+        error: "Announcement not found.",
+      };
+    }
+
+    if (error.code === "P2023") {
+      return {
+        success: false,
+        error: "Invalid announcement ID format.",
+      };
+    }
+
+    console.error("Failed to delete announcement:", error);
+    return {
+      success: false,
+      error: "Failed to delete announcement. Please try again.",
+    };
+  }
+}
 
 // --- Exam Actions ---
 type CreateExamInput = {

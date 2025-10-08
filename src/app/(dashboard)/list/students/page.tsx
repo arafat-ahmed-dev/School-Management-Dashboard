@@ -9,7 +9,11 @@ import Link from "next/link";
 import prisma from "../../../../../prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 
-type StudnetList = Student & { class: Class } & { grade: Grade };
+type StudnetList = Student & {
+  class: Class;
+  grade: Grade;
+  Parent: { name: string; phone: string } | null;
+};
 
 const columns = [
   {
@@ -28,14 +32,29 @@ const columns = [
     className: "hidden md:table-cell p-2",
   },
   {
+    header: "Sex",
+    accessor: "sex",
+    className: "hidden md:table-cell p-2",
+  },
+  {
+    header: "Parent",
+    accessor: "parent",
+    className: "hidden lg:table-cell p-2",
+  },
+  {
     header: "Phone",
     accessor: "phone",
-    className: "hidden md:table-cell",
+    className: "hidden lg:table-cell",
+  },
+  {
+    header: "Blood Type",
+    accessor: "bloodType",
+    className: "hidden lg:table-cell p-2",
   },
   {
     header: "Address",
     accessor: "address",
-    className: "hidden md:table-cell",
+    className: "hidden xl:table-cell p-2",
   },
   ...(role === "admin" || role === "teacher"
     ? [
@@ -63,13 +82,42 @@ const renderRow = (item: StudnetList) => (
       />
       <div className="flex flex-col">
         <h3 className="font-semibold">{item.name}</h3>
+        <p className="text-xs text-gray-500">{item.email}</p>
         <p className="text-xs text-gray-500">{item.class?.name}</p>
       </div>
     </td>
     <td className="hidden p-2 md:table-cell">{item.id.substring(10)}</td>
     <td className="hidden p-2 md:table-cell">{item.grade?.level ?? "N/A"}</td>
-    <td className="hidden p-2 md:table-cell">{item.phone}</td>
-    <td className="hidden p-2 md:table-cell">{item.address}</td>
+    <td className="hidden p-2 md:table-cell">
+      <span className={`rounded-full px-2 py-1 text-xs ${item.sex === 'MALE' ? 'bg-blue-100 text-blue-800' :
+          item.sex === 'FEMALE' ? 'bg-pink-100 text-pink-800' :
+            'bg-gray-100 text-gray-800'
+        }`}>
+        {item.sex || 'N/A'}
+      </span>
+    </td>
+    <td className="hidden p-2 lg:table-cell">
+      {item.Parent ? (
+        <div>
+          <div className="text-xs font-medium">{item.Parent.name}</div>
+          <div className="text-xs text-gray-500">{item.Parent.phone}</div>
+        </div>
+      ) : (
+        <span className="text-xs text-gray-500">No parent</span>
+      )}
+    </td>
+    <td className="hidden p-2 lg:table-cell">{item.phone || 'N/A'}</td>
+    <td className="hidden p-2 lg:table-cell">
+      <span className={`rounded-full px-2 py-1 text-xs ${item.bloodType ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
+        }`}>
+        {item.bloodType || 'Unknown'}
+      </span>
+    </td>
+    <td className="hidden p-2 xl:table-cell">
+      <div className="max-w-32 truncate" title={item.address || 'No address'}>
+        {item.address || 'No address'}
+      </div>
+    </td>
     <td>
       <div className="flex items-center justify-center  gap-2">
         <Link href={`/list/students/${item.id}`}>
@@ -131,7 +179,13 @@ const StudentListPage = async ({
       where: query,
       include: {
         class: true,
-        grade: true, // Ensure grade is included in the query
+        grade: true,
+        Parent: {
+          select: {
+            name: true,
+            phone: true,
+          },
+        },
       },
 
       take: ITEM_PER_PAGE,

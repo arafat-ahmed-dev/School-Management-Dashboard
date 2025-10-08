@@ -58,7 +58,7 @@ const renderRow = (item: AttendanceList) => (
       <div className="flex w-fit items-center justify-center gap-2">
         {role === "admin" && (
           <>
-            <FormModel table="attendance" type="update" data={item} />
+            <FormModel table="attendance" type="update" data={item} id={item.id} />
             <FormModel
               table="attendance"
               type="delete"
@@ -103,7 +103,26 @@ const AttendanceListPage = async ({
     prisma.attendance.findMany({
       where: query,
       include: {
-        student: { select: { name: true, class: { select: { name: true } } } },
+        student: {
+          select: {
+            id: true,
+            name: true,
+            class: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        },
+        lesson: {
+          select: {
+            id: true,
+            name: true,
+            subject: { select: { name: true } },
+            class: { select: { name: true } }
+          }
+        }
       },
       take: ITEM_PER_PAGE,
       skip: (p - 1) * ITEM_PER_PAGE,

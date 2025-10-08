@@ -46,7 +46,12 @@ const TeacherListPage = async ({
     {
       header: "Address",
       accessor: "address",
-      className: "hidden lg:table-cell",
+      className: "hidden lg:table-cell p-2",
+    },
+    {
+      header: "Blood Type",
+      accessor: "bloodType",
+      className: "hidden xl:table-cell p-2",
     },
     ...(role === "admin" || role === "teacher"
       ? [
@@ -85,7 +90,17 @@ const TeacherListPage = async ({
         {item.classes.map((item) => item.name).join(", ")}
       </td>
       <td className="hidden p-2 lg:table-cell">{item.phone}</td>
-      <td className="hidden p-2 lg:table-cell">{item.address}</td>
+      <td className="hidden p-2 lg:table-cell">
+        <div className="max-w-32 truncate" title={item.address || 'No address'}>
+          {item.address || 'No address'}
+        </div>
+      </td>
+      <td className="hidden p-2 xl:table-cell">
+        <span className={`rounded-full px-2 py-1 text-xs ${item.bloodType ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
+          }`}>
+          {item.bloodType || 'Unknown'}
+        </span>
+      </td>
       <td>
         <div className="flex items-center justify-center gap-2">
           <Link href={`/list/teachers/${item.id}`}>

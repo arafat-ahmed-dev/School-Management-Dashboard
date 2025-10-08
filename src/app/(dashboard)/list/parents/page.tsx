@@ -22,6 +22,11 @@ const columns = [
     className: "p-2",
   },
   {
+    header: "Type",
+    accessor: "type",
+    className: "hidden md:table-cell p-2",
+  },
+  {
     header: "Phone",
     accessor: "phone",
     className: "hidden md:table-cell",
@@ -29,7 +34,7 @@ const columns = [
   {
     header: "Address",
     accessor: "address",
-    className: "hidden md:table-cell",
+    className: "hidden lg:table-cell p-2",
   },
   ...(role === "admin"
     ? [
@@ -53,8 +58,20 @@ const renderRow = (item: ParentList) => (
       </div>
     </td>
     <td className="p-2">{item.students.map((item) => item.name).join(", ")}</td>
-    <td className="hidden p-2 md:table-cell">{item.phone}</td>
-    <td className="hidden p-2 md:table-cell">{item.address}</td>
+    <td className="hidden p-2 md:table-cell">
+      <span className={`rounded-full px-2 py-1 text-xs ${item.type === 'FATHER' ? 'bg-blue-100 text-blue-800' :
+          item.type === 'MOTHER' ? 'bg-pink-100 text-pink-800' :
+            'bg-gray-100 text-gray-800'
+        }`}>
+        {item.type || 'N/A'}
+      </span>
+    </td>
+    <td className="hidden p-2 md:table-cell">{item.phone || 'N/A'}</td>
+    <td className="hidden p-2 lg:table-cell">
+      <div className="max-w-32 truncate" title={item.address || 'No address'}>
+        {item.address || 'No address'}
+      </div>
+    </td>
     <td>
       <div className="flex items-center justify-center  gap-2">
         {role === "admin" && (

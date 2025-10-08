@@ -80,21 +80,21 @@ const FormModal = ({
         : "bg-aamPurple";
 
   const forms: {
-    [key: string]: (type: "create" | "update", data?: any) => React.JSX.Element;
+    [key: string]: (type: "create" | "update", data?: any, onSuccess?: () => void) => React.JSX.Element;
   } = {
-    teacher: (type, data) => <TeacherForm type={type} data={data} />,
-    student: (type, data) => <StudentForm type={type} data={data} />,
-    parent: (type, data) => <ParentForm type={type} data={data} />,
-    subject: (type, data) => <SubjectForm type={type} data={data} />,
-    class: (type, data) => <ClassForm type={type} data={data} />,
-    lesson: (type, data) => <LessonForm type={type} data={data} />,
-    exam: (type, data) => <ExamForm type={type} data={data} />,
-    assignment: (type, data) => <AssignmentForm type={type} data={data} />,
-    result: (type, data) => <ResultForm type={type} data={data} />,
-    attendance: (type, data) => <AttendanceForm type={type} data={data} />,
-    event: (type, data) => <EventForm type={type} data={data} />,
-    message: (type, data) => <MessageForm type={type} data={data} />,
-    announcement: (type, data) => <AnnouncementForm type={type} data={data} />,
+    teacher: (type, data, onSuccess) => <TeacherForm type={type} data={data} />,
+    student: (type, data, onSuccess) => <StudentForm type={type} data={data} />,
+    parent: (type, data, onSuccess) => <ParentForm type={type} data={data} />,
+    subject: (type, data, onSuccess) => <SubjectForm type={type} data={data} />,
+    class: (type, data, onSuccess) => <ClassForm type={type} data={data} />,
+    lesson: (type, data, onSuccess) => <LessonForm type={type} data={data} />,
+    exam: (type, data, onSuccess) => <ExamForm type={type} data={data} />,
+    assignment: (type, data, onSuccess) => <AssignmentForm type={type} data={data} />,
+    result: (type, data, onSuccess) => <ResultForm type={type} data={data} onSuccess={onSuccess} />,
+    attendance: (type, data, onSuccess) => <AttendanceForm type={type} data={data} />,
+    event: (type, data, onSuccess) => <EventForm type={type} data={data} onSuccess={onSuccess} />,
+    message: (type, data, onSuccess) => <MessageForm type={type} data={data} />,
+    announcement: (type, data, onSuccess) => <AnnouncementForm type={type} data={data} onSuccess={onSuccess} />,
   };
 
   const [open, setOpen] = useState(false);
@@ -151,6 +151,11 @@ const FormModal = ({
 
   const Form = () => {
     console.log(`Rendering form for table: ${table}, type: ${type}, id: ${id}`);
+
+    const handleSuccess = () => {
+      setOpen(false);
+    };
+
     return type === "delete" && id ? (
       <form onSubmit={handleDelete} className="flex flex-col gap-4 p-4">
         <span className="text-center font-medium">
@@ -166,7 +171,7 @@ const FormModal = ({
         </button>
       </form>
     ) : type === "create" || type === "update" ? (
-      forms[table](type, data)
+      forms[table](type, data, handleSuccess)
     ) : (
       "Form not found!"
     );

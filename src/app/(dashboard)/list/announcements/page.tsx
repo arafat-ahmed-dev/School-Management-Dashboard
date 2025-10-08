@@ -48,8 +48,8 @@ const renderRow = (item: AnnouncementList) => (
       <div className="flex w-fit items-center justify-center gap-2">
         {role === "admin" && (
           <>
-            <FormModel table="parent" type="update" />
-            <FormModel table="parent" type="delete" id={item.id.toString()} />
+            <FormModel table="announcement" type="update" data={item} id={item.id} />
+            <FormModel table="announcement" type="delete" id={item.id.toString()} />
           </>
         )}
       </div>

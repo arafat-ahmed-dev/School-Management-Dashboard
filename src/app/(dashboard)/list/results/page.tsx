@@ -133,7 +133,7 @@ const ResultPage = async ({
     {
       header: "Actions",
       accessor: "action",
-      className: "flex justify-center table-cell",
+      className: "text-center table-cell",
     },
   ];
 
@@ -175,11 +175,11 @@ const ResultPage = async ({
       <td className="hidden p-2 lg:table-cell">
         <span
           className={`rounded-full px-3 py-1 text-xs font-semibold shadow-sm ${calculateGrade(item.score, item.maxScore) === "F"
-              ? "border border-red-200 bg-red-50 text-red-700"
-              : calculateGrade(item.score, item.maxScore) === "A+" ||
-                calculateGrade(item.score, item.maxScore) === "A"
-                ? "border border-emerald-200 bg-emerald-50 text-emerald-700"
-                : "border border-amber-200 bg-amber-50 text-amber-700"
+            ? "border border-red-200 bg-red-50 text-red-700"
+            : calculateGrade(item.score, item.maxScore) === "A+" ||
+              calculateGrade(item.score, item.maxScore) === "A"
+              ? "border border-emerald-200 bg-emerald-50 text-emerald-700"
+              : "border border-amber-200 bg-amber-50 text-amber-700"
             }`}
         >
           {calculateGrade(item.score, item.maxScore)}
@@ -191,7 +191,7 @@ const ResultPage = async ({
       <td>
         <div className="flex items-center justify-center gap-2">
           <Link href={`/list/results/${item.id}`}>
-            <button className="flex size-8 items-center justify-center rounded-lg bg-blue-500 shadow-sm transition-colors duration-200 hover:bg-blue-600">
+            <button className="flex size-7 items-center justify-center rounded-full bg-aamSky">
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
           </Link>

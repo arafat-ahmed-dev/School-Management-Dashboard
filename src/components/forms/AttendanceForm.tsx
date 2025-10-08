@@ -47,20 +47,30 @@ const AttendanceForm = ({ type, data }: { type: "create" | "update"; data?: any 
     const selectedStudent = watch("studentId");
     const selectedLesson = watch("lessonId");
 
+    // Set initial values for edit mode
+    useEffect(() => {
+        if (type === "update" && data) {
+            setValue("studentId", data.studentId || "");
+            setValue("lessonId", data.lessonId || "");
+            setValue("date", data.date ? new Date(data.date).toISOString().split('T')[0] : "");
+            setValue("present", data.present !== undefined ? String(data.present) : "true");
+        }
+    }, [data, type, setValue]);
+
     useEffect(() => {
         (async () => {
-            const [studentsData, lessonsResult] = await Promise.all([
-                getAllStudents({ class: true }),
-                getAllLessons({ subject: true, class: true })
-            ]);
-            // Filter students to only include those with assigned classes
-            const studentsWithClasses = studentsData.filter(student => student.class);
-            setStudents(studentsWithClasses);
+            // Only load lessons initially, load students when dropdown is opened
+            const lessonsResult = await getAllLessons({ subject: true, class: true });
             if (lessonsResult.lessons) {
                 setLessons(lessonsResult.lessons);
             }
+
+            // For edit mode, load the specific student data
+            if (type === "update" && data?.student) {
+                setStudents([data.student]);
+            }
         })();
-    }, []);
+    }, [type, data]);
 
     // Handle click outside dropdowns
     useEffect(() => {
@@ -107,6 +117,25 @@ const AttendanceForm = ({ type, data }: { type: "create" | "update"; data?: any 
         }
     });
 
+    // Add a function to load students when needed
+    const loadStudents = async () => {
+        try {
+            if (students.length === 0 || (type === "create" && students.length < 10)) {
+                const studentsData = await getAllStudents({ class: true });
+                if (studentsData && Array.isArray(studentsData)) {
+                    const studentsWithClasses = studentsData.filter(student => student.class);
+                    setStudents(studentsWithClasses);
+                } else {
+                    console.error("Failed to load students: Invalid data structure");
+                    toast.error("Failed to load students. Please try again.");
+                }
+            }
+        } catch (error) {
+            console.error("Error loading students:", error);
+            toast.error("Failed to load students. Please try again.");
+        }
+    };
+
     return (
         <form className="flex flex-col gap-8" onSubmit={onSubmit}>
             <h1 className="text-xl font-semibold">{type === "create" ? "Create a new attendance record" : "Update attendance record"}</h1>
@@ -127,12 +156,17 @@ const AttendanceForm = ({ type, data }: { type: "create" | "update"; data?: any 
                         <button
                             type="button"
                             className="w-full rounded-md border border-gray-300 bg-white p-2 text-left text-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            onClick={() => setShowStudentDropdown((v) => !v)}
+                            onClick={async () => {
+                                if (!showStudentDropdown) {
+                                    await loadStudents();
+                                }
+                                setShowStudentDropdown((v) => !v);
+                            }}
                         >
                             {selectedStudent
                                 ? (() => {
                                     const student = students.find((s) => s.id === selectedStudent);
-                                    return student ? `${student.name} (${student.class.name})` : "Select student";
+                                    return student ? `${student.name} (${student.class?.name})` : "Select student";
                                 })()
                                 : "Select student"}
                         </button>
@@ -147,10 +181,13 @@ const AttendanceForm = ({ type, data }: { type: "create" | "update"; data?: any 
                                 />
                                 <div className="max-h-40 overflow-y-auto">
                                     {students
-                                        .filter((student) =>
-                                            student.name.toLowerCase().includes(studentSearch.toLowerCase()) ||
-                                            student.class.name.toLowerCase().includes(studentSearch.toLowerCase())
-                                        )
+                                        .filter((student) => {
+                                            if (!student || !student.name) return false;
+                                            const studentName = student.name.toLowerCase();
+                                            const className = student.class?.name?.toLowerCase() || "";
+                                            const searchTerm = studentSearch.toLowerCase();
+                                            return studentName.includes(searchTerm) || className.includes(searchTerm);
+                                        })
                                         .map((student) => (
                                             <label
                                                 key={student.id}
@@ -168,7 +205,7 @@ const AttendanceForm = ({ type, data }: { type: "create" | "update"; data?: any 
                                                 <div className="ml-2">
                                                     <div className="font-medium">{student.name}</div>
                                                     <div className="text-xs text-gray-500">
-                                                        Class: {student.class.name}
+                                                        Class: {student.class?.name || "No class"}
                                                     </div>
                                                 </div>
                                             </label>
@@ -218,11 +255,16 @@ const AttendanceForm = ({ type, data }: { type: "create" | "update"; data?: any 
                                 />
                                 <div className="max-h-40 overflow-y-auto">
                                     {lessons
-                                        .filter((lesson) =>
-                                            lesson.name.toLowerCase().includes(lessonSearch.toLowerCase()) ||
-                                            lesson.subject?.name.toLowerCase().includes(lessonSearch.toLowerCase()) ||
-                                            lesson.class?.name.toLowerCase().includes(lessonSearch.toLowerCase())
-                                        )
+                                        .filter((lesson) => {
+                                            if (!lesson || !lesson.name) return false;
+                                            const lessonName = lesson.name.toLowerCase();
+                                            const subjectName = lesson.subject?.name?.toLowerCase() || "";
+                                            const className = lesson.class?.name?.toLowerCase() || "";
+                                            const searchTerm = lessonSearch.toLowerCase();
+                                            return lessonName.includes(searchTerm) ||
+                                                subjectName.includes(searchTerm) ||
+                                                className.includes(searchTerm);
+                                        })
                                         .map((lesson) => (
                                             <label
                                                 key={lesson.id}
@@ -240,7 +282,7 @@ const AttendanceForm = ({ type, data }: { type: "create" | "update"; data?: any 
                                                 <div className="ml-2">
                                                     <div className="font-medium">{lesson.name}</div>
                                                     <div className="text-xs text-gray-500">
-                                                        {lesson.subject?.name} - {lesson.class?.name}
+                                                        {lesson.subject?.name || "No subject"} - {lesson.class?.name || "No class"}
                                                     </div>
                                                 </div>
                                             </label>

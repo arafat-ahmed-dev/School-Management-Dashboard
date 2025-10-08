@@ -8,11 +8,14 @@ import prisma from "../../../../../prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Prisma, Subject, Teacher } from "@prisma/client";
 
-type SubjectList = Subject & { teachers: Teacher[] };
+type SubjectList = Subject & {
+  teachers: Teacher[];
+  classes: { name: string }[];
+};
 
 const columns = [
   {
-    header: "Subject Name",
+    header: "Subject Info",
     accessor: "subjectName",
     className: "p-2",
   },
@@ -20,6 +23,11 @@ const columns = [
     header: "Teachers",
     accessor: "teachers",
     className: "hidden md:table-cell p-2",
+  },
+  {
+    header: "Classes",
+    accessor: "classes",
+    className: "hidden lg:table-cell p-2",
   },
   ...(role === "admin"
     ? [
@@ -37,10 +45,16 @@ const renderRow = (item: SubjectList) => (
     className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
   >
     <td className="flex items-center gap-4 p-4 px-2">
-      <h3 className="font-semibold">{item.name}</h3>
+      <div className="flex flex-col">
+        <h3 className="font-semibold">{item.name}</h3>
+        <p className="text-xs text-gray-500">Code: {item.code}</p>
+      </div>
     </td>
     <td className="hidden p-2 md:table-cell">
-      {item.teachers.map((item) => item.name).join(", ")}
+      {item.teachers.map((teacher) => teacher.name).join(", ") || "No teachers assigned"}
+    </td>
+    <td className="hidden p-2 lg:table-cell">
+      {item.classes.map((cls) => cls.name).join(", ") || "No classes assigned"}
     </td>
     <td>
       <div className="flex w-fit gap-2">

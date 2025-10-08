@@ -8,7 +8,11 @@ import Image from "next/image";
 import prisma from "../../../../../prisma";
 import { Prisma, Class, Grade, Teacher } from "@prisma/client";
 
-type ClassList = Class & { grade: Grade } & { supervisor: Teacher }; // Update type to include supervisor
+type ClassList = Class & {
+  grade: Grade;
+  supervisor: Teacher;
+  _count: { students: number };
+};
 
 const columns = [
   {
@@ -27,18 +31,23 @@ const columns = [
     className: "hidden md:table-cell p-2",
   },
   {
+    header: "Students",
+    accessor: "students",
+    className: "hidden md:table-cell p-2",
+  },
+  {
     header: "Supervisor",
     accessor: "supervisor",
     className: "p-2",
   },
   ...(role === "admin"
     ? [
-        {
-          header: "Actions",
-          accessor: "action",
-          className: "table-cell p-2",
-        },
-      ]
+      {
+        header: "Actions",
+        accessor: "action",
+        className: "table-cell p-2",
+      },
+    ]
     : []),
 ];
 const renderRow = (item: ClassList) => (
@@ -49,12 +58,17 @@ const renderRow = (item: ClassList) => (
     <td className="flex items-center gap-4 p-4 px-2">{item.name}</td>
     <td className="hidden p-2 md:table-cell">{item.capacity}</td>
     <td className="hidden p-2 md:table-cell">{item.grade.level}</td>
-    <td className=" p-2">{item.supervisor?.name}</td>
+    <td className="hidden p-2 md:table-cell">
+      <span className="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800">
+        {item._count.students} students
+      </span>
+    </td>
+    <td className="p-2">{item.supervisor?.name || 'No supervisor'}</td>
     <td>
       <div className="flex w-fit items-center justify-center gap-2">
         {role === "admin" && (
           <>
-            <FormModel table="class" type="update" data={item}/>
+            <FormModel table="class" type="update" data={item} id={item.id} />
             <FormModel table="class" type="delete" id={item.id.toString()} />
           </>
         )}
@@ -101,10 +115,13 @@ const ClassListPage = async ({
       include: {
         grade: {
           select: { id: true, level: true },
-        }, 
+        },
         supervisor: {
           select: { id: true, name: true },
-        }, 
+        },
+        _count: {
+          select: { students: true },
+        },
       },
       take: ITEM_PER_PAGE,
       skip: (p - 1) * ITEM_PER_PAGE,

@@ -16,6 +16,11 @@ const columns = [
     accessor: "title",
   },
   {
+    header: "Description",
+    accessor: "description",
+    className: "hidden md:table-cell p-2",
+  },
+  {
     header: "Class",
     accessor: "class",
   },
@@ -27,12 +32,12 @@ const columns = [
   {
     header: "Start Time",
     accessor: "startTime",
-    className: "hidden md:table-cell p-2",
+    className: "hidden lg:table-cell p-2",
   },
   {
     header: "End Time",
     accessor: "endTime",
-    className: "hidden md:table-cell p-2",
+    className: "hidden lg:table-cell p-2",
   },
   ...(role === "admin"
     ? [
@@ -50,18 +55,23 @@ const renderRow = (item: EventList) => (
     className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
   >
     <td className="flex items-center gap-4 p-4 px-2">{item.title}</td>
-    <td className="capitalize">{item.class?.name}</td>
+    <td className="hidden p-2 md:table-cell">
+      <div className="max-w-32 truncate" title={item.description}>
+        {item.description}
+      </div>
+    </td>
+    <td className="capitalize">{item.class?.name || 'All Classes'}</td>
     <td className="hidden p-2 md:table-cell">
       {new Intl.DateTimeFormat("en-US").format(item.startTime)}
     </td>
-    <td className="hidden p-2 md:table-cell">
+    <td className="hidden p-2 lg:table-cell">
       {new Intl.DateTimeFormat("en-US", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: true, // Use 12-hour format (set to false for 24-hour format)
       }).format(item.startTime)}
     </td>
-    <td className="hidden p-2 md:table-cell">
+    <td className="hidden p-2 lg:table-cell">
       {new Intl.DateTimeFormat("en-US", {
         hour: "2-digit",
         minute: "2-digit",
@@ -72,7 +82,7 @@ const renderRow = (item: EventList) => (
       <div className="flex w-fit items-center justify-center gap-2">
         {role === "admin" && (
           <>
-            <FormModel table="event" type="update" />
+            <FormModel table="event" type="update" data={item} id={item.id} />
             <FormModel table="event" type="delete" id={item.id.toString()} />
           </>
         )}
