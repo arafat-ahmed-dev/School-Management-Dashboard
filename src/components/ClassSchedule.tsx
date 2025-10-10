@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState, useCallback } from "react";
-import { type CalendarEvent, calendarEvents, classes } from "@/lib/data";
+import { useMemo, useState, useCallback, useEffect } from "react";
+import { type CalendarEvent, calendarEvents } from "@/lib/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useCalendarOperations } from "@/hooks/useCalendarOperations";
 
 const daysOfWeek = [
   "Sunday",
@@ -48,37 +49,99 @@ const timeSlots = [
 ];
 
 type ViewType = "list" | "week" | "all";
+interface TeacherItem {
+  name: string;
+  subjects: { name: string }[];
+}
+interface ClassItem {
+  name: string;
+}
+interface SubjectItem {
+  name: string;
+  teachers: { name: string }[];
+}
+
+export interface ClassScheduleProps {
+  teacherName: TeacherItem[];
+  classesName: ClassItem[];
+  subjectName: SubjectItem[];
+  initialEvents?: CalendarEvent[];
+  isLoading?: boolean;
+}
 
 export default function ClassSchedule({
-  classesName = classes,
+  teacherName,
+  classesName,
+  subjectName,
+  initialEvents = [],
   isLoading = false,
-}: {
-  classesName?: Array<{ name: string }>;
-  isLoading?: boolean;
-}) {
+}: ClassScheduleProps) {
+  // Hooks
+  const { createLesson } = useCalendarOperations();
+
   // State management
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<ViewType>("week");
-  const [events, setEvents] = useState<CalendarEvent[]>(calendarEvents);
+  const [events, setEvents] = useState<CalendarEvent[]>(initialEvents.length > 0 ? initialEvents : calendarEvents);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedClass, setSelectedClass] = useState(
     classesName[0]?.name || "Class 7",
   );
   const [searchQuery, setSearchQuery] = useState("");
+  const [preFillData, setPreFillData] = useState<{
+    dayOfWeek?: string;
+    startTime?: string;
+    endTime?: string;
+    class?: string;
+  }>({});
+
+  // Sync events when initialEvents change
+  useEffect(() => {
+    if (initialEvents.length > 0) {
+      setEvents(initialEvents);
+    }
+  }, [initialEvents]);
+
   const subjectColors: Record<string, string> = {
+    // Math subjects
     Math: "bg-blue-100 text-blue-800",
-    "Advanced Math": "bg-blue-200 text-blue-900",
     Mathematics: "bg-blue-100 text-blue-800",
+    "Advanced Math": "bg-blue-200 text-blue-900",
+
+    // English subjects
     English: "bg-green-100 text-green-800",
+    "English-1": "bg-green-100 text-green-800",
+    "English-2": "bg-green-200 text-green-900",
     "English Literature": "bg-green-200 text-green-900",
+
+    // Bangla subjects
+    "Bangla-1": "bg-teal-100 text-teal-800",
+    "Bangla-2": "bg-teal-200 text-teal-900",
+
+    // Sciences
     Biology: "bg-yellow-100 text-yellow-800",
     Physics: "bg-purple-100 text-purple-800",
     "Physics Lab": "bg-purple-200 text-purple-900",
     Chemistry: "bg-pink-100 text-pink-800",
+    "General Science": "bg-lime-100 text-lime-800",
+
+    // Social Studies
     History: "bg-orange-100 text-orange-800",
     Geography: "bg-amber-100 text-amber-800",
-    "Computer Science": "bg-cyan-100 text-cyan-800",
+    "Bangladesh and Global Studies": "bg-amber-200 text-amber-900",
+    Civics: "bg-slate-100 text-slate-800",
+    "Islamic History and Culture": "bg-orange-200 text-orange-900",
+
+    // Commerce subjects
     Economics: "bg-emerald-100 text-emerald-800",
+    Accounting: "bg-emerald-200 text-emerald-900",
+    "Business Organization and Management": "bg-emerald-300 text-emerald-900",
+
+    // Technology and Others
+    "Computer Science": "bg-cyan-100 text-cyan-800",
+    ICT: "bg-cyan-200 text-cyan-900",
+    "Information and Communication Technology": "bg-cyan-200 text-cyan-900",
+    Religion: "bg-violet-100 text-violet-800",
     "Social Studies": "bg-indigo-100 text-indigo-800",
   };
   // Derived state with memoization for performance
@@ -151,17 +214,20 @@ export default function ClassSchedule({
   );
 
   const handleCreateSchedule = useCallback(
-    (
+    async (
       scheduleData: Omit<CalendarEvent, "dayOfWeek"> & { dayOfWeek: string },
     ) => {
-      const newEvent: CalendarEvent = {
-        ...scheduleData,
-        dayOfWeek: daysOfWeek.indexOf(scheduleData.dayOfWeek),
-      };
+      // Call the server action to create the lesson
+      const newEvent = await createLesson(scheduleData);
 
-      setEvents((prevEvents) => [...prevEvents, newEvent]);
+      // Only add to local state if newEvent is defined
+      if (newEvent) {
+        setEvents((prevEvents) => [...prevEvents, newEvent]);
+      }
+
+      // Modal will close itself on success
     },
-    [],
+    [createLesson],
   );
 
   const handlePrint = useCallback(() => {
@@ -201,6 +267,45 @@ export default function ClassSchedule({
     );
     link.click();
   }, [events]);
+
+  // Helper function to convert AM/PM time to 24-hour format
+  const convertTo24Hour = useCallback((timeStr: string) => {
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+    
+    if (modifier === 'PM' && hours !== 12) {
+      hours += 12;
+    }
+    if (modifier === 'AM' && hours === 12) {
+      hours = 0;
+    }
+    
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  }, []);
+
+  // Helper function to suggest end time (1 hour later)
+  const suggestEndTime = useCallback((startTime: string) => {
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const endHour = hours + 1;
+    return `${endHour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  }, []);
+
+  // Function to handle time slot click with pre-fill data
+  const handleTimeSlotClick = useCallback((timeSlot: string, dayOfWeek: number, className?: string) => {
+    const startTime24 = convertTo24Hour(timeSlot);
+    const endTime24 = suggestEndTime(startTime24);
+    
+    const dayName = daysOfWeek[dayOfWeek];
+    
+    setPreFillData({
+      dayOfWeek: dayName,
+      startTime: startTime24,
+      endTime: endTime24,
+      class: className || selectedClass,
+    });
+    
+    setIsCreateModalOpen(true);
+  }, [convertTo24Hour, suggestEndTime, selectedClass]);
 
   // View rendering functions
   const renderListView = () => (
@@ -260,7 +365,10 @@ export default function ClassSchedule({
       <div
         className={cn("min-w-[600px]", days.length === 1 && "min-w-[300px]")}
       >
-        <div className={`grid-cols-${days.length} grid gap-1`}>
+        <div
+          className="grid gap-1"
+          style={{ gridTemplateColumns: `repeat(${days.length}, minmax(0, 1fr))` }}
+        >
           {days.map((day) => (
             <div key={day} className="flex flex-col">
               <div className="flex h-12 items-center justify-center border-b bg-muted/30 font-semibold">
@@ -268,79 +376,79 @@ export default function ClassSchedule({
               </div>
               {isLoading
                 ? Array(timeSlots.length)
-                    .fill(0)
-                    .map((_, i) => (
-                      <div
-                        key={i}
-                        className="relative h-24 border-b border-gray-100"
-                      >
-                        <Skeleton className="absolute inset-1 rounded-md" />
-                      </div>
-                    ))
+                  .fill(0)
+                  .map((_, i) => (
+                    <div
+                      key={i}
+                      className="relative h-24 border-b border-gray-100"
+                    >
+                      <Skeleton className="absolute inset-1 rounded-md" />
+                    </div>
+                  ))
                 : timeSlots.map((timeSlot) => {
-                    type ClassSchedule = {
-                      title: string;
-                      startTime: string;
-                      endTime: string;
-                      dayOfWeek: number; // 0 (Sunday) to 6 (Saturday)
-                      class: string;
-                      teacher: string;
-                    };
-                    const event: ClassSchedule | null =
-                      getEventForTimeSlot(day, timeSlot, selectedClass) || null;
+                  type ClassSchedule = {
+                    title: string;
+                    startTime: string;
+                    endTime: string;
+                    dayOfWeek: number; // 0 (Sunday) to 6 (Saturday)
+                    class: string;
+                    teacher: string;
+                  };
+                  const event: ClassSchedule | null =
+                    getEventForTimeSlot(day, timeSlot, selectedClass) || null;
 
-                    if (event) {
-                      console.log(event);
-                      // const title = event.title;
-                      // const start = formatTime(event.startTime);
-                      // const end = formatTime(event.endTime);
-                      // console.log(title, "--------- > ", start, "--", end);
-                    } else {
-                      console.log("No event found for this time slot.");
-                    }
-                    return (
-                      <div
-                        key={`${day}-${timeSlot}`}
-                        className="relative h-24 border-b border-gray-100 transition-colors hover:bg-muted/10"
-                      >
-                        <div className="absolute left-0 top-0 p-1 text-xs text-gray-500">
-                          {timeSlot}
-                        </div>
-                        {event ? (
-                          <div
-                            className={cn(
-                              "absolute inset-1 p-2 rounded-md shadow-sm transition-all hover:shadow-md",
-                              subjectColors[event.title]
-                                ? subjectColors[event.title]
-                                : "bg-gray-100 text-gray-800",
-                            )}
-                          >
-                            <div className="text-xs font-medium">
-                              {event.title}
-                            </div>
-                            <div className="text-xs opacity-75">
-                              {formatTime(event.startTime)} -{" "}
-                              {formatTime(event.endTime)}
-                            </div>
-                            <div className="truncate text-xs">
-                              Class: {event.class}
-                            </div>
-                            <div className="mt-1 truncate text-xs">
-                              Teacher: {event.teacher}
-                            </div>
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => setIsCreateModalOpen(true)}
-                            className="absolute inset-1 flex items-center justify-center rounded-md border border-dashed border-gray-300 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600"
-                          >
-                            <PlusCircle className="mr-1 size-4" />
-                            <span className="text-xs">Add</span>
-                          </button>
-                        )}
+                  if (event) {
+                    console.log(event);
+                    // const title = event.title;
+                    // const start = formatTime(event.startTime);
+                    // const end = formatTime(event.endTime);
+                    // console.log(title, "--------- > ", start, "--", end);
+                  } else {
+                    console.log("No event found for this time slot.");
+                  }
+                  return (
+                    <div
+                      key={`${day}-${timeSlot}`}
+                      className="relative h-24 border-b border-gray-100 transition-colors hover:bg-muted/10"
+                    >
+                      <div className="absolute left-0 top-0 p-1 text-xs text-gray-500">
+                        {timeSlot}
                       </div>
-                    );
-                  })}
+                      {event ? (
+                        <div
+                          className={cn(
+                            "absolute inset-1 p-2 rounded-md shadow-sm transition-all hover:shadow-md",
+                            subjectColors[event.title]
+                              ? subjectColors[event.title]
+                              : "bg-gray-100 text-gray-800",
+                          )}
+                        >
+                          <div className="text-xs font-medium">
+                            {event.title}
+                          </div>
+                          <div className="text-xs opacity-75">
+                            {formatTime(event.startTime)} -{" "}
+                            {formatTime(event.endTime)}
+                          </div>
+                          <div className="truncate text-xs">
+                            Class: {event.class}
+                          </div>
+                          <div className="mt-1 truncate text-xs">
+                            Teacher: {event.teacher}
+                          </div>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => handleTimeSlotClick(timeSlot, day, selectedClass)}
+                          className="absolute inset-1 flex items-center justify-center rounded-md border border-dashed border-gray-300 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600"
+                        >
+                          <PlusCircle className="mr-1 size-4" />
+                          <span className="text-xs">Add</span>
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
             </div>
           ))}
         </div>
@@ -376,85 +484,85 @@ export default function ClassSchedule({
             <tbody>
               {isLoading
                 ? Array(timeSlots.length)
-                    .fill(0)
-                    .map((_, i) => (
-                      <tr key={i}>
-                        <td className="sticky left-0 border bg-background p-2 font-medium">
-                          <Skeleton className="h-4 w-16" />
+                  .fill(0)
+                  .map((_, i) => (
+                    <tr key={i}>
+                      <td className="sticky left-0 border bg-background p-2 font-medium">
+                        <Skeleton className="h-4 w-16" />
+                      </td>
+                      {allClasses.map((className, j) => (
+                        <td key={`${i}-${j}`} className="border p-1">
+                          <Skeleton className="h-16 w-full rounded-md" />
                         </td>
-                        {allClasses.map((className, j) => (
-                          <td key={`${i}-${j}`} className="border p-1">
-                            <Skeleton className="h-16 w-full rounded-md" />
-                          </td>
-                        ))}
-                      </tr>
-                    ))
+                      ))}
+                    </tr>
+                  ))
                 : timeSlots.map((timeSlot) => {
-                    const [slotHour, slotPeriod] = timeSlot.split(/:| /);
-                    const slotHourNum =
-                      Number.parseInt(slotHour) +
-                      (slotPeriod === "PM" && slotHour !== "12" ? 12 : 0);
+                  const [slotHour, slotPeriod] = timeSlot.split(/:| /);
+                  const slotHourNum =
+                    Number.parseInt(slotHour) +
+                    (slotPeriod === "PM" && slotHour !== "12" ? 12 : 0);
 
-                    return (
-                      <tr key={timeSlot} className="hover:bg-muted/10">
-                        <td className="sticky left-0 z-10 border bg-background p-2 font-medium">
-                          {timeSlot}
-                        </td>
-                        {allClasses.map((className) => {
-                          const classEvent = dayEvents.find((event) => {
-                            if (event.class !== className) return false;
+                  return (
+                    <tr key={timeSlot} className="hover:bg-muted/10">
+                      <td className="sticky left-0 z-10 border bg-background p-2 font-medium">
+                        {timeSlot}
+                      </td>
+                      {allClasses.map((className) => {
+                        const classEvent = dayEvents.find((event) => {
+                          if (event.class !== className) return false;
 
-                            const [eventStartHour, eventStartPeriod] =
-                              event.startTime.split(/:| /);
-                            const eventHourNum =
-                              Number.parseInt(eventStartHour) +
-                              (eventStartPeriod === "PM" &&
+                          const [eventStartHour, eventStartPeriod] =
+                            event.startTime.split(/:| /);
+                          const eventHourNum =
+                            Number.parseInt(eventStartHour) +
+                            (eventStartPeriod === "PM" &&
                               eventStartHour !== "12"
-                                ? 12
-                                : 0);
+                              ? 12
+                              : 0);
 
-                            return eventHourNum === slotHourNum;
-                          });
+                          return eventHourNum === slotHourNum;
+                        });
 
-                          return (
-                            <td
-                              key={`${className}-${timeSlot}`}
-                              className="relative min-h-[80px] border p-1"
-                            >
-                              {classEvent ? (
-                                <div
-                                  className={cn(
-                                    "p-2 rounded-md h-full transition-all hover:shadow-md",
-                                    subjectColors[classEvent.title] ||
-                                      "bg-gray-100",
-                                  )}
-                                >
-                                  <div className="text-xs font-medium">
-                                    {classEvent.title}
-                                  </div>
-                                  <div className="text-xs opacity-75">
-                                    {formatTime(classEvent.startTime)} -{" "}
-                                    {formatTime(classEvent.endTime)}
-                                  </div>
-                                  <div className="mt-1 truncate text-xs">
-                                    Teacher: {classEvent.teacher}
-                                  </div>
+                        return (
+                          <td
+                            key={`${className}-${timeSlot}`}
+                            className="relative min-h-[80px] border p-1"
+                          >
+                            {classEvent ? (
+                              <div
+                                className={cn(
+                                  "p-2 rounded-md h-full transition-all hover:shadow-md",
+                                  subjectColors[classEvent.title] ||
+                                  "bg-gray-100",
+                                )}
+                              >
+                                <div className="text-xs font-medium">
+                                  {classEvent.title}
                                 </div>
-                              ) : (
-                                <button
-                                  onClick={() => setIsCreateModalOpen(true)}
-                                  className="flex h-16 w-full items-center justify-center rounded-md border border-dashed border-gray-300 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600"
-                                >
-                                  <PlusCircle className="mr-1 size-3" />
-                                  <span className="text-xs">Add</span>
-                                </button>
-                              )}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    );
-                  })}
+                                <div className="text-xs opacity-75">
+                                  {formatTime(classEvent.startTime)} -{" "}
+                                  {formatTime(classEvent.endTime)}
+                                </div>
+                                <div className="mt-1 truncate text-xs">
+                                  Teacher: {classEvent.teacher}
+                                </div>
+                              </div>
+                            ) : (
+                              <button
+                                onClick={() => handleTimeSlotClick(timeSlot, currentDate.getDay(), className)}
+                                className="flex h-16 w-full items-center justify-center rounded-md border border-dashed border-gray-300 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600"
+                              >
+                                <PlusCircle className="mr-1 size-3" />
+                                <span className="text-xs">Add</span>
+                              </button>
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </div>
@@ -587,9 +695,16 @@ export default function ClassSchedule({
 
       <CreateScheduleModal
         isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+        onClose={() => {
+          setIsCreateModalOpen(false);
+          setPreFillData({}); // Clear pre-fill data when modal closes
+        }}
         onCreateSchedule={handleCreateSchedule}
         classOptions={classesName.map((c) => c.name)}
+        teacherOptions={teacherName}
+        subjectOptions={subjectName}
+        isLoading={isLoading}
+        preFillData={preFillData}
       />
     </Card>
   );
