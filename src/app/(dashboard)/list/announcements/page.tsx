@@ -2,6 +2,7 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import NotificationReader from "@/components/NotificationReader";
 import { role } from "@/lib/data";
 import Image from "next/image";
 import prisma from "../../../../../prisma";
@@ -102,6 +103,7 @@ const AnnouncementListPage = async ({
 
   return (
     <div className="m-4 mt-0 flex-1 rounded-md bg-white p-4">
+      <NotificationReader type="announcements" />
       {/* TOP */}
       <div className="flex items-center justify-between">
         <h1 className="hidden text-lg font-semibold md:block">

@@ -1637,6 +1637,37 @@ export async function deleteAnnouncement(id: string) {
   }
 }
 
+export async function getNotificationCounts() {
+  try {
+    // Get recent announcements count (last 7 days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const recentAnnouncementsCount = await prisma.announcement.count({
+      where: {
+        date: {
+          gte: sevenDaysAgo,
+        },
+      },
+    });
+
+    // For now, messages count is 0 since Message model doesn't exist yet
+    // You can implement this when the Message model is added to the schema
+    const messagesCount = 0;
+
+    return {
+      announcements: recentAnnouncementsCount,
+      messages: messagesCount,
+    };
+  } catch (error) {
+    console.error("Failed to fetch notification counts:", error);
+    return {
+      announcements: 0,
+      messages: 0,
+    };
+  }
+}
+
 // --- Exam Actions ---
 type CreateExamInput = {
   title: string;

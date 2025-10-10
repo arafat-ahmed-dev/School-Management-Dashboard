@@ -1,5 +1,6 @@
-import Image from "next/image"
-import Link from "next/link";
+import Image from "next/image";
+import NotificationComponent from "./NotificationComponent";
+import UserInfo from "./UserInfo";
 
 const Navbar = () => {
   return (
@@ -15,28 +16,11 @@ const Navbar = () => {
       </div>
       {/* ICONS & USER */}
       <div className="flex items-center gap-4 md:gap-6">
-        <Link href="/list/announcements">
-          <div className="relative flex size-7 cursor-pointer items-center justify-center rounded-full bg-white">
-            <Image src="/announcement.png" alt="user" width={20} height={20} />
-            <span className="absolute -right-3 -top-3 flex size-5 items-center justify-center rounded-full bg-purple-500 text-xs text-white">
-              2
-            </span>
-          </div>
-        </Link>
-        <div className="flex flex-col">
-          <span className="text-xs font-medium leading-3">Arafat Ahmed</span>
-          <span className="text-right text-[10px] text-gray-500">Admin</span>
-        </div>
-          <Image
-            src="/avatar.png"
-            alt="user"
-            width={36}
-            height={36}
-            className="rounded-full"
-          />
+        <NotificationComponent />
+        <UserInfo />
       </div>
     </div>
   );
-}
+};
 
 export default Navbar
