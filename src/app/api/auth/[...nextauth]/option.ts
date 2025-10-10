@@ -1,6 +1,6 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "../../../../../prisma";
-import { verifyPassword } from "@/lib/argon2";
+import { verifyPassword } from "@/lib/hash";
 import { NextAuthOptions } from "next-auth"; // ✅ Updated from bcrypt to argon2
 
 type UserType = "Admin" | "Student" | "Teacher" | "Parent";
@@ -46,6 +46,10 @@ export const authOptions: NextAuthOptions = {
         if (!user) {
           throw new Error("User not found");
         }
+        console.log(credentials.password);
+        console.log(user.password)
+        
+        
         if (!(await verifyPassword(credentials.password, user.password))) {
           throw new Error("Invalid credentials");
         }

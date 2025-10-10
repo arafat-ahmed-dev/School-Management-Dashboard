@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import prisma from "../../../prisma";
 import { numberToDay } from "@/lib/types";
-import { hashPassword } from "@/lib/argon2";
+import { hashPassword } from "@/lib/hash";
 import { writeFile } from "fs/promises";
 import { join } from "path";
 
