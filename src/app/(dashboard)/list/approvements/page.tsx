@@ -46,7 +46,7 @@ const ApprovementListPage = async ({
     | "teacher"
     | "parent"
     | "admin";
-  console.log(role);
+
   for (const [key, value] of Object.entries(queryParams)) {
     if (value !== undefined) {
       switch (key) {
@@ -116,21 +116,21 @@ const ApprovementListPage = async ({
     ...(role === "admin"
       ? []
       : [
-          {
-            header:
-              role === "student"
-                ? "Class"
-                : role === "teacher"
+        {
+          header:
+            role === "student"
+              ? "Class"
+              : role === "teacher"
                 ? "Subjects"
                 : "Students",
-            accessor:
-              role === "student"
-                ? "class.name"
-                : role === "teacher"
+          accessor:
+            role === "student"
+              ? "class.name"
+              : role === "teacher"
                 ? "subjects.name"
                 : "students.name",
-          },
-        ]),
+        },
+      ]),
     {
       header: "Date",
       accessor: "date",
@@ -143,12 +143,12 @@ const ApprovementListPage = async ({
     },
     ...(host === "admin"
       ? [
-          {
-            header: "Actions",
-            accessor: "action",
-            className: "text-center table-cell",
-          },
-        ]
+        {
+          header: "Actions",
+          accessor: "action",
+          className: "text-center table-cell",
+        },
+      ]
       : []),
   ];
 

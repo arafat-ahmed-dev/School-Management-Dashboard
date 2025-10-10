@@ -46,10 +46,7 @@ export const authOptions: NextAuthOptions = {
         if (!user) {
           throw new Error("User not found");
         }
-        console.log(credentials.password);
-        console.log(user.password)
-        
-        
+
         if (!(await verifyPassword(credentials.password, user.password))) {
           throw new Error("Invalid credentials");
         }

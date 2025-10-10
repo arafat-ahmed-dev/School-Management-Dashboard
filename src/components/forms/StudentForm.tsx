@@ -47,12 +47,11 @@ const StudentForm = ({
   });
 
   const onSubmit = handleSubmit((formData) => {
-    // Combine firstName and lastName for backend
-    const studentData = {
-      ...formData,
-      name: `${formData.firstName} ${formData.lastName}`.trim(),
-    };
-    console.log(studentData);
+    // TODO: handle create/update student logic
+    // const studentData = {
+    //   ...formData,
+    //   name: `${formData.firstName} ${formData.lastName}`.trim(),
+    // };
   });
 
   return (

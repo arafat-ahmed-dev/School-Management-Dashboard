@@ -124,7 +124,6 @@ const FormModal = ({
     e.preventDefault();
     setError(null);
     if (!id) return;
-    console.log(id);
 
     const deleteFn = deleteActionMap[table];
     if (!deleteFn) {
@@ -150,8 +149,6 @@ const FormModal = ({
   };
 
   const Form = () => {
-    console.log(`Rendering form for table: ${table}, type: ${type}, id: ${id}`);
-
     const handleSuccess = () => {
       setOpen(false);
     };

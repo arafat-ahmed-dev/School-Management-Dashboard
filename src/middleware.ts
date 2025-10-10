@@ -41,8 +41,6 @@ const matchers = [
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req });
   const requestedPath = req.nextUrl.pathname;
-  console.log(token?.role);
-  console.log("Requested Path:", requestedPath);
 
   // If user is authenticated and visits root path, redirect to their dashboard
   if (requestedPath === "/" && token) {
@@ -55,7 +53,6 @@ export async function middleware(req: NextRequest) {
   }
 
   if (!token) {
-    
     // Allow access to root path (which now shows login)
     if (requestedPath === "/") {
       return NextResponse.next();

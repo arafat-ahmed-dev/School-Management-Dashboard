@@ -37,7 +37,7 @@ const ParentForm = ({ type, data }: { type: "create" | "update"; data?: any }) =
         if (data?.name) return data.name.split(" ")[0] || "";
         return "";
     }, [data]);
-    
+
     const initialLastName = useMemo(() => {
         if (data?.lastName) return data.lastName;
         if (data?.name) return data.name.split(" ").slice(1).join(" ") || "";
@@ -66,7 +66,6 @@ const ParentForm = ({ type, data }: { type: "create" | "update"; data?: any }) =
         delete (submitData as any).firstName;
         delete (submitData as any).lastName;
         // TODO: handle create/update parent logic
-        console.log(submitData);
     });
 
     return (

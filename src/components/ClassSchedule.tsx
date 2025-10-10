@@ -397,15 +397,6 @@ export default function ClassSchedule({
                   const event: ClassSchedule | null =
                     getEventForTimeSlot(day, timeSlot, selectedClass) || null;
 
-                  if (event) {
-                    console.log(event);
-                    // const title = event.title;
-                    // const start = formatTime(event.startTime);
-                    // const end = formatTime(event.endTime);
-                    // console.log(title, "--------- > ", start, "--", end);
-                  } else {
-                    console.log("No event found for this time slot.");
-                  }
                   return (
                     <div
                       key={`${day}-${timeSlot}`}

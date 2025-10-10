@@ -23,15 +23,8 @@ export const DataService = {
    * Get all data for the results dashboard
    */
   async getAllResultData() {
-    console.log(
-      "🔍 DataService.getAllResultData called, USE_REAL_DATA:",
-      USE_REAL_DATA
-    );
-
     if (USE_REAL_DATA) {
       try {
-        console.log("DataService: Attempting to fetch real database data...");
-
         // Set up proper date ranges for data fetching
         const currentDate = new Date();
         const currentPeriodStart = new Date(
@@ -49,12 +42,6 @@ export const DataService = {
           previousPeriodEnd.getMonth(),
           1
         );
-
-        console.log("📅 Date ranges:", {
-          currentPeriodStart: currentPeriodStart.toISOString(),
-          previousPeriodStart: previousPeriodStart.toISOString(),
-          previousPeriodEnd: previousPeriodEnd.toISOString(),
-        });
 
         // Use real database operations
         const [
@@ -78,17 +65,6 @@ export const DataService = {
           DatabaseOperations.getOverviewMetrics(),
           DatabaseOperations.getPerformanceInsights(),
         ]);
-
-        console.log("DataService: Database queries completed successfully");
-        console.log("📊 Data summary:", {
-          students: students?.length || 0,
-          averageMarksKeys: Object.keys(averageMarksData || {}),
-          classTrendItems: classTrendData?.length || 0,
-          groupPerformanceItems: groupPerformanceData?.length || 0,
-          studentGrowthItems: studentGrowthData?.length || 0,
-          overviewMetrics: overviewMetrics ? "✅" : "❌",
-          performanceInsights: performanceInsights?.length || 0,
-        });
 
         // For classData, we'll derive it from students data
         const classData = students.reduce((acc, student) => {
@@ -138,7 +114,6 @@ export const DataService = {
           "📍 Error details:",
           error instanceof Error ? error.message : String(error)
         );
-        console.log("🔄 DataService: Falling back to mock data...");
         // Fall back to mock data if database fails
         const overviewMetrics = calculateOverviewMetrics(
           mockAverageMarksData,
@@ -158,7 +133,6 @@ export const DataService = {
         };
       }
     } else {
-      console.log("📋 DataService: Using mock data (USE_REAL_DATA = false)");
       // Use mock data
       const overviewMetrics = calculateOverviewMetrics(
         mockAverageMarksData,
@@ -208,7 +182,6 @@ export const DataService = {
   setUseRealData(useReal: boolean) {
     // In a real implementation, this would be an environment variable
     // For now, you'll need to manually change USE_REAL_DATA constant
-    console.log(`Data source mode: ${useReal ? "Database" : "Mock"}`);
   },
 };
 

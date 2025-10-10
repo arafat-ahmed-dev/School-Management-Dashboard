@@ -56,11 +56,9 @@ export function LoginForm({
       password: data.password,
       userType: data.userType,
     });
-    console.log(result);
     setLoading(false); // Set loading to false when login completes
     if (result?.error) {
       setError(result?.error);
-      console.log(result?.error);
     } else {
       // Redirect to user's dashboard based on their role
       const userRole = data.userType.toLowerCase();

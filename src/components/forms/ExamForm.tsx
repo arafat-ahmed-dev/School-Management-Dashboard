@@ -76,7 +76,6 @@ const ExamForm = ({ type, data }: { type: "create" | "update"; data?: any }) => 
                     console.error("Error creating exam:", result.error);
                     toast.error("Failed to create exam: " + result.error);
                 } else {
-                    console.log("Exam created successfully:", result.exam);
                     toast.success("Exam created successfully!");
                     // You might want to redirect or close the modal here
                 }
@@ -86,7 +85,6 @@ const ExamForm = ({ type, data }: { type: "create" | "update"; data?: any }) => 
                     console.error("Error updating exam:", result.error);
                     toast.error("Failed to update exam: " + result.error);
                 } else {
-                    console.log("Exam updated successfully:", result.exam);
                     toast.success("Exam updated successfully!");
                 }
             }

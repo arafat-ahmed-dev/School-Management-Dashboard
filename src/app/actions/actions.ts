@@ -258,7 +258,6 @@ export async function deleteLesson(id: string) {
     console.error("Failed to delete lesson:", error);
 
     if (error.code === "P2025") {
-      console.log("Lesson record not found (P2025)");
       return {
         success: false,
         error: "Lesson not found.",
@@ -266,7 +265,6 @@ export async function deleteLesson(id: string) {
     }
 
     if (error.code === "P2023") {
-      console.log("Invalid ObjectId format (P2023)");
       return {
         success: false,
         error: "Invalid lesson ID format.",
@@ -274,7 +272,6 @@ export async function deleteLesson(id: string) {
     }
 
     if (error.code === "P2014") {
-      console.log("Foreign key constraint violation (P2014)");
       return {
         success: false,
         error:
@@ -585,8 +582,6 @@ export async function updateSubject(
   classIds: string[],
   teacherIds: string[]
 ) {
-  console.log(id, name, code, classIds, teacherIds);
-
   try {
     const subject = await prisma.subject.update({
       where: { id },
@@ -692,14 +687,6 @@ export async function updateClass(
   classId: string
 ) {
   try {
-    console.log("updateClass args:", {
-      id,
-      name,
-      gradeId,
-      supervisorId,
-      capacity,
-      classId,
-    });
     await prisma.class.update({
       where: { id },
       data: {
@@ -1785,11 +1772,8 @@ export async function updateExam(id: string, input: CreateExamInput) {
 
 export async function deleteExam(id: string) {
   try {
-    console.log("Attempting to delete exam with ID:", id);
-
     // Validate the ID format
     if (!id || id.trim() === "") {
-      console.log("Invalid ID provided:", id);
       return {
         success: false,
         error: "Invalid exam ID provided.",
@@ -1824,20 +1808,15 @@ export async function deleteExam(id: string) {
       where: { id },
     });
 
-    console.log("Exam deleted successfully");
-
     // Revalidate the exam list page to update the UI
     revalidatePath("/list/exams");
 
     return { success: true, error: null };
   } catch (error: any) {
     console.error("Failed to delete exam:", error);
-    console.log("Error code:", error.code);
-    console.log("Error message:", error.message);
 
     // Handle specific Prisma errors
     if (error.code === "P2025") {
-      console.log("Exam not found (P2025)");
       return {
         success: false,
         error: "Exam not found. It may have already been deleted.",
@@ -1846,7 +1825,6 @@ export async function deleteExam(id: string) {
 
     // Handle invalid ObjectId format (common with MongoDB)
     if (error.code === "P2023") {
-      console.log("Invalid ObjectId format (P2023)");
       return {
         success: false,
         error: "Invalid exam ID format.",
@@ -1855,7 +1833,6 @@ export async function deleteExam(id: string) {
 
     // Handle foreign key constraint violations
     if (error.code === "P2014") {
-      console.log("Foreign key constraint violation (P2014)");
       return {
         success: false,
         error:
@@ -1863,7 +1840,6 @@ export async function deleteExam(id: string) {
       };
     }
 
-    console.log("Unknown error occurred");
     return {
       success: false,
       error: "Failed to delete exam. Please try again.",
@@ -2058,7 +2034,6 @@ export async function updateAssignment(
     };
   } catch (error: any) {
     if (error.code === "P2025") {
-      console.log("Assignment record not found (P2025)");
       return {
         assignment: null,
         error: "Assignment not found.",
@@ -2066,7 +2041,6 @@ export async function updateAssignment(
     }
 
     if (error.code === "P2023") {
-      console.log("Invalid ObjectId format (P2023)");
       return {
         assignment: null,
         error: "Invalid assignment ID format.",
@@ -2125,7 +2099,6 @@ export async function deleteAssignment(id: string) {
     };
   } catch (error: any) {
     if (error.code === "P2025") {
-      console.log("Assignment record not found (P2025)");
       return {
         success: false,
         error: "Assignment not found.",
@@ -2133,7 +2106,6 @@ export async function deleteAssignment(id: string) {
     }
 
     if (error.code === "P2023") {
-      console.log("Invalid ObjectId format (P2023)");
       return {
         success: false,
         error: "Invalid assignment ID format.",
@@ -2141,7 +2113,6 @@ export async function deleteAssignment(id: string) {
     }
 
     if (error.code === "P2014") {
-      console.log("Foreign key constraint violation (P2014)");
       return {
         success: false,
         error:
@@ -2149,7 +2120,6 @@ export async function deleteAssignment(id: string) {
       };
     }
 
-    console.log("Unknown error occurred");
     return {
       success: false,
       error: "Failed to delete assignment. Please try again.",
@@ -2383,7 +2353,6 @@ export async function updateAttendance(
     };
   } catch (error: any) {
     if (error.code === "P2025") {
-      console.log("Attendance record not found (P2025)");
       return {
         attendance: null,
         error: "Attendance record not found.",
@@ -2391,7 +2360,6 @@ export async function updateAttendance(
     }
 
     if (error.code === "P2023") {
-      console.log("Invalid ObjectId format (P2023)");
       return {
         attendance: null,
         error: "Invalid attendance ID format.",
@@ -2440,7 +2408,6 @@ export async function deleteAttendance(id: string) {
     };
   } catch (error: any) {
     if (error.code === "P2025") {
-      console.log("Attendance record not found (P2025)");
       return {
         success: false,
         error: "Attendance record not found.",
@@ -2448,14 +2415,12 @@ export async function deleteAttendance(id: string) {
     }
 
     if (error.code === "P2023") {
-      console.log("Invalid ObjectId format (P2023)");
       return {
         success: false,
         error: "Invalid attendance ID format.",
       };
     }
 
-    console.log("Unknown error occurred");
     return {
       success: false,
       error: "Failed to delete attendance. Please try again.",

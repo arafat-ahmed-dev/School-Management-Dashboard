@@ -24,7 +24,6 @@ const MessageForm = ({ type, data }: { type: "create" | "update"; data?: any }) 
 
     const onSubmit = handleSubmit((formData) => {
         // TODO: handle create/update message logic
-        console.log(formData);
     });
 
     return (

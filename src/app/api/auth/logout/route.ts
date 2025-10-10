@@ -26,10 +26,6 @@ export const POST = async (request: NextRequest) => {
 
       const { userId, userType } = decoded;
 
-      // Log user data for debugging
-      console.log("userId: " + userId);
-      console.log("userType: " + userType);
-
       // Handle the logout logic based on user role
       const updateData = { refreshToken: null };
 
