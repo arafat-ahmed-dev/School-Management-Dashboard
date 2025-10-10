@@ -137,8 +137,34 @@
   font-size: 10px !important;
 }
 
-::-webkit-scrollbar{
+::-webkit-scrollbar {
   display: none;
+}
+
+/* Calendar specific scrollbar styling */
+.calendar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.calendar-scroll::-webkit-scrollbar {
+  display: block;
+  height: 8px;
+  width: 8px;
+}
+
+.calendar-scroll::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.calendar-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.calendar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 @layer base {

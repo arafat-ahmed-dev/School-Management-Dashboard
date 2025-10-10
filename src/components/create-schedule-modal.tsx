@@ -103,9 +103,9 @@ export function CreateScheduleModal({
   const handleSubjectChange = (subject: string) => {
     setSubjectGroup(subject);
     setTeacherGroup(""); // Reset teacher when subject changes
-    
+
     // Find teachers who can teach this subject
-    const qualifiedTeachers = teacherOptions.filter(teacher => 
+    const qualifiedTeachers = teacherOptions.filter(teacher =>
       teacher.subjects.some(teacherSubject => teacherSubject.name === subject)
     );
     setAvailableTeachers(qualifiedTeachers);
@@ -114,7 +114,7 @@ export function CreateScheduleModal({
   // Filter subjects based on selected teacher
   const handleTeacherChange = (teacher: string) => {
     setTeacherGroup(teacher);
-    
+
     // Find subjects this teacher can teach
     const teacherData = teacherOptions.find(t => t.name === teacher);
     if (teacherData) {
@@ -202,11 +202,11 @@ export function CreateScheduleModal({
     setSubjectGroup("");
     setError(null);
     setIsSubmitting(false);
-    
+
     // Reset filtered lists
     setAvailableTeachers(teacherOptions);
     setAvailableSubjects(subjectOptions);
-    
+
     onClose();
   };
 

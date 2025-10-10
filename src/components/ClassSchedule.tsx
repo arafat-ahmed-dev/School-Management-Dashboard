@@ -272,14 +272,14 @@ export default function ClassSchedule({
   const convertTo24Hour = useCallback((timeStr: string) => {
     const [time, modifier] = timeStr.split(' ');
     let [hours, minutes] = time.split(':').map(Number);
-    
+
     if (modifier === 'PM' && hours !== 12) {
       hours += 12;
     }
     if (modifier === 'AM' && hours === 12) {
       hours = 0;
     }
-    
+
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   }, []);
 
@@ -294,16 +294,16 @@ export default function ClassSchedule({
   const handleTimeSlotClick = useCallback((timeSlot: string, dayOfWeek: number, className?: string) => {
     const startTime24 = convertTo24Hour(timeSlot);
     const endTime24 = suggestEndTime(startTime24);
-    
+
     const dayName = daysOfWeek[dayOfWeek];
-    
+
     setPreFillData({
       dayOfWeek: dayName,
       startTime: startTime24,
       endTime: endTime24,
       class: className || selectedClass,
     });
-    
+
     setIsCreateModalOpen(true);
   }, [convertTo24Hour, suggestEndTime, selectedClass]);
 
@@ -361,13 +361,13 @@ export default function ClassSchedule({
   );
 
   const renderScheduleGrid = (days: number[]) => (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full overflow-x-auto calendar-scroll">
       <div
-        className={cn("min-w-[600px]", days.length === 1 && "min-w-[300px]")}
+        className={cn("min-w-[1200px]", days.length === 1 && "min-w-[400px]")}
       >
         <div
           className="grid gap-1"
-          style={{ gridTemplateColumns: `repeat(${days.length}, minmax(0, 1fr))` }}
+          style={{ gridTemplateColumns: `repeat(${days.length}, minmax(240px, 1fr))` }}
         >
           {days.map((day) => (
             <div key={day} className="flex flex-col">
@@ -463,18 +463,18 @@ export default function ClassSchedule({
     );
 
     return (
-      <div className="w-full overflow-x-auto">
-        <div className="min-w-[800px]">
+      <div className="w-full overflow-x-auto calendar-scroll">
+        <div className="min-w-[1400px]">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-muted/30">
-                <th className="sticky left-0 z-10 border bg-background p-2 text-left font-semibold">
+                <th className="sticky left-0 z-20 border bg-background p-3 text-left font-semibold shadow-sm min-w-[100px]">
                   Time
                 </th>
                 {allClasses.map((className) => (
                   <th
                     key={className}
-                    className="border p-2 text-center font-semibold"
+                    className="border p-3 text-center font-semibold min-w-[180px] whitespace-nowrap"
                   >
                     {className}
                   </th>
@@ -487,11 +487,11 @@ export default function ClassSchedule({
                   .fill(0)
                   .map((_, i) => (
                     <tr key={i}>
-                      <td className="sticky left-0 border bg-background p-2 font-medium">
+                      <td className="sticky left-0 z-20 border bg-background p-3 font-medium shadow-sm">
                         <Skeleton className="h-4 w-16" />
                       </td>
                       {allClasses.map((className, j) => (
-                        <td key={`${i}-${j}`} className="border p-1">
+                        <td key={`${i}-${j}`} className="border p-2 min-w-[180px]">
                           <Skeleton className="h-16 w-full rounded-md" />
                         </td>
                       ))}
@@ -505,7 +505,7 @@ export default function ClassSchedule({
 
                   return (
                     <tr key={timeSlot} className="hover:bg-muted/10">
-                      <td className="sticky left-0 z-10 border bg-background p-2 font-medium">
+                      <td className="sticky left-0 z-20 border bg-background p-3 font-medium shadow-sm">
                         {timeSlot}
                       </td>
                       {allClasses.map((className) => {
@@ -527,7 +527,7 @@ export default function ClassSchedule({
                         return (
                           <td
                             key={`${className}-${timeSlot}`}
-                            className="relative min-h-[80px] border p-1"
+                            className="relative border p-2 min-h-[80px] min-w-[180px]"
                           >
                             {classEvent ? (
                               <div
