@@ -17,7 +17,7 @@ const SingleStudentPage = async ({ params }: { params: { id: string } }) => {
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
-    redirect("/auth");
+    redirect("/login");
   }
 
   // Additional URL-level access control

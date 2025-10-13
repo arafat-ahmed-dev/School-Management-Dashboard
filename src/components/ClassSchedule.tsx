@@ -361,7 +361,7 @@ export default function ClassSchedule({
   );
 
   const renderScheduleGrid = (days: number[]) => (
-    <div className="w-full overflow-x-auto calendar-scroll">
+    <div className="calendar-scroll w-full overflow-x-auto">
       <div
         className={cn("min-w-[1200px]", days.length === 1 && "min-w-[400px]")}
       >
@@ -454,18 +454,18 @@ export default function ClassSchedule({
     );
 
     return (
-      <div className="w-full overflow-x-auto calendar-scroll">
+      <div className="calendar-scroll w-full overflow-x-auto">
         <div className="min-w-[1400px]">
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-muted/30">
-                <th className="sticky left-0 z-20 border bg-background p-3 text-left font-semibold shadow-sm min-w-[100px]">
+                <th className="sticky left-0 z-20 min-w-[100px] border bg-background p-3 text-left font-semibold shadow-sm">
                   Time
                 </th>
                 {allClasses.map((className) => (
                   <th
                     key={className}
-                    className="border p-3 text-center font-semibold min-w-[180px] whitespace-nowrap"
+                    className="min-w-[180px] whitespace-nowrap border p-3 text-center font-semibold"
                   >
                     {className}
                   </th>
@@ -482,7 +482,7 @@ export default function ClassSchedule({
                         <Skeleton className="h-4 w-16" />
                       </td>
                       {allClasses.map((className, j) => (
-                        <td key={`${i}-${j}`} className="border p-2 min-w-[180px]">
+                        <td key={`${i}-${j}`} className="min-w-[180px] border p-2">
                           <Skeleton className="h-16 w-full rounded-md" />
                         </td>
                       ))}
@@ -518,7 +518,7 @@ export default function ClassSchedule({
                         return (
                           <td
                             key={`${className}-${timeSlot}`}
-                            className="relative border p-2 min-h-[80px] min-w-[180px]"
+                            className="relative min-h-[80px] min-w-[180px] border p-2"
                           >
                             {classEvent ? (
                               <div

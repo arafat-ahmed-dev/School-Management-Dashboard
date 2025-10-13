@@ -17,7 +17,7 @@ const SingleTeacherPage = async ({ params }: { params: { id: string } }) => {
   const session = await getServerSession(authOptions);
 
   if (!session?.user) {
-    redirect("/auth");
+    redirect("/login");
   }
 
   // Additional URL-level access control
@@ -198,7 +198,8 @@ const SingleTeacherPage = async ({ params }: { params: { id: string } }) => {
             <IndividualPerformance
               type="teacher"
               data={{
-                attendancePercentage: teacherData.attendancePercentage,
+                averageScore: 0, // Teachers don't have scores like students
+                attendancePercentage: teacherData.attendancePercentage || 100,
               }}
               teacherId={teacherId}
             />
@@ -209,8 +210,6 @@ const SingleTeacherPage = async ({ params }: { params: { id: string } }) => {
     );
   } catch (error) {
     console.error("Error loading teacher page:", error);
-    // If data service throws notFound(), it will handle the 404
-    // If other error, redirect to safe page
     redirect("/list/teachers");
   }
 };
