@@ -87,7 +87,8 @@ export default async function Home() {
     class: lesson.class?.name || '',
     teacher: lesson.teacher?.name || '',
   }));
-
+  // console.log(calendarEvents);
+  
   const order: Record<"Science" | "Arts" | "Commerce", number> = {
     Science: 1,
     Arts: 2,
@@ -105,7 +106,7 @@ export default async function Home() {
 
     return (order[typeA] || 0) - (order[typeB] || 0); // Sort by order Science → Arts → Commerce
   });
-
+  
   return (
     <main className="w-full p-2 ">
       <h1 className="mb-4 text-2xl font-bold">Class Schedule</h1>

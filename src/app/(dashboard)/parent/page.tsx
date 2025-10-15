@@ -1,5 +1,5 @@
 import Announcements from "@/components/Announcements";
-import BigCalender from "@/components/BigCalender";
+import BigCalenderContainer from "@/components/BigCalenderContainer";
 import EventCalender from "@/components/EventCalender";
 
 const StudentPage = () => {
@@ -9,12 +9,12 @@ const StudentPage = () => {
       <div className="w-full xl:w-2/3">
         <div className="h-full rounded-md bg-white p-2 md:p-4 ">
           <div>
-            <h1 className="text-xl font-semibold">Schedule ( Jone Lew )</h1>
-            <BigCalender />
+            <h1 className="text-xl font-semibold">Schedule (Child 1)</h1>
+            <BigCalenderContainer type="student" id="student-id-placeholder" />
           </div>
           <div className="mt-4 border-t border-gray-600 pt-6">
-            <h1 className="text-xl font-semibold">Schedule ( Jone Lew )</h1>
-            <BigCalender />
+            <h1 className="text-xl font-semibold">Schedule (Child 2)</h1>
+            <BigCalenderContainer type="student" id="student-id-placeholder-2" />
           </div>
         </div>
       </div>

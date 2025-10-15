@@ -13,9 +13,8 @@ const TeacherPage = async () => {
       {/* LEFT */}
       <div className="w-full xl:w-2/3">
         <div className="h-full rounded-md bg-white p-2 md:p-4">
-          <h1 className="text-xl font-semibold">Schedule (4A)</h1>
           <BigCalenderContainer
-            type={"teacherId"}
+            type="teacher"
             id={userId}
           />
         </div>
