@@ -2,7 +2,7 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role } from "@/lib/data";
+import { getSessionData } from "@/lib/session-utils";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import prisma from "../../../../../prisma";
@@ -10,91 +10,97 @@ import { Prisma, Parent, Student } from "@prisma/client";
 
 type ParentList = Parent & { students: Student[] };
 
-const columns = [
-  {
-    header: "Info",
-    accessor: "info",
-    className: " p-2",
-  },
-  {
-    header: "Student Names",
-    accessor: "students",
-    className: "p-2",
-  },
-  {
-    header: "Type",
-    accessor: "type",
-    className: "hidden md:table-cell p-2",
-  },
-  {
-    header: "Phone",
-    accessor: "phone",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Address",
-    accessor: "address",
-    className: "hidden lg:table-cell p-2",
-  },
-  ...(role === "admin"
-    ? [
-      {
-        header: "Actions",
-        accessor: "action",
-        className: "flex justify-center table-cell p-2",
-      },
-    ]
-    : []),
-];
-const renderRow = (item: ParentList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4 px-2">
-      <div className="flex flex-col">
-        <h3 className="font-semibold">{item.name}</h3>
-        <p className="text-xs text-gray-500">{item?.email}</p>
-      </div>
-    </td>
-    <td className="p-2">{item.students.map((item) => item.name).join(", ")}</td>
-    <td className="hidden p-2 md:table-cell">
-      <span className={`rounded-full px-2 py-1 text-xs ${item.type === 'FATHER' ? 'bg-blue-100 text-blue-800' :
-          item.type === 'MOTHER' ? 'bg-pink-100 text-pink-800' :
-            'bg-gray-100 text-gray-800'
-        }`}>
-        {item.type || 'N/A'}
-      </span>
-    </td>
-    <td className="hidden p-2 md:table-cell">{item.phone || 'N/A'}</td>
-    <td className="hidden p-2 lg:table-cell">
-      <div className="max-w-32 truncate" title={item.address || 'No address'}>
-        {item.address || 'No address'}
-      </div>
-    </td>
-    <td>
-      <div className="flex items-center justify-center  gap-2">
-        {role === "admin" && (
-          <>
-            <FormModel table="parent" type="update" data={item} id={item.id.toString()} />
-            <FormModel table="parent" type="delete" id={item.id.toString()} />
-          </>
-        )}
-      </div>
-    </td>
-  </tr>
-);
-
 const ParentListPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
+  // Get current user session for security
+  const { userRole } = await getSessionData();
+  const role = userRole || "admin";
+
+  // Define columns based on user role
+  const columns = [
+    {
+      header: "Info",
+      accessor: "info",
+      className: " p-2",
+    },
+    {
+      header: "Student Names",
+      accessor: "students",
+      className: "p-2",
+    },
+    {
+      header: "Type",
+      accessor: "type",
+      className: "hidden md:table-cell p-2",
+    },
+    {
+      header: "Phone",
+      accessor: "phone",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Address",
+      accessor: "address",
+      className: "hidden lg:table-cell p-2",
+    },
+    ...(role === "admin"
+      ? [
+        {
+          header: "Actions",
+          accessor: "action",
+          className: "flex justify-center table-cell p-2",
+        },
+      ]
+      : []),
+  ];
+
+  const renderRow = (item: ParentList) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4 px-2">
+        <div className="flex flex-col">
+          <h3 className="font-semibold">{item.name}</h3>
+          <p className="text-xs text-gray-500">{item?.email}</p>
+        </div>
+      </td>
+      <td className="p-2">{item.students.map((student) => student.name).join(", ")}</td>
+      <td className="hidden p-2 md:table-cell">
+        <span className={`rounded-full px-2 py-1 text-xs ${item.type === 'FATHER' ? 'bg-blue-100 text-blue-800' :
+          item.type === 'MOTHER' ? 'bg-pink-100 text-pink-800' :
+            'bg-gray-100 text-gray-800'
+          }`}>
+          {item.type || 'N/A'}
+        </span>
+      </td>
+      <td className="hidden p-2 md:table-cell">{item.phone || 'N/A'}</td>
+      <td className="hidden p-2 lg:table-cell">
+        <div className="max-w-32 truncate" title={item.address || 'No address'}>
+          {item.address || 'No address'}
+        </div>
+      </td>
+      <td>
+        <div className="flex items-center justify-center  gap-2">
+          {role === "admin" && (
+            <>
+              <FormModel table="parent" type="update" data={item} id={item.id.toString()} />
+              <FormModel table="parent" type="delete" id={item.id.toString()} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
   const query: Prisma.ParentWhereInput = {
-    approved: "ACCEPTED", // Add this line to filter accepted students
-  };;
+    approved: "ACCEPTED", // Only show approved parents
+  };
 
   for (const [key, value] of Object.entries(queryParams)) {
     if (value !== undefined) {
@@ -102,16 +108,7 @@ const ParentListPage = async ({
         case "search":
           query.OR = [
             { name: { contains: value, mode: "insensitive" } },
-            {
-              students: {
-                some: {
-                  name: {
-                    contains: value,
-                    mode: "insensitive",
-                  },
-                },
-              },
-            },
+            { email: { contains: value, mode: "insensitive" } },
           ];
           break;
         default:
@@ -120,7 +117,7 @@ const ParentListPage = async ({
     }
   }
 
-  const [data, count] = await prisma.$transaction([
+  const [data, count] = await Promise.all([
     prisma.parent.findMany({
       where: query,
       include: {
@@ -128,6 +125,9 @@ const ParentListPage = async ({
       },
       take: ITEM_PER_PAGE,
       skip: (p - 1) * ITEM_PER_PAGE,
+      orderBy: {
+        name: "asc",
+      },
     }),
     prisma.parent.count({ where: query }),
   ]);

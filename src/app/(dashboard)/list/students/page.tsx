@@ -2,7 +2,7 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role } from "@/lib/data";
+import { getSessionData } from "@/lib/session-utils";
 import { Class, Grade, Prisma, Student } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,135 +15,144 @@ type StudnetList = Student & {
   Parent: { name: string; phone: string } | null;
 };
 
-const columns = [
-  {
-    header: "Info",
-    accessor: "info",
-    className: "p-2",
-  },
-  {
-    header: "Student ID",
-    accessor: "teacherId",
-    className: "hidden md:table-cell p-2",
-  },
-  {
-    header: "Grade",
-    accessor: "subjects",
-    className: "hidden md:table-cell p-2",
-  },
-  {
-    header: "Sex",
-    accessor: "sex",
-    className: "hidden md:table-cell p-2",
-  },
-  {
-    header: "Parent",
-    accessor: "parent",
-    className: "hidden lg:table-cell p-2",
-  },
-  {
-    header: "Phone",
-    accessor: "phone",
-    className: "hidden lg:table-cell",
-  },
-  {
-    header: "Blood Type",
-    accessor: "bloodType",
-    className: "hidden lg:table-cell p-2",
-  },
-  {
-    header: "Address",
-    accessor: "address",
-    className: "hidden xl:table-cell p-2",
-  },
-  ...(role === "admin" || role === "teacher"
-    ? [
-      {
-        header: "Actions",
-        accessor: "action",
-        className: "flex justify-center table-cell ",
-      },
-    ]
-    : []),
-];
-
-const renderRow = (item: StudnetList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4 px-2">
-      <Image
-        src="/noAvatar.png"
-        alt=""
-        width={40}
-        height={40}
-        className="size-10 rounded-full object-cover md:hidden xl:block"
-      />
-      <div className="flex flex-col">
-        <h3 className="font-semibold">{item.name}</h3>
-        <p className="text-xs text-gray-500">{item.email}</p>
-        <p className="text-xs text-gray-500">{item.class?.name}</p>
-      </div>
-    </td>
-    <td className="hidden p-2 md:table-cell">{item.id.substring(10)}</td>
-    <td className="hidden p-2 md:table-cell">{item.grade?.level ?? "N/A"}</td>
-    <td className="hidden p-2 md:table-cell">
-      <span className={`rounded-full px-2 py-1 text-xs ${item.sex === 'MALE' ? 'bg-blue-100 text-blue-800' :
-          item.sex === 'FEMALE' ? 'bg-pink-100 text-pink-800' :
-            'bg-gray-100 text-gray-800'
-        }`}>
-        {item.sex || 'N/A'}
-      </span>
-    </td>
-    <td className="hidden p-2 lg:table-cell">
-      {item.Parent ? (
-        <div>
-          <div className="text-xs font-medium">{item.Parent.name}</div>
-          <div className="text-xs text-gray-500">{item.Parent.phone}</div>
-        </div>
-      ) : (
-        <span className="text-xs text-gray-500">No parent</span>
-      )}
-    </td>
-    <td className="hidden p-2 lg:table-cell">{item.phone || 'N/A'}</td>
-    <td className="hidden p-2 lg:table-cell">
-      <span className={`rounded-full px-2 py-1 text-xs ${item.bloodType ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
-        }`}>
-        {item.bloodType || 'Unknown'}
-      </span>
-    </td>
-    <td className="hidden p-2 xl:table-cell">
-      <div className="max-w-32 truncate" title={item.address || 'No address'}>
-        {item.address || 'No address'}
-      </div>
-    </td>
-    <td>
-      <div className="flex items-center justify-center  gap-2">
-        <Link href={`/list/students/${item.id}`}>
-          <button className="flex size-7 items-center justify-center rounded-full bg-aamSky">
-            <Image src="/view.png" alt="" width={16} height={16} />
-          </button>
-        </Link>
-        {role === "admin" && (
-          <>
-            <FormModel table="student" type="update" data={item} id={item.id.toString()} />
-            <FormModel table="student" type="delete" id={item.id.toString()} />
-          </>
-        )}
-      </div>
-    </td>
-  </tr>
-);
 const StudentListPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
+  // Get current user session data for security
+  const { userRole } = await getSessionData();
+  const role = userRole || "admin";
+
+  // Define columns based on user role
+  const columns = [
+    {
+      header: "Info",
+      accessor: "info",
+      className: "p-2",
+    },
+    {
+      header: "Student ID",
+      accessor: "teacherId",
+      className: "hidden md:table-cell p-2",
+    },
+    {
+      header: "Grade",
+      accessor: "subjects",
+      className: "hidden md:table-cell p-2",
+    },
+    {
+      header: "Sex",
+      accessor: "sex",
+      className: "hidden md:table-cell p-2",
+    },
+    {
+      header: "Parent",
+      accessor: "parent",
+      className: "hidden lg:table-cell p-2",
+    },
+    {
+      header: "Phone",
+      accessor: "phone",
+      className: "hidden lg:table-cell",
+    },
+    {
+      header: "Blood Type",
+      accessor: "bloodType",
+      className: "hidden lg:table-cell p-2",
+    },
+    {
+      header: "Address",
+      accessor: "address",
+      className: "hidden xl:table-cell p-2",
+    },
+    ...(role === "admin" || role === "teacher"
+      ? [
+        {
+          header: "Actions",
+          accessor: "action",
+          className: "flex justify-center table-cell ",
+        },
+      ]
+      : []),
+  ];
+
+  const renderRow = (item: StudnetList) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4 px-2">
+        <Image
+          src="/noAvatar.png"
+          alt=""
+          width={40}
+          height={40}
+          className="size-10 rounded-full object-cover md:hidden xl:block"
+        />
+        <div className="flex flex-col">
+          <h3 className="font-semibold">{item.name}</h3>
+          <p className="text-xs text-gray-500">{item.email}</p>
+        </div>
+      </td>
+      <td className="hidden p-2 md:table-cell">{item.id}</td>
+      <td className="hidden p-2 md:table-cell">
+        <span className="rounded-full bg-aamSkyLight px-2 py-1 text-xs">
+          {item.grade.level}
+        </span>
+      </td>
+      <td className="hidden p-2 md:table-cell">
+        <span
+          className={`rounded-full px-2 py-1 text-xs ${item.sex === 'MALE' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800'
+            }`}
+        >
+          {item.sex || 'N/A'}
+        </span>
+      </td>
+      <td className="hidden p-2 lg:table-cell">
+        {item.Parent ? (
+          <div>
+            <div className="text-xs font-medium">{item.Parent.name}</div>
+            <div className="text-xs text-gray-500">{item.Parent.phone}</div>
+          </div>
+        ) : (
+          <span className="text-xs text-gray-500">No parent</span>
+        )}
+      </td>
+      <td className="hidden p-2 lg:table-cell">{item.phone || 'N/A'}</td>
+      <td className="hidden p-2 lg:table-cell">
+        <span className={`rounded-full px-2 py-1 text-xs ${item.bloodType ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'
+          }`}>
+          {item.bloodType || 'Unknown'}
+        </span>
+      </td>
+      <td className="hidden p-2 xl:table-cell">
+        <div className="max-w-32 truncate" title={item.address || 'No address'}>
+          {item.address || 'No address'}
+        </div>
+      </td>
+      <td>
+        <div className="flex items-center justify-center  gap-2">
+          <Link href={`/list/students/${item.id}`}>
+            <button className="flex size-7 items-center justify-center rounded-full bg-aamSky">
+              <Image src="/view.png" alt="" width={16} height={16} />
+            </button>
+          </Link>
+          {role === "admin" && (
+            <>
+              <FormModel table="student" type="update" data={item} id={item.id.toString()} />
+              <FormModel table="student" type="delete" id={item.id.toString()} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
   const query: Prisma.StudentWhereInput = {
-    approved: "ACCEPTED", // Add this line to filter accepted students
+    approved: "ACCEPTED", // Only show approved students
   };
 
   for (const [key, value] of Object.entries(queryParams)) {
@@ -161,11 +170,7 @@ const StudentListPage = async ({
         case "search":
           query.OR = [
             { name: { contains: value, mode: "insensitive" } },
-            {
-              class: {
-                name: { contains: value, mode: "insensitive" },
-              },
-            },
+            { email: { contains: value, mode: "insensitive" } },
           ];
           break;
         default:
@@ -174,7 +179,7 @@ const StudentListPage = async ({
     }
   }
 
-  const [data, count] = await prisma.$transaction([
+  const [data, count] = await Promise.all([
     prisma.student.findMany({
       where: query,
       include: {
@@ -187,11 +192,10 @@ const StudentListPage = async ({
           },
         },
       },
-
       take: ITEM_PER_PAGE,
       skip: (p - 1) * ITEM_PER_PAGE,
       orderBy: {
-        name: "asc", // Sort by className in ascending order
+        name: "asc",
       },
     }),
     prisma.student.count({ where: query }),

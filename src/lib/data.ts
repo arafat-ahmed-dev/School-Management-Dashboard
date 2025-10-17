@@ -7,7 +7,8 @@ export type CalendarEvent = {
   teacher: string;
 };
 
-export const role = "admin";
+// SECURITY WARNING: Do not export static roles
+// Use getSessionData() from session-utils.ts to get current user role
 
 export const calendarEvents: CalendarEvent[] = [
   {

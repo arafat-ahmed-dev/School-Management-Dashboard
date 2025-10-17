@@ -2,7 +2,7 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role } from "@/lib/data";
+import { getSessionData } from "@/lib/session-utils";
 import Image from "next/image";
 import prisma from "../../../../../prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
@@ -13,67 +13,90 @@ type SubjectList = Subject & {
   classes: { name: string }[];
 };
 
-const columns = [
-  {
-    header: "Subject Info",
-    accessor: "subjectName",
-    className: "p-2",
-  },
-  {
-    header: "Teachers",
-    accessor: "teachers",
-    className: "hidden md:table-cell p-2",
-  },
-  {
-    header: "Classes",
-    accessor: "classes",
-    className: "hidden lg:table-cell p-2",
-  },
-  ...(role === "admin"
-    ? [
-      {
-        header: "Actions",
-        accessor: "action",
-        className: "table-cell",
-      },
-    ]
-    : []),
-];
-const renderRow = (item: SubjectList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4 px-2">
-      <div className="flex flex-col">
-        <h3 className="font-semibold">{item.name}</h3>
-        <p className="text-xs text-gray-500">Code: {item.code}</p>
-      </div>
-    </td>
-    <td className="hidden p-2 md:table-cell">
-      {item.teachers.map((teacher) => teacher.name).join(", ") || "No teachers assigned"}
-    </td>
-    <td className="hidden p-2 lg:table-cell">
-      {item.classes.map((cls) => cls.name).join(", ") || "No classes assigned"}
-    </td>
-    <td>
-      <div className="flex w-fit gap-2">
-        {role === "admin" && (
-          <>
-            <FormModel table="subject" type="update" data={item} id={item.id.toString()} />
-            <FormModel table="subject" type="delete" id={item.id.toString()} />
-          </>
-        )}
-      </div>
-    </td>
-  </tr>
-);
-
 const SubjectListPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
+  // Get current user session for security - subjects are admin-only
+  const { userRole } = await getSessionData();
+  const role = userRole || "admin";
+
+  const columns = [
+    {
+      header: "Subject Info",
+      accessor: "subjectName",
+      className: "p-2",
+    },
+    {
+      header: "Teachers",
+      accessor: "teachers",
+      className: "hidden md:table-cell p-2",
+    },
+    {
+      header: "Classes",
+      accessor: "classes",
+      className: "hidden lg:table-cell p-2",
+    },
+    ...(role === "admin"
+      ? [
+        {
+          header: "Actions",
+          accessor: "action",
+          className: "table-cell",
+        },
+      ]
+      : []),
+  ];
+
+  const renderRow = (item: SubjectList) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4">
+        <div className="flex flex-col">
+          <h3 className="font-semibold">{item.name}</h3>
+          <p className="text-xs text-gray-500">Subject</p>
+        </div>
+      </td>
+      <td className="hidden p-2 md:table-cell">
+        <div className="flex flex-wrap gap-1">
+          {item.teachers.map((teacher) => (
+            <span
+              key={teacher.id}
+              className="rounded-full bg-aamSkyLight px-2 py-1 text-xs"
+            >
+              {teacher.name}
+            </span>
+          ))}
+        </div>
+      </td>
+      <td className="hidden p-2 lg:table-cell">
+        <div className="flex flex-wrap gap-1">
+          {item.classes.map((cls, index) => (
+            <span
+              key={index}
+              className="rounded-full bg-aamYellowLight px-2 py-1 text-xs"
+            >
+              {cls.name}
+            </span>
+          ))}
+        </div>
+      </td>
+      <td>
+        <div className="flex items-center justify-center gap-2">
+          {role === "admin" && (
+            <>
+              <FormModel table="subject" type="update" data={item} id={item.id} />
+              <FormModel table="subject" type="delete" id={item.id} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
   const query: Prisma.SubjectWhereInput = {};
@@ -82,14 +105,7 @@ const SubjectListPage = async ({
     if (value !== undefined) {
       switch (key) {
         case "search":
-          query.OR = [
-            { name: { contains: value, mode: "insensitive" } },
-            {
-              teachers: {
-                some: { name: { contains: value, mode: "insensitive" } },
-              },
-            },
-          ];
+          query.name = { contains: value, mode: "insensitive" };
           break;
         default:
           break;
@@ -97,15 +113,22 @@ const SubjectListPage = async ({
     }
   }
 
-  const [data, count] = await prisma.$transaction([
+  const [data, count] = await Promise.all([
     prisma.subject.findMany({
       where: query,
       include: {
         teachers: true,
-        classes: true,
+        classes: {
+          select: {
+            name: true,
+          },
+        },
       },
       take: ITEM_PER_PAGE,
       skip: (p - 1) * ITEM_PER_PAGE,
+      orderBy: {
+        name: "asc",
+      },
     }),
     prisma.subject.count({ where: query }),
   ]);

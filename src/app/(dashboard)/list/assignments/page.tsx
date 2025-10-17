@@ -2,7 +2,7 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role } from "@/lib/data";
+import { getSessionData } from "@/lib/session-utils";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import prisma from "../../../../../prisma";
@@ -16,106 +16,139 @@ type AssignmentList = Assignment & {
   };
 };
 
-const columns = [
-  {
-    header: "Assignment Info",
-    accessor: "info",
-  },
-  {
-    header: "Subject",
-    accessor: "subject",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Class",
-    accessor: "class",
-    className: "hidden lg:table-cell",
-  },
-  {
-    header: "Teacher",
-    accessor: "teacher",
-    className: "hidden lg:table-cell",
-  },
-  {
-    header: "Dates",
-    accessor: "dates",
-    className: "hidden xl:table-cell",
-  },
-  ...(role === "admin" || role === "teacher"
-    ? [
-      {
-        header: "Actions",
-        accessor: "action",
-      },
-    ]
-    : []),
-];
-
-const renderRow = (item: AssignmentList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4">
-      <div className="flex flex-col">
-        <h3 className="font-semibold">{item.title}</h3>
-        <p className="text-xs text-gray-500 md:hidden">
-          {item.lesson.subject.name} • {item.lesson.class.name}
-        </p>
-        <p className="text-xs text-gray-500 lg:hidden">
-          Teacher: {item.lesson.teacher.name}
-        </p>
-        <p className="text-xs text-gray-500 xl:hidden">
-          Due: {new Intl.DateTimeFormat("en-US").format(item.dueDate)}
-        </p>
-      </div>
-    </td>
-    <td className="hidden md:table-cell">
-      <div className="flex flex-col">
-        <span className="font-medium">{item.lesson.subject.name}</span>
-      </div>
-    </td>
-    <td className="hidden lg:table-cell">
-      <div className="flex flex-col">
-        <span className="font-medium">{item.lesson.class.name}</span>
-      </div>
-    </td>
-    <td className="hidden lg:table-cell">
-      <div className="flex flex-col">
-        <span className="font-medium">{item.lesson.teacher.name}</span>
-      </div>
-    </td>
-    <td className="hidden xl:table-cell">
-      <div className="flex flex-col text-xs">
-        <span className="text-gray-500">
-          Start: {new Intl.DateTimeFormat("en-US").format(item.startDate)}
-        </span>
-        <span className="font-medium">
-          Due: {new Intl.DateTimeFormat("en-US").format(item.dueDate)}
-        </span>
-      </div>
-    </td>
-    <td>
-      <div className="flex items-center gap-2">
-        {role === "admin" && (
-          <>
-            <FormModel table="assignment" type="update" data={item} />
-            <FormModel table="assignment" type="delete" id={item.id.toString()} />
-          </>
-        )}
-      </div>
-    </td>
-  </tr>
-);
-
 const AssignmentListPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
+  // Get current user session for security
+  const { userRole, userId } = await getSessionData();
+  const role = userRole || "admin";
+
+  // Define columns based on user role
+  const columns = [
+    {
+      header: "Assignment Info",
+      accessor: "info",
+    },
+    {
+      header: "Subject",
+      accessor: "subject",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Class",
+      accessor: "class",
+      className: "hidden lg:table-cell",
+    },
+    {
+      header: "Teacher",
+      accessor: "teacher",
+      className: "hidden lg:table-cell",
+    },
+    {
+      header: "Dates",
+      accessor: "dates",
+      className: "hidden xl:table-cell",
+    },
+    ...(role === "admin" || role === "teacher"
+      ? [
+        {
+          header: "Actions",
+          accessor: "action",
+        },
+      ]
+      : []),
+  ];
+
+  const renderRow = (item: AssignmentList) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4">
+        <div className="flex flex-col">
+          <h3 className="font-semibold">{item.title}</h3>
+          <p className="text-xs text-gray-500 md:hidden">
+            {item.lesson.subject.name} • {item.lesson.class.name}
+          </p>
+          <p className="text-xs text-gray-500 lg:hidden">
+            Teacher: {item.lesson.teacher.name}
+          </p>
+          <p className="text-xs text-gray-500 xl:hidden">
+            Due: {new Intl.DateTimeFormat("en-US").format(item.dueDate)}
+          </p>
+        </div>
+      </td>
+      <td className="hidden md:table-cell">
+        <div className="flex flex-col">
+          <span className="font-medium">{item.lesson.subject.name}</span>
+        </div>
+      </td>
+      <td className="hidden lg:table-cell">
+        <div className="flex flex-col">
+          <span className="font-medium">{item.lesson.class.name}</span>
+        </div>
+      </td>
+      <td className="hidden lg:table-cell">
+        <div className="flex flex-col">
+          <span className="font-medium">{item.lesson.teacher.name}</span>
+        </div>
+      </td>
+      <td className="hidden xl:table-cell">
+        <div className="flex flex-col text-xs">
+          <span className="text-gray-500">
+            Start: {new Intl.DateTimeFormat("en-US").format(item.startDate)}
+          </span>
+          <span className="font-medium">
+            Due: {new Intl.DateTimeFormat("en-US").format(item.dueDate)}
+          </span>
+        </div>
+      </td>
+      <td>
+        <div className="flex items-center gap-2">
+          {role === "admin" && (
+            <>
+              <FormModel table="assignment" type="update" data={item} />
+              <FormModel table="assignment" type="delete" id={item.id.toString()} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
   const query: Prisma.AssignmentWhereInput = {};
+
+  // Apply role-based filtering
+  if (role === "student") {
+    // Students should only see assignments for their class
+    const student = await prisma.student.findUnique({
+      where: { id: userId || "" },
+      select: { classId: true },
+    });
+    if (student?.classId) {
+      query.lesson = {
+        classId: student.classId,
+      };
+    }
+  } else if (role === "parent") {
+    // Parents should only see assignments for their children's classes
+    const parent = await prisma.parent.findUnique({
+      where: { id: userId || "" },
+      include: { students: { select: { classId: true } } },
+    });
+    if (parent?.students.length) {
+      const classIds = parent.students.map(s => s.classId).filter(Boolean) as string[];
+      if (classIds.length > 0) {
+        query.lesson = {
+          classId: { in: classIds },
+        };
+      }
+    }
+  }
 
   for (const [key, value] of Object.entries(queryParams)) {
     if (value !== undefined) {

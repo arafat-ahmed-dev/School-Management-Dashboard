@@ -1,7 +1,7 @@
 import FormModel from "@/components/FormModal";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { getCurrentRole } from "@/lib/session-utils";
+import { getSessionData } from "@/lib/session-utils";
 import { Class, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,7 +16,9 @@ const TeacherListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-  const role = await getCurrentRole();
+  // Get current user session for security
+  const { userRole } = await getSessionData();
+  const role = userRole || "admin";
 
   const columns = [
     {

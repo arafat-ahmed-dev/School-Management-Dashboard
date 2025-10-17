@@ -7,10 +7,16 @@ const matchers = [
   { matcher: /^\/teacher(.*)$/, allowedRoles: ["teacher"] },
   { matcher: /^\/parent(.*)$/, allowedRoles: ["parent"] },
   { matcher: /^\/list\/teachers$/, allowedRoles: ["admin", "teacher"] },
+  { matcher: /^\/list\/teachers\/[^/]+$/, allowedRoles: ["admin", "teacher"] },
   { matcher: /^\/list\/students$/, allowedRoles: ["admin", "teacher"] },
+  {
+    matcher: /^\/list\/students\/[^/]+$/,
+    allowedRoles: ["admin", "teacher", "student"],
+  },
   { matcher: /^\/list\/parents$/, allowedRoles: ["admin", "teacher"] },
   { matcher: /^\/list\/subjects$/, allowedRoles: ["admin"] },
   { matcher: /^\/list\/classes$/, allowedRoles: ["admin", "teacher"] },
+  { matcher: /^\/list\/lessons$/, allowedRoles: ["admin", "teacher"] },
   {
     matcher: /^\/list\/exams$/,
     allowedRoles: ["admin", "teacher", "student", "parent"],
@@ -21,6 +27,10 @@ const matchers = [
   },
   {
     matcher: /^\/list\/results$/,
+    allowedRoles: ["admin", "teacher", "student", "parent"],
+  },
+  {
+    matcher: /^\/list\/results\/[^/]+$/,
     allowedRoles: ["admin", "teacher", "student", "parent"],
   },
   {
@@ -36,6 +46,10 @@ const matchers = [
     allowedRoles: ["admin", "teacher", "student", "parent"],
   },
   { matcher: /^\/list\/approvements$/, allowedRoles: ["admin"] },
+  {
+    matcher: /^\/list\/calendar$/,
+    allowedRoles: ["admin", "teacher", "student", "parent"],
+  },
 ];
 
 export async function middleware(req: NextRequest) {
