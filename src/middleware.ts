@@ -6,7 +6,10 @@ const matchers = [
   { matcher: /^\/student(.*)$/, allowedRoles: ["student"] },
   { matcher: /^\/teacher(.*)$/, allowedRoles: ["teacher"] },
   { matcher: /^\/parent(.*)$/, allowedRoles: ["parent"] },
-  { matcher: /^\/list\/teachers$/, allowedRoles: ["admin", "teacher"] },
+  {
+    matcher: /^\/list\/teachers$/,
+    allowedRoles: ["admin", "teacher", "parent"],
+  },
   { matcher: /^\/list\/teachers\/[^/]+$/, allowedRoles: ["admin", "teacher"] },
   { matcher: /^\/list\/students$/, allowedRoles: ["admin", "teacher"] },
   {
@@ -14,9 +17,18 @@ const matchers = [
     allowedRoles: ["admin", "teacher", "student"],
   },
   { matcher: /^\/list\/parents$/, allowedRoles: ["admin", "teacher"] },
-  { matcher: /^\/list\/subjects$/, allowedRoles: ["admin"] },
-  { matcher: /^\/list\/classes$/, allowedRoles: ["admin", "teacher"] },
-  { matcher: /^\/list\/lessons$/, allowedRoles: ["admin", "teacher"] },
+  {
+    matcher: /^\/list\/subjects$/,
+    allowedRoles: ["admin", "teacher", "parent"],
+  },
+  {
+    matcher: /^\/list\/classes$/,
+    allowedRoles: ["admin", "teacher", "parent"],
+  },
+  {
+    matcher: /^\/list\/lessons$/,
+    allowedRoles: ["admin", "teacher", "student", "parent"],
+  },
   {
     matcher: /^\/list\/exams$/,
     allowedRoles: ["admin", "teacher", "student", "parent"],

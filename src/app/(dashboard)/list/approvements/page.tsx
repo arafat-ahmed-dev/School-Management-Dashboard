@@ -1,7 +1,7 @@
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role as host } from "@/lib/data";
+import { getSessionData } from "@/lib/session-utils";
 import Image from "next/image";
 import { FilterPopover } from "@/components/filter";
 import { ITEM_PER_PAGE } from "@/lib/setting";
@@ -34,6 +34,10 @@ const ApprovementListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
+  // Get current user session for security
+  const { userRole } = await getSessionData();
+  const host = userRole || "admin";
+
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
   const query:
@@ -171,7 +175,7 @@ const ApprovementListPage = async ({
             <div className="flex items-center gap-4 self-end">
               <FilterPopover filterGroups={filterGroups} />
               {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
-              <button className="bg-aamYellow flex size-8 items-center justify-center rounded-full">
+              <button className="flex size-8 items-center justify-center rounded-full bg-aamYellow">
                 <Image src="/sort.png" alt="" width={14} height={14} />
               </button>
             </div>

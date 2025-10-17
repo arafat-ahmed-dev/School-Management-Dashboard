@@ -9,11 +9,12 @@ export const routeAccessMap: RouteAccessMap = {
   "/student(.*)": ["student"],
   "/teacher(.*)": ["teacher"],
   "/parent(.*)": ["parent"],
-  "/list/teachers": ["admin", "teacher"],
+  "/list/teachers": ["admin", "teacher", "parent"],
   "/list/students": ["admin", "teacher"],
   "/list/parents": ["admin", "teacher"],
-  "/list/subjects": ["admin"],
-  "/list/classes": ["admin", "teacher"],
+  "/list/subjects": ["admin", "teacher", "parent"],
+  "/list/classes": ["admin", "teacher", "parent"],
+  "/list/lessons": ["admin", "teacher", "student", "parent"],
   "/list/exams": ["admin", "teacher", "student", "parent"],
   "/list/assignments": ["admin", "teacher", "student", "parent"],
   "/list/results": ["admin", "teacher", "student", "parent"],
@@ -81,4 +82,3 @@ export const classNames = [
   { key: "class12-art", label: "Class 12 Arts" },
   { key: "class12-com", label: "Class 12 Commerce" },
 ];
-

@@ -17,7 +17,7 @@ const TeacherListPage = async ({
   searchParams: { [key: string]: string | undefined };
 }) => {
   // Get current user session for security
-  const { userRole } = await getSessionData();
+  const { userRole, userId } = await getSessionData();
   const role = userRole || "admin";
 
   const columns = [
@@ -123,8 +123,36 @@ const TeacherListPage = async ({
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
   const query: Prisma.TeacherWhereInput = {
-    approved: "ACCEPTED", // Add this line to filter accepted students
+    approved: "ACCEPTED", // Only show approved teachers
   };
+
+  // Apply role-based filtering
+  if (role === "student") {
+    // Students should only see teachers who teach in their class
+    const student = await prisma.student.findUnique({
+      where: { id: userId || "" },
+      select: { classId: true },
+    });
+    if (student?.classId) {
+      query.lessons = {
+        some: { classId: student.classId },
+      };
+    }
+  } else if (role === "parent") {
+    // Parents should only see teachers who teach their children
+    const parent = await prisma.parent.findUnique({
+      where: { id: userId || "" },
+      include: { students: { select: { classId: true } } },
+    });
+    if (parent?.students.length) {
+      const classIds = parent.students.map(s => s.classId).filter(Boolean) as string[];
+      if (classIds.length > 0) {
+        query.lessons = {
+          some: { classId: { in: classIds } },
+        };
+      }
+    }
+  }
 
   for (const [key, value] of Object.entries(queryParams)) {
     if (value !== undefined) {
@@ -167,12 +195,14 @@ const TeacherListPage = async ({
     <div className="m-4 mt-0 flex-1 rounded-md bg-white p-4">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden text-lg font-semibold md:block">All Teachers</h1>
+        <h1 className="hidden text-lg font-semibold md:block">
+          {role === "student" || role === "parent" ? "My Teachers" : "All Teachers"}
+        </h1>
         <div className="flex w-full flex-col items-center gap-4 md:w-auto md:flex-row">
           <TableSearch />
           <div className="flex w-full items-center justify-between gap-4 md:self-end">
             <h1 className="block text-sm font-semibold md:hidden">
-              All Teachers
+              {role === "student" || role === "parent" ? "My Teachers" : "All Teachers"}
             </h1>
             <div className="flex items-center gap-4 self-end">
               <button className="flex size-8 items-center justify-center rounded-full bg-aamYellow">

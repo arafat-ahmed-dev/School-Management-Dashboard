@@ -2,7 +2,6 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role } from "@/lib/data";
 import Image from "next/image";
 import prisma from "../../../../../prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
@@ -67,11 +66,13 @@ const ExamListPage = async ({
 
   // Get current session to determine user role and student class
   const session = await getServerSession(authOptions);
-  const currentRole = session?.user?.role || role;
+  const currentRole = session?.user?.role;
   const userId = session?.user?.id || "";
 
   // If user is a student, get their class information
   let studentClassId: string | null = null;
+  let parentStudentClassIds: string[] = [];
+
   if (currentRole === "Student" || currentRole === "student") {
     const student = await prisma.student.findFirst({
       where: {
@@ -86,6 +87,25 @@ const ExamListPage = async ({
       },
     });
     studentClassId = student?.classId || null;
+  } else if (currentRole === "Parent" || currentRole === "parent") {
+    // If user is a parent, get their children's class information
+    const parent = await prisma.parent.findFirst({
+      where: {
+        OR: [
+          { id: userId },
+          { email: session?.user?.email || "" },
+          { username: session?.user?.email || "" },
+        ],
+      },
+      include: {
+        students: {
+          select: {
+            classId: true,
+          },
+        },
+      },
+    });
+    parentStudentClassIds = parent?.students.map(s => s.classId).filter(Boolean) as string[] || [];
   }
 
   const renderRow = (item: ExamList) => (
@@ -181,6 +201,14 @@ const ExamListPage = async ({
       // If student has no class, show no exams
       query.lesson.classId = "nonexistent";
     }
+  } else if (currentRole === "Parent" || currentRole === "parent") {
+    // If parent, filter by their children's classes
+    if (parentStudentClassIds.length > 0) {
+      query.lesson.classId = { in: parentStudentClassIds };
+    } else {
+      // If parent has no children assigned, show no exams
+      query.lesson.classId = "nonexistent";
+    }
   }
 
   if (queryParams) {
@@ -188,8 +216,9 @@ const ExamListPage = async ({
       if (value !== undefined) {
         switch (key) {
           case "classId":
-            // For students, ignore classId filter as we already filtered by their class
-            if (currentRole !== "Student" && currentRole !== "student") {
+            // For students and parents, ignore classId filter as we already filtered by their class(es)
+            if (currentRole !== "Student" && currentRole !== "student" &&
+              currentRole !== "Parent" && currentRole !== "parent") {
               query.lesson.classId = value;
             }
             break;

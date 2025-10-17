@@ -18,8 +18,8 @@ const SubjectListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-  // Get current user session for security - subjects are admin-only
-  const { userRole } = await getSessionData();
+  // Get current user session for security
+  const { userRole, userId } = await getSessionData();
   const role = userRole || "admin";
 
   const columns = [
@@ -101,6 +101,39 @@ const SubjectListPage = async ({
   const p = page ? parseInt(page) : 1;
   const query: Prisma.SubjectWhereInput = {};
 
+  // Apply role-based filtering
+  if (role === "student") {
+    // Students should only see subjects taught in their class
+    const student = await prisma.student.findUnique({
+      where: { id: userId || "" },
+      select: { classId: true },
+    });
+    if (student?.classId) {
+      query.classes = {
+        some: { id: student.classId },
+      };
+    }
+  } else if (role === "parent") {
+    // Parents should only see subjects taught in their children's classes
+    const parent = await prisma.parent.findUnique({
+      where: { id: userId || "" },
+      include: { students: { select: { classId: true } } },
+    });
+    if (parent?.students.length) {
+      const classIds = parent.students.map(s => s.classId).filter(Boolean) as string[];
+      if (classIds.length > 0) {
+        query.classes = {
+          some: { id: { in: classIds } },
+        };
+      }
+    }
+  } else if (role === "teacher") {
+    // Teachers should only see subjects they teach
+    query.teachers = {
+      some: { id: userId || "" },
+    };
+  }
+
   for (const [key, value] of Object.entries(queryParams)) {
     if (value !== undefined) {
       switch (key) {
@@ -137,12 +170,14 @@ const SubjectListPage = async ({
     <div className="m-4 mt-0 flex-1 rounded-md bg-white p-4">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden text-lg font-semibold md:block">All Subjects</h1>
+        <h1 className="hidden text-lg font-semibold md:block">
+          {role === "student" || role === "parent" || role === "teacher" ? "My Subjects" : "All Subjects"}
+        </h1>
         <div className="flex w-full flex-col items-center gap-4 md:w-auto md:flex-row">
           <TableSearch />
           <div className="flex w-full items-center justify-between gap-4 md:self-end">
             <h1 className="block text-sm font-semibold md:hidden">
-              All Subjects
+              {role === "student" || role === "parent" || role === "teacher" ? "My Subjects" : "All Subjects"}
             </h1>
             <div className="flex items-center gap-4 self-end">
               <button className="flex size-8 items-center justify-center rounded-full bg-aamYellow">

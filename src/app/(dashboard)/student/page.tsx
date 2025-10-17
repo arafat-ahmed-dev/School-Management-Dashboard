@@ -12,7 +12,7 @@ const StudentPage = async ({
 }) => {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id || "";
-
+  const role = session?.user?.role || "student";
 
   // Check if user is authenticated and has student role
   if (!session || !userId) {
@@ -257,7 +257,7 @@ const StudentPage = async ({
       <div className="w-full xl:w-2/3">
         <div className="h-full rounded-md bg-white p-2 md:p-4">
           <BigCalenderContainer
-            type="student"
+            type={role}
             id={userId}
             studentCalendarEvents={calendarEvents}
             studentClassData={className}

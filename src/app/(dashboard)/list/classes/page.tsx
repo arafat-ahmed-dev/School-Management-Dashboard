@@ -2,7 +2,7 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role } from "@/lib/data";
+import { getSessionData } from "@/lib/session-utils";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import prisma from "../../../../../prisma";
@@ -14,78 +14,108 @@ type ClassList = Class & {
   _count: { students: number };
 };
 
-const columns = [
-  {
-    header: "Class Name",
-    accessor: "name",
-    className: "p-2",
-  },
-  {
-    header: "Capacity",
-    accessor: "capacity",
-    className: "hidden md:table-cell p-2",
-  },
-  {
-    header: "Grade",
-    accessor: "grade",
-    className: "hidden md:table-cell p-2",
-  },
-  {
-    header: "Students",
-    accessor: "students",
-    className: "hidden md:table-cell p-2",
-  },
-  {
-    header: "Supervisor",
-    accessor: "supervisor",
-    className: "p-2",
-  },
-  ...(role === "admin"
-    ? [
-      {
-        header: "Actions",
-        accessor: "action",
-        className: "table-cell p-2",
-      },
-    ]
-    : []),
-];
-const renderRow = (item: ClassList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4 px-2">{item.name}</td>
-    <td className="hidden p-2 md:table-cell">{item.capacity}</td>
-    <td className="hidden p-2 md:table-cell">{item.grade.level}</td>
-    <td className="hidden p-2 md:table-cell">
-      <span className="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800">
-        {item._count.students} students
-      </span>
-    </td>
-    <td className="p-2">{item.supervisor?.name || 'No supervisor'}</td>
-    <td>
-      <div className="flex w-fit items-center justify-center gap-2">
-        {role === "admin" && (
-          <>
-            <FormModel table="class" type="update" data={item} id={item.id} />
-            <FormModel table="class" type="delete" id={item.id.toString()} />
-          </>
-        )}
-      </div>
-    </td>
-  </tr>
-);
-
 const ClassListPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
+  // Get current user session for security
+  const { userRole, userId } = await getSessionData();
+  const role = userRole || "admin";
+
+  // Define columns based on user role
+  const columns = [
+    {
+      header: "Class Name",
+      accessor: "name",
+      className: "p-2",
+    },
+    {
+      header: "Capacity",
+      accessor: "capacity",
+      className: "hidden md:table-cell p-2",
+    },
+    {
+      header: "Grade",
+      accessor: "grade",
+      className: "hidden md:table-cell p-2",
+    },
+    {
+      header: "Students",
+      accessor: "students",
+      className: "hidden md:table-cell p-2",
+    },
+    {
+      header: "Supervisor",
+      accessor: "supervisor",
+      className: "p-2",
+    },
+    ...(role === "admin"
+      ? [
+        {
+          header: "Actions",
+          accessor: "action",
+          className: "table-cell p-2",
+        },
+      ]
+      : []),
+  ];
+
+  const renderRow = (item: ClassList) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4 px-2">{item.name}</td>
+      <td className="hidden p-2 md:table-cell">{item.capacity}</td>
+      <td className="hidden p-2 md:table-cell">{item.grade.level}</td>
+      <td className="hidden p-2 md:table-cell">
+        <span className="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800">
+          {item._count.students} students
+        </span>
+      </td>
+      <td className="p-2">{item.supervisor?.name || 'No supervisor'}</td>
+      <td>
+        <div className="flex w-fit items-center justify-center gap-2">
+          {role === "admin" && (
+            <>
+              <FormModel table="class" type="update" data={item} id={item.id} />
+              <FormModel table="class" type="delete" id={item.id.toString()} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
   const query: Prisma.ClassWhereInput = {};
   const orderBy: Prisma.ClassOrderByWithRelationInput = { name: "asc" }; // Add sorting by name
+
+  // Apply role-based filtering
+  if (role === "student") {
+    // Students should only see their own class
+    const student = await prisma.student.findUnique({
+      where: { id: userId || "" },
+      select: { classId: true },
+    });
+    if (student?.classId) {
+      query.id = student.classId;
+    }
+  } else if (role === "parent") {
+    // Parents should only see classes where their children are enrolled
+    const parent = await prisma.parent.findUnique({
+      where: { id: userId || "" },
+      include: { students: { select: { classId: true } } },
+    });
+    if (parent?.students.length) {
+      const classIds = parent.students.map(s => s.classId).filter(Boolean) as string[];
+      if (classIds.length > 0) {
+        query.id = { in: classIds };
+      }
+    }
+  }
 
   for (const [key, value] of Object.entries(queryParams)) {
     if (value !== undefined) {
@@ -133,12 +163,14 @@ const ClassListPage = async ({
     <div className="m-4 mt-0 flex-1 rounded-md bg-white p-4">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden text-lg font-semibold md:block">All Classes</h1>
+        <h1 className="hidden text-lg font-semibold md:block">
+          {role === "student" || role === "parent" ? "My Classes" : "All Classes"}
+        </h1>
         <div className="flex w-full flex-col items-center gap-4 md:w-auto md:flex-row">
           <TableSearch />
           <div className="flex w-full items-center justify-between gap-4 md:self-end">
             <h1 className="block text-sm font-semibold md:hidden">
-              All Classes
+              {role === "student" || role === "parent" ? "My Classes" : "All Classes"}
             </h1>
             <div className="flex items-center gap-4 self-end">
               <button className="flex size-8 items-center justify-center rounded-full bg-aamYellow">

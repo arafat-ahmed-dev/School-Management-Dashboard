@@ -30,37 +30,37 @@ const Menu = () => {
           icon: "/teacher.png",
           label: "Teachers",
           href: "/list/teachers",
-          visible: ["admin", "teacher"],
+          visible: ["admin", "teacher", "parent"], 
         },
         {
           icon: "/student.png",
           label: "Students",
           href: "/list/students",
-          visible: ["admin", "teacher"],
+          visible: ["admin", "teacher"], 
         },
         {
           icon: "/parent.png",
           label: "Parents",
           href: "/list/parents",
-          visible: ["admin", "teacher"],
+          visible: ["admin", "teacher"], 
         },
         {
           icon: "/subject.png",
           label: "Subjects",
           href: "/list/subjects",
-          visible: ["admin"],
+          visible: ["admin", "teacher", "parent", "student"],
         },
         {
           icon: "/class.png",
           label: "Classes",
           href: "/list/classes",
-          visible: ["admin", "teacher"],
+          visible: ["admin", "teacher", "parent", "student"],
         },
         {
           icon: "/lesson.png",
           label: "Lessons",
           href: "/list/lessons",
-          visible: ["admin", "teacher"],
+          visible: ["admin", "teacher", "student", "parent"],
         },
         {
           icon: "/exam.png",
@@ -106,21 +106,21 @@ const Menu = () => {
         },
         {
           icon: "/approvement.png",
-          label: "Approvements",
-          href: "/list/approvements",
+          label: "Approvals",
+          href: "/list/approvals",
           visible: ["admin"],
         },
+        {
+          icon: "/setting.png",
+          label: "Settings",
+          href: "/list/settings",
+          visible: ["admin"], 
+        }
       ],
     },
     {
       title: "OTHER",
       items: [
-        // {
-        //   icon: "/setting.png",
-        //   label: "Settings",
-        //   href: "/list/settings",
-        //   visible: ["admin", "teacher", "student", "parent"],
-        // },
         {
           icon: "/logout.png",
           label: "Logout",
@@ -130,6 +130,7 @@ const Menu = () => {
       ],
     },
   ];
+
 
   if (!isClient || isLoading) {
     return <div>Loading...</div>;
