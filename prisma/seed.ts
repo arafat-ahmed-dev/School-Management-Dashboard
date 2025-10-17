@@ -1,4 +1,4 @@
-// prisma/seed.ts
+// prisma/combined-seed.ts
 import {
   PrismaClient,
   Approve,
@@ -12,14 +12,41 @@ import { faker } from "@faker-js/faker";
 
 const prisma = new PrismaClient();
 
+function parseTimeToDate(timeStr: string) {
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  const d = new Date(2025, 0, 1);
+  d.setHours(hours, minutes, 0, 0);
+  d.setSeconds(0, 0);
+  return d;
+}
+
+const timeSlots: Array<[string, string]> = [
+  ["09:00", "09:50"],
+  ["10:00", "10:50"],
+  ["11:00", "11:50"],
+  ["12:00", "12:50"],
+  ["13:00", "13:50"],
+  ["14:00", "14:50"],
+  ["15:00", "15:50"],
+];
+
+const weekdays: Day[] = [
+  Day.MONDAY,
+  Day.TUESDAY,
+  Day.WEDNESDAY,
+  Day.THURSDAY,
+  Day.FRIDAY,
+];
+
 async function main() {
-  console.log("🚀 Seeding started...");
+  console.log("🚀 Combined seeding started...");
 
   // ---------------------------------------
-  // 1. Cleanup old data
+  // 1. Cleanup old data (in correct order)
   // ---------------------------------------
-  await prisma.attendance.deleteMany();
+  console.log("🧹 Cleaning up existing data...");
   await prisma.result.deleteMany();
+  await prisma.attendance.deleteMany();
   await prisma.assignment.deleteMany();
   await prisma.exam.deleteMany();
   await prisma.lesson.deleteMany();
@@ -130,6 +157,7 @@ async function main() {
     { id: "Civ", name: "Civics" },
     { id: "IHC", name: "Islamic History and Culture" },
   ];
+
   const subjects = await Promise.all(
     subjectData.map((s) =>
       prisma.subject.create({
@@ -182,6 +210,12 @@ async function main() {
           gradeId: grade.id,
           capacity: faker.number.int({ min: 30, max: 60 }),
           supervisorId: faker.helpers.arrayElement(teachers).id,
+          subjects: {
+            connect: faker.helpers.arrayElements(
+              subjects.map((s) => ({ id: s.id })),
+              { min: 3, max: 8 }
+            ),
+          },
         },
       });
     })
@@ -221,30 +255,75 @@ async function main() {
   console.log(`✅ Students seeded: ${students.length}`);
 
   // ---------------------------------------
-  // 9. Seed Lessons
+  // 9. Seed Lessons (Enhanced Calendar Logic)
   // ---------------------------------------
-  const lessons = await Promise.all(
-    Array.from({ length: 50 }).map(() =>
-      prisma.lesson.create({
-        data: {
-          name: faker.word.words(3),
-          day: faker.helpers.arrayElement(Object.values(Day)),
-          startTime: faker.date.future(),
-          endTime: faker.date.future(),
-          subjectId: faker.helpers.arrayElement(subjects).id,
-          classId: faker.helpers.arrayElement(classes).id,
-          teacherId: faker.helpers.arrayElement(teachers).id,
-        },
-      })
-    )
-  );
+  console.log("📅 Creating comprehensive lesson schedule...");
+
+  const createdLessons: Array<any> = [];
+
+  for (let classIndex = 0; classIndex < classes.length; classIndex++) {
+    const cls = classes[classIndex];
+
+    // Get subjects for this class
+    const classWithSubjects = await prisma.class.findUnique({
+      where: { id: cls.id },
+      include: { subjects: true },
+    });
+
+    const classSubjects = classWithSubjects?.subjects || subjects.slice(0, 6);
+    const subjStart = classIndex % classSubjects.length;
+
+    for (let dayIndex = 0; dayIndex < weekdays.length; dayIndex++) {
+      const day = weekdays[dayIndex];
+
+      for (let slotIndex = 0; slotIndex < timeSlots.length; slotIndex++) {
+        const subject =
+          classSubjects[
+            (subjStart + slotIndex + dayIndex) % classSubjects.length
+          ];
+        const teacher =
+          teachers[(classIndex + slotIndex + dayIndex) % teachers.length];
+
+        const [startStr, endStr] = timeSlots[slotIndex];
+        const startTime = parseTimeToDate(startStr);
+        const endTime = parseTimeToDate(endStr);
+
+        const lessonName = `${subject.name} - ${cls.name} - D${dayIndex + 1}-S${slotIndex + 1}`;
+
+        createdLessons.push({
+          name: lessonName,
+          day,
+          startTime,
+          endTime,
+          classId: cls.id,
+          teacherId: teacher.id,
+          subjectId: subject.id,
+        });
+      }
+    }
+  }
+
+  // Insert lessons in batches for performance
+  const BATCH_SIZE = 100;
+  for (let i = 0; i < createdLessons.length; i += BATCH_SIZE) {
+    const chunk = createdLessons.slice(i, i + BATCH_SIZE);
+    await prisma.$transaction(
+      chunk.map((lessonData) => prisma.lesson.create({ data: lessonData }))
+    );
+    console.log(
+      `📚 Inserted lessons ${i + 1}..${Math.min(i + BATCH_SIZE, createdLessons.length)}`
+    );
+  }
+
+  // Get all created lessons for further seeding
+  const lessons = await prisma.lesson.findMany();
   console.log(`✅ Lessons seeded: ${lessons.length}`);
 
   // ---------------------------------------
   // 10. Seed Exams
   // ---------------------------------------
   const exams = await Promise.all(
-    Array.from({ length: 20 }).map(() =>
+    Array.from({ length: 50 }).map(() =>
       prisma.exam.create({
         data: {
           title: faker.word.words(2),
@@ -262,7 +341,7 @@ async function main() {
   // 11. Seed Assignments
   // ---------------------------------------
   const assignments = await Promise.all(
-    Array.from({ length: 20 }).map(() =>
+    Array.from({ length: 50 }).map(() =>
       prisma.assignment.create({
         data: {
           title: faker.word.words(3),
@@ -279,14 +358,20 @@ async function main() {
   // 12. Seed Results
   // ---------------------------------------
   const results = await Promise.all(
-    Array.from({ length: 50 }).map(() => {
-      const exam = faker.helpers.arrayElement(exams);
+    Array.from({ length: 100 }).map(() => {
+      const isExamResult = faker.datatype.boolean();
+      const exam = isExamResult ? faker.helpers.arrayElement(exams) : null;
+      const assignment = !isExamResult
+        ? faker.helpers.arrayElement(assignments)
+        : null;
       const student = faker.helpers.arrayElement(students);
+
       return prisma.result.create({
         data: {
-          score: faker.number.int({ min: 0, max: 100 }),
+          score: faker.number.int({ min: 40, max: 100 }),
           maxScore: 100,
-          examId: exam.id,
+          examId: exam?.id,
+          assignmentId: assignment?.id,
           studentId: student.id,
         },
       });
@@ -298,13 +383,13 @@ async function main() {
   // 13. Seed Attendance
   // ---------------------------------------
   const attendance = await Promise.all(
-    Array.from({ length: 100 }).map(() => {
+    Array.from({ length: 200 }).map(() => {
       const lesson = faker.helpers.arrayElement(lessons);
       const student = faker.helpers.arrayElement(students);
       return prisma.attendance.create({
         data: {
-          date: faker.date.recent(),
-          present: faker.datatype.boolean(),
+          date: faker.date.recent({ days: 30 }),
+          present: faker.datatype.boolean(0.85), // 85% attendance rate
           studentId: student.id,
           lessonId: lesson.id,
         },
@@ -314,20 +399,47 @@ async function main() {
   console.log(`✅ Attendance seeded: ${attendance.length}`);
 
   // ---------------------------------------
-  // 14. Seed Events
+  // 14. Seed Events (Enhanced with calendar logic)
   // ---------------------------------------
+  const today = new Date();
+  const eventsToCreate: Array<any> = [];
+
+  // Create one event per class
+  for (let i = 0; i < classes.length; i++) {
+    const cls = classes[i];
+    const evStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 7 + i,
+      9,
+      0,
+      0
+    );
+    const evEnd = new Date(evStart);
+    evEnd.setHours(evStart.getHours() + 3);
+
+    eventsToCreate.push({
+      title: `Class Activity - ${cls.name}`,
+      description: `Auto-created activity for ${cls.name}`,
+      startTime: evStart,
+      endTime: evEnd,
+      classId: cls.id,
+    });
+  }
+
+  // Create additional general events
+  const additionalEvents = Array.from({ length: 10 }).map(() => ({
+    title: faker.word.words(3),
+    description: faker.lorem.sentence(),
+    startTime: faker.date.future(),
+    endTime: faker.date.future(),
+    classId: faker.helpers.arrayElement(classes).id,
+  }));
+
+  eventsToCreate.push(...additionalEvents);
+
   const events = await Promise.all(
-    Array.from({ length: 10 }).map(() =>
-      prisma.event.create({
-        data: {
-          title: faker.word.words(3),
-          description: faker.lorem.sentence(),
-          startTime: faker.date.future(),
-          endTime: faker.date.future(),
-          classId: faker.helpers.arrayElement(classes).id,
-        },
-      })
-    )
+    eventsToCreate.map((eventData) => prisma.event.create({ data: eventData }))
   );
   console.log(`✅ Events seeded: ${events.length}`);
 
@@ -335,12 +447,12 @@ async function main() {
   // 15. Seed Announcements
   // ---------------------------------------
   const announcements = await Promise.all(
-    Array.from({ length: 10 }).map(() =>
+    Array.from({ length: 15 }).map(() =>
       prisma.announcement.create({
         data: {
           title: faker.word.words(3),
           description: faker.lorem.sentence(),
-          date: faker.date.recent(),
+          date: faker.date.recent({ days: 7 }),
           classId: faker.helpers.arrayElement(classes).id,
         },
       })
@@ -348,12 +460,30 @@ async function main() {
   );
   console.log(`✅ Announcements seeded: ${announcements.length}`);
 
-  console.log("🎉 Seeding completed successfully!");
+  // ---------------------------------------
+  // Summary
+  // ---------------------------------------
+  console.log("\n🎉 Combined seeding completed successfully!");
+  console.log("📊 Summary:");
+  console.log(`   - Admins: ${admins.count}`);
+  console.log(`   - Parents: ${parents.length}`);
+  console.log(`   - Teachers: ${teachers.length}`);
+  console.log(`   - Grades: ${grades.length}`);
+  console.log(`   - Subjects: ${subjects.length}`);
+  console.log(`   - Classes: ${classes.length}`);
+  console.log(`   - Students: ${students.length}`);
+  console.log(`   - Lessons: ${lessons.length}`);
+  console.log(`   - Exams: ${exams.length}`);
+  console.log(`   - Assignments: ${assignments.length}`);
+  console.log(`   - Results: ${results.length}`);
+  console.log(`   - Attendance: ${attendance.length}`);
+  console.log(`   - Events: ${events.length}`);
+  console.log(`   - Announcements: ${announcements.length}`);
 }
 
 main()
   .catch((e) => {
-    console.error("❌ Seeding failed:", e);
+    console.error("❌ Combined seeding failed:", e);
     process.exit(1);
   })
   .finally(async () => {
