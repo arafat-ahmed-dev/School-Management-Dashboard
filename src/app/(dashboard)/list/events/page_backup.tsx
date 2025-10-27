@@ -2,15 +2,16 @@ import FormModel from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role } from "@/lib/data";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import prisma from "../../../../../prisma";
 import { Event, Prisma } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/option";
 
 type EventList = Event & { class: { name: string } };
 
-const columns = [
+const getColumns = (role: string) => [
   {
     header: "Title",
     accessor: "title",
@@ -49,53 +50,58 @@ const columns = [
     ]
     : []),
 ];
-const renderRow = (item: EventList) => (
-  <tr
-    key={item.id}
-    className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
-  >
-    <td className="flex items-center gap-4 p-4 px-2">{item.title}</td>
-    <td className="hidden p-2 md:table-cell">
-      <div className="max-w-32 truncate" title={item.description}>
-        {item.description}
-      </div>
-    </td>
-    <td className="capitalize">{item.class?.name || 'All Classes'}</td>
-    <td className="hidden p-2 md:table-cell">
-      {new Intl.DateTimeFormat("en-US").format(item.startTime)}
-    </td>
-    <td className="hidden p-2 lg:table-cell">
-      {new Intl.DateTimeFormat("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true, // Use 12-hour format (set to false for 24-hour format)
-      }).format(item.startTime)}
-    </td>
-    <td className="hidden p-2 lg:table-cell">
-      {new Intl.DateTimeFormat("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true, // Use 12-hour format (set to false for 24-hour format)
-      }).format(item.endTime)}
-    </td>
-    <td>
-      <div className="flex w-fit items-center justify-center gap-2">
-        {role === "admin" && (
-          <>
-            <FormModel table="event" type="update" data={item} id={item.id} />
-            <FormModel table="event" type="delete" id={item.id.toString()} />
-          </>
-        )}
-      </div>
-    </td>
-  </tr>
-);
 
 const EventListPage = async ({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
+  // Get user session for role-based access
+  const session = await getServerSession(authOptions);
+  const role = session?.user?.role || "guest";
+
+  const renderRow = (item: EventList) => (
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 text-sm even:bg-slate-50 hover:bg-aamPurpleLight"
+    >
+      <td className="flex items-center gap-4 p-4 px-2">{item.title}</td>
+      <td className="hidden p-2 md:table-cell">
+        <div className="max-w-32 truncate" title={item.description}>
+          {item.description}
+        </div>
+      </td>
+      <td className="capitalize">{item.class?.name || 'All Classes'}</td>
+      <td className="hidden p-2 md:table-cell">
+        {new Intl.DateTimeFormat("en-US").format(item.startTime)}
+      </td>
+      <td className="hidden p-2 lg:table-cell">
+        {new Intl.DateTimeFormat("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true, // Use 12-hour format (set to false for 24-hour format)
+        }).format(item.startTime)}
+      </td>
+      <td className="hidden p-2 lg:table-cell">
+        {new Intl.DateTimeFormat("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true, // Use 12-hour format (set to false for 24-hour format)
+        }).format(item.endTime)}
+      </td>
+      <td>
+        <div className="flex w-fit items-center justify-center gap-2">
+          {role === "admin" && (
+            <>
+              <FormModel table="event" type="update" data={item} id={item.id} />
+              <FormModel table="event" type="delete" id={item.id.toString()} />
+            </>
+          )}
+        </div>
+      </td>
+    </tr>
+  );
+
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
   const query: Prisma.EventWhereInput = {};
@@ -164,7 +170,7 @@ const EventListPage = async ({
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={data} />
+      <Table columns={getColumns(role)} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
       <Pagination page={p} count={count} />
     </div>

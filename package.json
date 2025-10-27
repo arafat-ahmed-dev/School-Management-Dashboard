@@ -10,8 +10,7 @@
     "build": "dotenv -e .env prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate",
-    "db:seed": "tsx prisma/seed.ts"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -70,7 +69,7 @@
     "zod": "^3.24.1"
   },
   "prisma": {
-    "seed": "tsx prisma/combined-seed.ts"
+    "seed": "tsx prisma/seed.ts"
   },
   "devDependencies": {
     "@faker-js/faker": "^10.0.0",

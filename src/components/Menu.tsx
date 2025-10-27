@@ -107,7 +107,7 @@ const Menu = () => {
         {
           icon: "/approvement.png",
           label: "Approvals",
-          href: "/list/approvals",
+          href: "/list/approvements",
           visible: ["admin"],
         },
         {

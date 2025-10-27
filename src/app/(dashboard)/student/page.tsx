@@ -258,9 +258,8 @@ const StudentPage = async ({
         <div className="h-full rounded-md bg-white p-2 md:p-4">
           <BigCalenderContainer
             type={role}
-            id={userId}
-            studentCalendarEvents={calendarEvents}
-            studentClassData={className}
+            calendarEvents={calendarEvents}
+            classData={className}
           />
         </div>
       </div>

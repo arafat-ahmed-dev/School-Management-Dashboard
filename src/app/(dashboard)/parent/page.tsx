@@ -315,9 +315,8 @@ const ParentPage = async ({
                   ) : (
                     <BigCalenderContainer
                       type={role}
-                      id={childData.student.id}
-                      studentCalendarEvents={childData.calendarEvents}
-                      studentClassData={childData.classData}
+                      calendarEvents={childData.calendarEvents}
+                      classData={childData.classData}
                     />
                   )}
                 </div>

@@ -1,4 +1,4 @@
-// prisma/seed.ts
+// prisma/combined-seed.ts
 import {
   PrismaClient,
   Approve,
@@ -158,64 +158,20 @@ async function main() {
     { id: "IHC", name: "Islamic History and Culture" },
   ];
 
-  // Create subjects with logical teacher specialization
-  const subjectGroups = {
-    languages: ["Ban-1", "Ban-2", "Eng-1", "Eng-2"],
-    sciences: ["Math", "Phy", "Chem", "Bio", "GenSci"],
-    social: ["BGS", "Hist", "Civ", "IHC"],
-    business: ["Acc", "BOM", "Eco"],
-    general: ["ICT", "Rel"],
-  };
-
+  // Create subjects with specialized teacher assignments
   const subjects = await Promise.all(
     subjectData.map((s, index) => {
-      // Find which group this subject belongs to
-      let subjectGroup = "general";
-      for (const [groupName, subjects] of Object.entries(subjectGroups)) {
-        if (subjects.includes(s.id)) {
-          subjectGroup = groupName;
-          break;
-        }
+      // Assign teachers more logically - each teacher specializes in 2-3 subjects
+      const teachersPerSubject = Math.ceil(
+        (teachers.length / subjectData.length) * 1.5
+      );
+      const startIndex = (index * 2) % teachers.length;
+      const assignedTeachers = [];
+
+      for (let i = 0; i < Math.min(teachersPerSubject, 3); i++) {
+        const teacherIndex = (startIndex + i) % teachers.length;
+        assignedTeachers.push({ id: teachers[teacherIndex].id });
       }
-
-      // Assign teachers based on subject groups
-      let teacherIndices: number[] = [];
-
-      if (subjectGroup === "languages") {
-        // Language teachers: assign first 8 teachers to language subjects
-        teacherIndices = Array.from(
-          { length: 2 },
-          (_, i) => (index * 2 + i) % 8
-        );
-      } else if (subjectGroup === "sciences") {
-        // Science teachers: assign teachers 8-18 to science subjects
-        teacherIndices = Array.from(
-          { length: 2 },
-          (_, i) => 8 + ((index * 2 + i) % 10)
-        );
-      } else if (subjectGroup === "social") {
-        // Social studies teachers: assign teachers 18-23
-        teacherIndices = Array.from(
-          { length: 2 },
-          (_, i) => 18 + ((index * 2 + i) % 6)
-        );
-      } else if (subjectGroup === "business") {
-        // Business teachers: assign teachers 24-27
-        teacherIndices = Array.from(
-          { length: 2 },
-          (_, i) => 24 + ((index * 2 + i) % 4)
-        );
-      } else {
-        // General subjects: can be taught by any available teachers
-        teacherIndices = Array.from(
-          { length: 2 },
-          (_, i) => 28 + ((index * 2 + i) % 2)
-        );
-      }
-
-      const assignedTeachers = teacherIndices.map((i) => ({
-        id: teachers[i % teachers.length].id,
-      }));
 
       return prisma.subject.create({
         data: {
@@ -252,7 +208,7 @@ async function main() {
   ];
 
   const classes = await Promise.all(
-    classNames.map(async (cls) => {
+    classNames.map((cls) => {
       const gradeLevelMatch = cls.key.match(/class(\d+)/);
       const gradeLevel = gradeLevelMatch ? parseInt(gradeLevelMatch[1]) : 7;
       const grade = grades.find((g) => g.level === gradeLevel)!;
@@ -349,33 +305,13 @@ async function main() {
         classSubjects.includes(s.subjectId)
       );
 
-      // Find a qualified supervisor from teachers who teach subjects in this class
-      let supervisor = faker.helpers.arrayElement(teachers);
-      if (subjectsToConnect.length > 0) {
-        // Try to find a teacher who teaches at least one subject in this class
-        const qualifiedSupervisors = [];
-        for (const subject of subjectsToConnect) {
-          const subjectTeachers = await prisma.subject.findUnique({
-            where: { id: subject.id },
-            include: { teachers: true },
-          });
-          if (subjectTeachers?.teachers) {
-            qualifiedSupervisors.push(...subjectTeachers.teachers);
-          }
-        }
-
-        if (qualifiedSupervisors.length > 0) {
-          supervisor = faker.helpers.arrayElement(qualifiedSupervisors);
-        }
-      }
-
       return prisma.class.create({
         data: {
           name: cls.label,
           classId: cls.key,
           gradeId: grade.id,
           capacity: faker.number.int({ min: 30, max: 60 }),
-          supervisorId: supervisor.id,
+          supervisorId: faker.helpers.arrayElement(teachers).id,
           subjects: {
             connect: subjectsToConnect.map((s) => ({ id: s.id })),
           },
@@ -500,7 +436,7 @@ async function main() {
   console.log(`✅ Lessons seeded: ${lessons.length}`);
 
   // ---------------------------------------
-  // 10. Seed Exams (Fixed: Structured exam distribution)
+  // 10. Seed Exams (Improved: More structured exam distribution)
   // ---------------------------------------
   const examRecords: Array<any> = [];
 
@@ -570,27 +506,13 @@ async function main() {
     }
   }
 
-  // Insert exams in batches to avoid transaction timeouts
-  const EXAM_BATCH_SIZE = 50;
-  let totalExams = 0;
-
-  for (let i = 0; i < examRecords.length; i += EXAM_BATCH_SIZE) {
-    const chunk = examRecords.slice(i, i + EXAM_BATCH_SIZE);
-    await prisma.$transaction(
-      chunk.map((record) => prisma.exam.create({ data: record }))
-    );
-    totalExams += chunk.length;
-    console.log(
-      `📝 Inserted exams ${i + 1}..${Math.min(i + EXAM_BATCH_SIZE, examRecords.length)}`
-    );
-  }
-
-  // Get all created exams for further seeding
-  const exams = await prisma.exam.findMany();
-  console.log(`✅ Exams seeded: ${totalExams}`);
+  const exams = await Promise.all(
+    examRecords.map((record) => prisma.exam.create({ data: record }))
+  );
+  console.log(`✅ Exams seeded: ${exams.length}`);
 
   // ---------------------------------------
-  // 11. Seed Assignments (Fixed: Subject-specific assignments)
+  // 11. Seed Assignments (Improved: Subject-specific assignments)
   // ---------------------------------------
   const assignmentRecords: Array<any> = [];
 
@@ -629,24 +551,12 @@ async function main() {
     }
   }
 
-  // Insert assignments in batches to avoid transaction timeouts
-  const ASSIGNMENT_BATCH_SIZE = 50;
-  let totalAssignments = 0;
-
-  for (let i = 0; i < assignmentRecords.length; i += ASSIGNMENT_BATCH_SIZE) {
-    const chunk = assignmentRecords.slice(i, i + ASSIGNMENT_BATCH_SIZE);
-    await prisma.$transaction(
-      chunk.map((record) => prisma.assignment.create({ data: record }))
-    );
-    totalAssignments += chunk.length;
-    console.log(
-      `📋 Inserted assignments ${i + 1}..${Math.min(i + ASSIGNMENT_BATCH_SIZE, assignmentRecords.length)}`
-    );
-  }
-
-  // Get all created assignments for further seeding
-  const assignments = await prisma.assignment.findMany();
-  console.log(`✅ Assignments seeded: ${totalAssignments}`);
+  const assignments = await Promise.all(
+    assignmentRecords.map((record) =>
+      prisma.assignment.create({ data: record })
+    )
+  );
+  console.log(`✅ Assignments seeded: ${assignments.length}`);
 
   // ---------------------------------------
   // 12. Seed Results (Fixed: Students only get results for their class lessons)
@@ -702,22 +612,10 @@ async function main() {
     }
   }
 
-  // Insert results in batches to avoid transaction timeouts
-  const RESULTS_BATCH_SIZE = 50;
-  let totalResults = 0;
-
-  for (let i = 0; i < resultRecords.length; i += RESULTS_BATCH_SIZE) {
-    const chunk = resultRecords.slice(i, i + RESULTS_BATCH_SIZE);
-    await prisma.$transaction(
-      chunk.map((record) => prisma.result.create({ data: record }))
-    );
-    totalResults += chunk.length;
-    console.log(
-      `📊 Inserted results ${i + 1}..${Math.min(i + RESULTS_BATCH_SIZE, resultRecords.length)}`
-    );
-  }
-
-  console.log(`✅ Results seeded: ${totalResults}`);
+  const results = await Promise.all(
+    resultRecords.map((record) => prisma.result.create({ data: record }))
+  );
+  console.log(`✅ Results seeded: ${results.length}`);
 
   // ---------------------------------------
   // 13. Seed Attendance (Fixed: Students only attend lessons in their class)
@@ -748,22 +646,12 @@ async function main() {
     }
   }
 
-  // Insert attendance records in batches to avoid transaction timeouts
-  const ATTENDANCE_BATCH_SIZE = 50;
-  let totalAttendance = 0;
-
-  for (let i = 0; i < attendanceRecords.length; i += ATTENDANCE_BATCH_SIZE) {
-    const chunk = attendanceRecords.slice(i, i + ATTENDANCE_BATCH_SIZE);
-    await prisma.$transaction(
-      chunk.map((record) => prisma.attendance.create({ data: record }))
-    );
-    totalAttendance += chunk.length;
-    console.log(
-      `📝 Inserted attendance ${i + 1}..${Math.min(i + ATTENDANCE_BATCH_SIZE, attendanceRecords.length)}`
-    );
-  }
-
-  console.log(`✅ Attendance seeded: ${totalAttendance}`);
+  const attendance = await Promise.all(
+    attendanceRecords.map((record) =>
+      prisma.attendance.create({ data: record })
+    )
+  );
+  console.log(`✅ Attendance seeded: ${attendance.length}`);
 
   // ---------------------------------------
   // 14. Seed Events (Enhanced with calendar logic)
@@ -794,14 +682,33 @@ async function main() {
     });
   }
 
-  // Create additional general events
-  const additionalEvents = Array.from({ length: 10 }).map(() => ({
-    title: faker.word.words(3),
-    description: faker.lorem.sentence(),
-    startTime: faker.date.future(),
-    endTime: faker.date.future(),
-    classId: faker.helpers.arrayElement(classes).id,
-  }));
+  // Create additional targeted events for different class levels
+  const additionalEvents = Array.from({ length: 10 }).map((_, i) => {
+    const eventStart = faker.date.soon({ days: 30 });
+    const eventEnd = new Date(eventStart);
+    eventEnd.setHours(
+      eventStart.getHours() + faker.number.int({ min: 1, max: 4 })
+    );
+
+    const eventTypes = [
+      "Science Fair",
+      "Sports Day",
+      "Cultural Program",
+      "Parent-Teacher Meeting",
+      "Field Trip",
+      "Workshop",
+      "Debate Competition",
+      "Art Exhibition",
+    ];
+
+    return {
+      title: faker.helpers.arrayElement(eventTypes),
+      description: faker.lorem.sentence(),
+      startTime: eventStart,
+      endTime: eventEnd,
+      classId: faker.helpers.arrayElement(classes).id,
+    };
+  });
 
   eventsToCreate.push(...additionalEvents);
 
@@ -840,10 +747,10 @@ async function main() {
   console.log(`   - Classes: ${classes.length}`);
   console.log(`   - Students: ${students.length}`);
   console.log(`   - Lessons: ${lessons.length}`);
-  console.log(`   - Exams: ${totalExams}`);
-  console.log(`   - Assignments: ${totalAssignments}`);
-  console.log(`   - Results: ${totalResults}`);
-  console.log(`   - Attendance: ${totalAttendance}`);
+  console.log(`   - Exams: ${exams.length}`);
+  console.log(`   - Assignments: ${assignments.length}`);
+  console.log(`   - Results: ${results.length}`);
+  console.log(`   - Attendance: ${attendance.length}`);
   console.log(`   - Events: ${events.length}`);
   console.log(`   - Announcements: ${announcements.length}`);
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useCallback, useEffect } from "react";
-import { type CalendarEvent, calendarEvents } from "@/lib/data";
+import { type CalendarEvent } from "@/lib/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,9 +55,8 @@ export default function BigCalender({
   userName,
 }: BigCalenderProps) {
   // State management
-  const [currentDate] = useState(new Date());
   const [view, setView] = useState<ViewType>("week");
-  const [events, setEvents] = useState<CalendarEvent[]>(initialEvents.length > 0 ? initialEvents : calendarEvents);
+  const [events, setEvents] = useState<CalendarEvent[]>(initialEvents);
   const [selectedClass, setSelectedClass] = useState("");
 
   // Initialize selectedClass based on user props
@@ -73,59 +72,47 @@ export default function BigCalender({
 
   // Sync events when initialEvents change
   useEffect(() => {
-    if (initialEvents.length > 0) {
-      setEvents(initialEvents);
-    }
+    setEvents(initialEvents);
   }, [initialEvents]);
 
-  const subjectColors: Record<string, string> = {
-    // Math subjects
-    Math: "bg-blue-100 text-blue-800",
-    Mathematics: "bg-blue-100 text-blue-800",
-    "Advanced Math": "bg-blue-200 text-blue-900",
+  // Dynamic color assignment based on subject hash
+  const getSubjectColor = useCallback((subject: string) => {
+    // Predefined color palette for consistent and appealing colors
+    const colorPalette = [
+      "bg-blue-100 text-blue-800",
+      "bg-green-100 text-green-800",
+      "bg-yellow-100 text-yellow-800",
+      "bg-purple-100 text-purple-800",
+      "bg-pink-100 text-pink-800",
+      "bg-orange-100 text-orange-800",
+      "bg-teal-100 text-teal-800",
+      "bg-cyan-100 text-cyan-800",
+      "bg-emerald-100 text-emerald-800",
+      "bg-amber-100 text-amber-800",
+      "bg-lime-100 text-lime-800",
+      "bg-indigo-100 text-indigo-800",
+      "bg-violet-100 text-violet-800",
+      "bg-rose-100 text-rose-800",
+      "bg-sky-100 text-sky-800",
+      "bg-slate-100 text-slate-800",
+    ];
 
-    // English subjects
-    English: "bg-green-100 text-green-800",
-    "English-1": "bg-green-100 text-green-800",
-    "English-2": "bg-green-200 text-green-900",
-    "English Literature": "bg-green-200 text-green-900",
+    // Simple hash function to consistently assign colors based on subject name
+    let hash = 0;
+    for (let i = 0; i < subject.length; i++) {
+      const char = subject.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
 
-    // Bangla subjects
-    "Bangla-1": "bg-teal-100 text-teal-800",
-    "Bangla-2": "bg-teal-200 text-teal-900",
-
-    // Sciences
-    Biology: "bg-yellow-100 text-yellow-800",
-    Physics: "bg-purple-100 text-purple-800",
-    "Physics Lab": "bg-purple-200 text-purple-900",
-    Chemistry: "bg-pink-100 text-pink-800",
-    "General Science": "bg-lime-100 text-lime-800",
-
-    // Social Studies
-    History: "bg-orange-100 text-orange-800",
-    Geography: "bg-amber-100 text-amber-800",
-    "Bangladesh and Global Studies": "bg-amber-200 text-amber-900",
-    Civics: "bg-slate-100 text-slate-800",
-    "Islamic History and Culture": "bg-orange-200 text-orange-900",
-
-    // Commerce subjects
-    Economics: "bg-emerald-100 text-emerald-800",
-    Accounting: "bg-emerald-200 text-emerald-900",
-    "Business Organization and Management": "bg-emerald-300 text-emerald-900",
-
-    // Technology and Others
-    "Computer Science": "bg-cyan-100 text-cyan-800",
-    ICT: "bg-cyan-200 text-cyan-900",
-    "Information and Communication Technology": "bg-cyan-200 text-cyan-900",
-    Religion: "bg-violet-100 text-violet-800",
-    "Social Studies": "bg-indigo-100 text-indigo-800",
-  };
+    // Use absolute value and modulo to get consistent index
+    const colorIndex = Math.abs(hash) % colorPalette.length;
+    return colorPalette[colorIndex];
+  }, []);
 
   // Filter events based on user role and permissions
   const filteredEvents = useMemo(() => {
-    let filtered = events.filter(
-      (event) => event.dayOfWeek === currentDate.getDay()
-    );
+    let filtered = events;
 
     // Apply role-based filtering using props
     if (userClass) {
@@ -140,60 +127,65 @@ export default function BigCalender({
     }
 
     return filtered.sort((a, b) => a.startTime.localeCompare(b.startTime));
-  }, [events, currentDate, selectedClass, userClass, userName]);
+  }, [events, selectedClass, userClass, userName]);
 
   // Helper functions
 
   const formatTime = useCallback((time: string) => {
-    // Split the time into the numeric part and the meridiem ("AM" or "PM")
-    const [timePart, meridiem] = time.split(" ");
-    const [hours, minutes] = timePart.split(":");
-    let hourNum = parseInt(hours, 10);
-
-    // Convert to 24-hour format
-    if (meridiem === "PM" && hourNum !== 12) {
-      hourNum += 12;
-    }
-    if (meridiem === "AM" && hourNum === 12) {
-      hourNum = 0;
+    // Check if time already contains AM/PM (display format)
+    if (time.includes(" ")) {
+      return time; // Already formatted
     }
 
-    // Create a formatted time string in 24-hour format (HH:mm)
-    const formattedTime = `${hourNum.toString().padStart(2, "0")}:${minutes.padStart(2, "0")}`;
+    // Convert 24-hour format (e.g., "09:00", "13:00") to 12-hour format with AM/PM
+    const [hours, minutes] = time.split(":");
+    const hourNum = parseInt(hours, 10);
 
-    // Create a date using a fixed date and the formatted time
-    const date = new Date(`1970-01-01T${formattedTime}:00`);
+    let displayHour = hourNum;
+    let meridiem = "AM";
 
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    if (hourNum === 0) {
+      displayHour = 12;
+      meridiem = "AM";
+    } else if (hourNum === 12) {
+      displayHour = 12;
+      meridiem = "PM";
+    } else if (hourNum > 12) {
+      displayHour = hourNum - 12;
+      meridiem = "PM";
+    }
+
+    return `${displayHour}:${minutes} ${meridiem}`;
   }, []);
 
   const getEventForTimeSlot = useCallback(
-    (dayOfWeek: number, timeSlot: string, className?: string) => {
-      const [slotHour, slotPeriod] = timeSlot.split(/:| /);
-      const slotHourNum =
-        Number.parseInt(slotHour) +
-        (slotPeriod === "PM" && slotHour !== "12" ? 12 : 0);
+    (dayOfWeek: number, timeSlot: string) => {
+      // Convert timeSlot (e.g., "9:00 AM") to 24-hour format
+      const [slotTime, slotPeriod] = timeSlot.split(" ");
+      const [slotHour, slotMinute] = slotTime.split(":");
+      let slotHourNum = Number.parseInt(slotHour);
 
-      return events.find((event) => {
-        if (
-          event.dayOfWeek !== dayOfWeek ||
-          (className && event.class !== className)
-        )
-          return false;
+      if (slotPeriod === "PM" && slotHourNum !== 12) {
+        slotHourNum += 12;
+      } else if (slotPeriod === "AM" && slotHourNum === 12) {
+        slotHourNum = 0;
+      }
 
-        const [eventStartHour, eventStartPeriod] = event.startTime.split(/:| /);
-        const eventHourNum =
-          Number.parseInt(eventStartHour) +
-          (eventStartPeriod === "PM" && eventStartHour !== "12" ? 12 : 0);
+      const slotTimeFormatted = `${slotHourNum.toString().padStart(2, "0")}:${slotMinute}`;
 
-        return eventHourNum === slotHourNum;
+      // Filter events based on role-based filtering that was already applied
+      return filteredEvents.find((event) => {
+        return event.dayOfWeek === dayOfWeek && event.startTime === slotTimeFormatted;
       });
     },
-    [events],
+    [filteredEvents],
   );
+
+  // Get today's events for list view
+  const todaysEvents = useMemo(() => {
+    const today = new Date().getDay();
+    return filteredEvents.filter(event => event.dayOfWeek === today);
+  }, [filteredEvents]);
 
   // View rendering functions
   const renderListView = () => (
@@ -208,13 +200,13 @@ export default function BigCalender({
               <Skeleton className="h-4 w-1/2" />
             </div>
           ))
-      ) : filteredEvents.length > 0 ? (
-        filteredEvents.map((event, index) => (
+      ) : todaysEvents.length > 0 ? (
+        todaysEvents.map((event, index) => (
           <div
             key={index}
             className={cn(
               "p-4 rounded-lg border transition-all hover:shadow-md",
-              subjectColors[event.title] || "bg-gray-100",
+              getSubjectColor(event.title),
             )}
           >
             <div className="flex items-start justify-between">
@@ -280,7 +272,7 @@ export default function BigCalender({
                     </div>
                   ))
                 : timeSlots.map((timeSlot, index) => {
-                  const event = getEventForTimeSlot(day, timeSlot, selectedClass);
+                  const event = getEventForTimeSlot(day, timeSlot);
 
                   return (
                     <div
@@ -294,9 +286,7 @@ export default function BigCalender({
                         <div
                           className={cn(
                             "absolute inset-1 p-2 rounded-md shadow-sm transition-all hover:shadow-md cursor-pointer",
-                            subjectColors[event.title]
-                              ? subjectColors[event.title]
-                              : "bg-gray-100 text-gray-800",
+                            getSubjectColor(event.title),
                           )}
                           title={`${event.title} - ${event.teacher} (${event.startTime} - ${event.endTime})`}
                         >
@@ -336,6 +326,17 @@ export default function BigCalender({
 
   return (
     <Card className="w-full shadow-lg print:shadow-none">
+      {/* Temporary debug info */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="border-b bg-gray-50 p-2 text-xs">
+          <div>Events: {events.length} | Filtered: {filteredEvents.length}</div>
+          <div>User: {userName || userClass || 'Admin'} | Selected Class: {selectedClass || 'All'}</div>
+          {events.length > 0 && (
+            <div>Sample: {events[0].title} at {events[0].startTime} on day {events[0].dayOfWeek}</div>
+          )}
+        </div>
+      )}
+
       <CardHeader className="flex flex-col gap-4 pb-2 sm:flex-row sm:items-center">
         <div className="flex flex-col">
           <CardTitle className="text-xl">
@@ -354,6 +355,22 @@ export default function BigCalender({
         </div>
 
         <div className="flex items-center gap-2 sm:ml-auto print:hidden">
+          {/* Class selector for admin view */}
+          {!userClass && !userName && classesName.length > 0 && (
+            <select
+              value={selectedClass}
+              onChange={(e) => setSelectedClass(e.target.value)}
+              className="rounded-md border bg-background px-3 py-2 text-sm"
+            >
+              <option value="">All Classes</option>
+              {classesName.map((cls) => (
+                <option key={cls.name} value={cls.name}>
+                  {cls.name}
+                </option>
+              ))}
+            </select>
+          )}
+
           {/* View selector */}
           <div className="flex gap-1 rounded-md bg-secondary p-1">
             {(["week", "list"] as const).map((v) => (
