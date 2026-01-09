@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "./ui/select"; // Import Select components
 import { signIn } from "next-auth/react";
+import { Eye, EyeOff } from "lucide-react";
 
 export function LoginForm({
   className,
@@ -27,11 +28,16 @@ export function LoginForm({
   const router = useRouter(); // Initialize the Next.js router
   const [error, setError] = useState<string | null>(null); // State for error messages
   const [loading, setLoading] = useState(false); // State for loading
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
 
   const handleInputChange = () => {
     if (error) {
       setError(null); // Clear the error message
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -116,15 +122,29 @@ export function LoginForm({
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                 </div>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  autoComplete="current-password"
-                  onChange={handleInputChange} // Add onChange handler
-                />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                    onChange={handleInputChange} // Add onChange handler
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
               </div>
               {error && (
                 <div className="mb-2 rounded border border-red-300 bg-red-100 px-3 py-2 text-sm text-red-700">
