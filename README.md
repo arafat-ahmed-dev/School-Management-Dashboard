@@ -51,7 +51,7 @@ A modern, full-stack dashboard application built with Next.js, TypeScript, and T
 
 ### Prerequisites
 
-- **Node.js (v18 or higher)**
+- **Node.js (v24 or higher)**
 - **npm (v9 or higher)**
 - **MongoDB database**
 
