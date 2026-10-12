@@ -3,6 +3,7 @@
 import prisma from "../../../prisma";
 import { Day } from "@prisma/client";
 import { CalendarEvent } from "@/lib/data";
+import { requireServerRole } from "@/lib/access-control";
 
 // Helper function to convert dayOfWeek string to Day enum
 function getDayEnum(dayOfWeekStr: string): Day {
@@ -44,6 +45,11 @@ export async function createLessonAction(
   lessonData: Omit<CalendarEvent, "dayOfWeek"> & { dayOfWeek: string }
 ) {
   try {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) {
+      return { success: false, error: auth.error };
+    }
+
     // Validate time inputs
     const startTime = parseTime(lessonData.startTime);
     const endTime = parseTime(lessonData.endTime);

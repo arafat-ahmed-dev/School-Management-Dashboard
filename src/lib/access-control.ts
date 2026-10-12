@@ -26,6 +26,32 @@ export async function getCurrentUserInfo(): Promise<SessionInfo> {
   };
 }
 
+export type AuthResult =
+  | { authorized: true; userId: string; role: UserRole }
+  | { authorized: false; error: string };
+
+/**
+ * Enforce role-based access control inside Server Actions
+ */
+export async function requireServerRole(allowedRoles: UserRole[]): Promise<AuthResult> {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user) {
+    return { authorized: false, error: "Unauthorized: You must be signed in to perform this action." };
+  }
+
+  const role = session.user.role as UserRole;
+  if (!allowedRoles.includes(role)) {
+    return {
+      authorized: false,
+      error: `Forbidden: '${role}' is not authorized to perform this action.`,
+    };
+  }
+
+  return { authorized: true, userId: session.user.id, role };
+}
+
+
 /**
  * Check if current user can access student data
  */

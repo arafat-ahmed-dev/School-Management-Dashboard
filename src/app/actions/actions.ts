@@ -6,9 +6,13 @@ import { numberToDay } from "@/lib/types";
 import { hashPassword } from "@/lib/hash";
 import { writeFile } from "fs/promises";
 import { join } from "path";
+import { requireServerRole } from "@/lib/access-control";
 
 // --- Get ALL Data Actions ---
 export async function getAllGrades(props?: Record<string, boolean>) {
+  const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+  if (!auth.authorized) return [];
+
   return await prisma.grade.findMany({
     select: { id: true, level: true, ...(props ?? {}) },
     orderBy: { level: "asc" },
@@ -16,6 +20,9 @@ export async function getAllGrades(props?: Record<string, boolean>) {
 }
 
 export async function getAllTeachers(props?: Record<string, boolean>) {
+  const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+  if (!auth.authorized) return [];
+
   return await prisma.teacher.findMany({
     select: { id: true, name: true, ...(props ?? {}) },
     orderBy: { name: "asc" },
@@ -23,6 +30,9 @@ export async function getAllTeachers(props?: Record<string, boolean>) {
 }
 
 export async function getAllSubjects(props?: Record<string, boolean>) {
+  const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+  if (!auth.authorized) return [];
+
   const includeClasses = props?.classes;
   const otherProps = { ...props };
   delete otherProps.classes;
@@ -39,6 +49,9 @@ export async function getAllSubjects(props?: Record<string, boolean>) {
 }
 
 export async function getAllClasses(props?: Record<string, boolean>) {
+  const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+  if (!auth.authorized) return [];
+
   return await prisma.class.findMany({
     select: {
       id: true,
@@ -51,6 +64,9 @@ export async function getAllClasses(props?: Record<string, boolean>) {
 }
 
 export async function getAllStudents(props?: Record<string, boolean>) {
+  const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+  if (!auth.authorized) return [];
+
   return await prisma.student.findMany({
     select: {
       id: true,
@@ -69,6 +85,9 @@ export async function getAllStudents(props?: Record<string, boolean>) {
 }
 
 export async function getAllLessons(props?: Record<string, boolean>) {
+    const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+    if (!auth.authorized) return { lessons: [], error: auth.error };
+
   try {
     const lessons = await prisma.lesson.findMany({
       include: {
@@ -89,6 +108,9 @@ export async function getAllLessons(props?: Record<string, boolean>) {
 }
 
 export async function getAllExams(props?: Record<string, boolean>) {
+    const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+    if (!auth.authorized) return { exams: [], error: auth.error };
+
   try {
     const exams = await prisma.exam.findMany({
       include: {
@@ -175,6 +197,9 @@ type CreateLessonInput = {
 };
 
 export async function createLesson(input: CreateLessonInput) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { lesson: null, error: auth.error };
+
   try {
     const {
       name,
@@ -217,6 +242,9 @@ export async function createLesson(input: CreateLessonInput) {
 }
 
 export async function deleteLesson(id: string) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     // Validate the ID format
     if (!id || id.trim() === "") {
@@ -290,6 +318,9 @@ export async function updateLesson(
   id: string,
   input: Partial<CreateLessonInput>
 ) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { lesson: null, error: auth.error };
+
   try {
     const {
       name,
@@ -373,6 +404,8 @@ export async function uploadTeacherImage(
   formData: FormData
 ): Promise<{ success: boolean; imagePath?: string; error?: string }> {
   try {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
     const file = formData.get("img") as File;
     if (!file || !(file instanceof File)) {
       return { success: false, error: "No file provided" };
@@ -395,6 +428,9 @@ export async function uploadTeacherImage(
 }
 
 export async function createTeacher(formData: TeacherFormData) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     const hashedPassword = await hashPassword(formData.password!);
     const fullName = `${formData.firstName} ${formData.lastName}`;
@@ -434,6 +470,9 @@ export async function createTeacher(formData: TeacherFormData) {
 }
 
 export async function updateTeacher(id: string, formData: TeacherFormData) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     const updateData: any = {
       username: formData.username,
@@ -475,6 +514,9 @@ export async function updateTeacher(id: string, formData: TeacherFormData) {
 }
 
 export async function getTeacherById(id: string) {
+    const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     const teacher = await prisma.teacher.findUnique({
       where: { id },
@@ -501,6 +543,9 @@ export async function getTeacherById(id: string) {
 }
 
 export async function deleteTeacher(id: string) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     await prisma.teacher.delete({
       where: { id },
@@ -521,6 +566,9 @@ export async function createSubject(
   classIds: string[] | string,
   teacherIds: string[]
 ) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     const subject = await prisma.subject.create({
       data: {
@@ -582,6 +630,9 @@ export async function updateSubject(
   classIds: string[],
   teacherIds: string[]
 ) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     const subject = await prisma.subject.update({
       where: { id },
@@ -618,6 +669,9 @@ export async function updateSubject(
 }
 
 export async function deleteSubject(id: string) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     await prisma.exam.deleteMany({
       where: { lesson: { subjectId: id } },
@@ -662,6 +716,8 @@ export async function createClass({
   classId,
 }: CreateClassInput) {
   try {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
     await prisma.class.create({
       data: {
         name,
@@ -686,6 +742,9 @@ export async function updateClass(
   capacity: string,
   classId: string
 ) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     await prisma.class.update({
       where: { id },
@@ -708,6 +767,9 @@ export async function updateClass(
   }
 }
 export async function deleteClass(id: string) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     await prisma.exam.deleteMany({
       where: { lesson: { classId: id } },
@@ -733,9 +795,39 @@ export async function deleteClass(id: string) {
 }
 
 // make all the deleted functions above available for import from this file
-export async function deleteStudent(id: string) {}
-export async function deleteParent(id: string) {}
-export async function deleteMessage(id: string) {}
+export async function deleteStudent(id: string) {
+  try {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+    await prisma.student.delete({ where: { id } });
+    revalidatePath("/list/students");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting student:", error);
+    return { success: false, error: "Failed to delete student" };
+  }
+}
+export async function deleteParent(id: string) {
+  try {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+    await prisma.parent.delete({ where: { id } });
+    revalidatePath("/list/parents");
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting parent:", error);
+    return { success: false, error: "Failed to delete parent" };
+  }
+}
+export async function deleteMessage(id: string) {
+  try {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: "Failed to delete message" };
+  }
+}
 
 // --- Result Actions ---
 type CreateResultInput = {
@@ -746,6 +838,9 @@ type CreateResultInput = {
 };
 
 export async function getAllResults() {
+    const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+    if (!auth.authorized) return [];
+
   try {
     const results = await prisma.result.findMany({
       include: {
@@ -794,6 +889,9 @@ export async function getAllResults() {
 }
 
 export async function createResult(input: CreateResultInput) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { result: null, error: auth.error };
+
   try {
     // Validate that examId is provided
     if (!input.examId) {
@@ -908,6 +1006,9 @@ export async function updateResult(
   id: string,
   input: Partial<CreateResultInput>
 ) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { result: null, error: auth.error };
+
   try {
     // Validate the ID format
     if (!id || id.trim() === "") {
@@ -1064,6 +1165,9 @@ export async function updateResult(
 }
 
 export async function deleteResult(id: string) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     // Validate the ID format
     if (!id || id.trim() === "") {
@@ -1128,6 +1232,9 @@ type CreateEventInput = {
 };
 
 export async function getAllEvents() {
+    const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+    if (!auth.authorized) return [];
+
   try {
     const events = await prisma.event.findMany({
       include: {
@@ -1150,6 +1257,9 @@ export async function getAllEvents() {
 }
 
 export async function createEvent(input: CreateEventInput) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { event: null, error: auth.error };
+
   try {
     // Validate dates
     const startTime = new Date(input.startTime);
@@ -1219,6 +1329,9 @@ export async function updateEvent(
   id: string,
   input: Partial<CreateEventInput>
 ) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { event: null, error: auth.error };
+
   try {
     // Validate the ID format
     if (!id || id.trim() === "") {
@@ -1342,6 +1455,9 @@ export async function updateEvent(
 }
 
 export async function deleteEvent(id: string) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     // Validate the ID format
     if (!id || id.trim() === "") {
@@ -1405,6 +1521,9 @@ type CreateAnnouncementInput = {
 };
 
 export async function getAllAnnouncements() {
+    const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+    if (!auth.authorized) return [];
+
   try {
     const announcements = await prisma.announcement.findMany({
       include: {
@@ -1427,6 +1546,9 @@ export async function getAllAnnouncements() {
 }
 
 export async function createAnnouncement(input: CreateAnnouncementInput) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { announcement: null, error: auth.error };
+
   try {
     // Validate date
     const date = new Date(input.date);
@@ -1486,6 +1608,9 @@ export async function updateAnnouncement(
   id: string,
   input: Partial<CreateAnnouncementInput>
 ) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { announcement: null, error: auth.error };
+
   try {
     // Validate the ID format
     if (!id || id.trim() === "") {
@@ -1583,6 +1708,9 @@ export async function updateAnnouncement(
 }
 
 export async function deleteAnnouncement(id: string) {
+    const auth = await requireServerRole(["admin"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     // Validate the ID format
     if (!id || id.trim() === "") {
@@ -1638,6 +1766,9 @@ export async function deleteAnnouncement(id: string) {
 }
 
 export async function getNotificationCounts() {
+  const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+  if (!auth.authorized) return { announcements: 0, messages: 0 };
+
   try {
     // Get recent announcements count (last 7 days)
     const sevenDaysAgo = new Date();
@@ -1678,6 +1809,9 @@ type CreateExamInput = {
 };
 
 export async function createExam(input: CreateExamInput) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { exam: null, error: auth.error };
+
   try {
     // Validate the lessonId exists
     if (!input.lessonId || input.lessonId.trim() === "") {
@@ -1735,6 +1869,9 @@ export async function createExam(input: CreateExamInput) {
 }
 
 export async function updateExam(id: string, input: CreateExamInput) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { exam: null, error: auth.error };
+
   try {
     // Validate the ID format
     if (!id || id.trim() === "") {
@@ -1802,6 +1939,9 @@ export async function updateExam(id: string, input: CreateExamInput) {
 }
 
 export async function deleteExam(id: string) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     // Validate the ID format
     if (!id || id.trim() === "") {
@@ -1887,6 +2027,9 @@ type CreateAssignmentInput = {
 };
 
 export async function getAllAssignments() {
+    const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+    if (!auth.authorized) return [];
+
   try {
     const assignments = await prisma.assignment.findMany({
       include: {
@@ -1910,6 +2053,9 @@ export async function getAllAssignments() {
 }
 
 export async function createAssignment(input: CreateAssignmentInput) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { assignment: null, error: auth.error };
+
   try {
     const startDate = new Date(input.startDate);
     const dueDate = new Date(input.dueDate);
@@ -1976,6 +2122,9 @@ export async function updateAssignment(
   id: string,
   input: Partial<CreateAssignmentInput>
 ) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { assignment: null, error: auth.error };
+
   try {
     // Validate the ID format
     if (!id || id.trim() === "") {
@@ -2087,6 +2236,9 @@ export async function updateAssignment(
 }
 
 export async function deleteAssignment(id: string) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     // Validate the ID format
     if (!id || id.trim() === "") {
@@ -2167,6 +2319,9 @@ type CreateAttendanceInput = {
 };
 
 export async function getAllAttendances() {
+    const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+    if (!auth.authorized) return [];
+
   try {
     const attendances = await prisma.attendance.findMany({
       include: {
@@ -2191,6 +2346,9 @@ export async function getAllAttendances() {
 }
 
 export async function createAttendance(input: CreateAttendanceInput) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { attendance: null, error: auth.error };
+
   try {
     const date = new Date(input.date);
 
@@ -2291,6 +2449,9 @@ export async function updateAttendance(
   id: string,
   input: Partial<CreateAttendanceInput>
 ) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { attendance: null, error: auth.error };
+
   try {
     // Validate the ID format
     if (!id || id.trim() === "") {
@@ -2406,6 +2567,9 @@ export async function updateAttendance(
 }
 
 export async function deleteAttendance(id: string) {
+    const auth = await requireServerRole(["admin", "teacher"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+
   try {
     // Validate the ID format
     if (!id || id.trim() === "") {
@@ -2458,3 +2622,93 @@ export async function deleteAttendance(id: string) {
     };
   }
 }
+
+// --- User Settings Actions ---
+export async function updateUserProfile(data: {
+  userId: string;
+  role: string;
+  name: string;
+  username: string;
+  email: string;
+  phone?: string;
+  address?: string;
+  img?: string;
+}) {
+  try {
+    const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+    if (auth.role !== "admin" && auth.userId !== data.userId) {
+      return { success: false, error: "Forbidden: You can only update your own profile." };
+    }
+    const { userId, role, name, username, email, phone, address, img } = data;
+    let updatedUser: any = null;
+
+    if (role === "admin") {
+      updatedUser = await prisma.admin.update({
+        where: { id: userId },
+        data: { name, username, email, phone: phone || null },
+      });
+    } else if (role === "teacher") {
+      updatedUser = await prisma.teacher.update({
+        where: { id: userId },
+        data: { name, username, email, phone: phone || null, address: address || null, ...(img ? { img } : {}) },
+      });
+    } else if (role === "student") {
+      updatedUser = await prisma.student.update({
+        where: { id: userId },
+        data: { name, username, email, phone: phone || null, address: address || null, ...(img ? { img } : {}) },
+      });
+    } else if (role === "parent") {
+      updatedUser = await prisma.parent.update({
+        where: { id: userId },
+        data: { name, username, email, phone: phone || null, address: address || null, ...(img ? { img } : {}) },
+      });
+    } else {
+      return { success: false, error: "Unknown user role" };
+    }
+
+    revalidatePath("/list/settings");
+    return { success: true, data: updatedUser };
+  } catch (error: any) {
+    console.error("Error updating user profile:", error);
+    if (error?.code === "P2002") {
+      return { success: false, error: "Username or Email already in use." };
+    }
+    return { success: false, error: error?.message || "Failed to update profile" };
+  }
+}
+
+export async function changeUserPassword(data: {
+  userId: string;
+  role: string;
+  currentPassword?: string;
+  newPassword: string;
+}) {
+  try {
+    const auth = await requireServerRole(["admin", "teacher", "student", "parent"]);
+    if (!auth.authorized) return { success: false, error: auth.error };
+    if (auth.role !== "admin" && auth.userId !== data.userId) {
+      return { success: false, error: "Forbidden: You can only change your own password." };
+    }
+    const { userId, role, newPassword } = data;
+    const newHashedPassword = await hashPassword(newPassword);
+
+    if (role === "admin") {
+      await prisma.admin.update({ where: { id: userId }, data: { password: newHashedPassword } });
+    } else if (role === "teacher") {
+      await prisma.teacher.update({ where: { id: userId }, data: { password: newHashedPassword } });
+    } else if (role === "student") {
+      await prisma.student.update({ where: { id: userId }, data: { password: newHashedPassword } });
+    } else if (role === "parent") {
+      await prisma.parent.update({ where: { id: userId }, data: { password: newHashedPassword } });
+    } else {
+      return { success: false, error: "Unknown user role" };
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error changing password:", error);
+    return { success: false, error: error?.message || "Failed to change password" };
+  }
+}
+
