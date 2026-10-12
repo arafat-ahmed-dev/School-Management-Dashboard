@@ -62,6 +62,12 @@ export default function StudentPerformanceTable({
   const [scoreRange, setScoreRange] = useState<[number, number]>([0, 100]);
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
+  const handleScoreRangeChange = (value: number[]) => {
+    if (value.length === 2) {
+      setScoreRange([value[0], value[1]]);
+    }
+  };
+
   const filteredStudents = useMemo(() => {
     const filtered = mockStudents.filter(
       (student) =>
@@ -165,7 +171,7 @@ export default function StudentPerformanceTable({
               max={100}
               step={1}
               value={scoreRange}
-              onValueChange={(value: [number, number]) => setScoreRange(value)} // Ensure the type matches [number, number]
+              onValueChange={handleScoreRangeChange}
               className="mb-2 w-full md:mb-0"
             />
             <div className="mt-1 text-sm text-gray-500">
