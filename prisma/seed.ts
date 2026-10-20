@@ -9,6 +9,7 @@ import {
   Day,
 } from "@prisma/client";
 import { faker } from "@faker-js/faker";
+import { hashPassword } from "../src/lib/hash";
 
 const prisma = new PrismaClient();
 
@@ -74,6 +75,16 @@ async function main() {
     })),
   });
   console.log(`✅ Admins seeded: ${admins.count}`);
+  await prisma.admin.create({
+    data: {
+      name: "Demo Administrator",
+      username: "admin_scl",
+      password: await hashPassword("Admin@scl"),
+      email: "admin_scl@school.com",
+      phone: "1000000001",
+      approved: Approve.ACCEPTED,
+    },
+  });
 
   // ---------------------------------------
   // 3. Seed Parents
@@ -99,6 +110,18 @@ async function main() {
     )
   );
   console.log(`✅ Parents seeded: ${parents.length}`);
+  const demoParent = await prisma.parent.create({
+    data: {
+      username: "parent_scl",
+      password: await hashPassword("Parent@scl"),
+      name: "Demo Parent",
+      email: "parent_scl@mail.com",
+      phone: "1000000002",
+      address: "Demo address",
+      type: ParentType.OTHER,
+      approved: Approve.ACCEPTED,
+    },
+  });
 
   // ---------------------------------------
   // 4. Seed Teachers
@@ -121,6 +144,18 @@ async function main() {
     )
   );
   console.log(`✅ Teachers seeded: ${teachers.length}`);
+  await prisma.teacher.create({
+    data: {
+      username: "teacher_scl",
+      password: await hashPassword("Teacher@scl"),
+      name: "Demo Teacher",
+      email: "teacher_scl@school.com",
+      phone: "1000000003",
+      address: "Demo address",
+      subjectsId: [],
+      approved: Approve.ACCEPTED,
+    },
+  });
 
   // ---------------------------------------
   // 5. Seed Grades (7–12)
@@ -384,6 +419,22 @@ async function main() {
     })
   );
   console.log(`✅ Classes seeded: ${classes.length}`);
+
+  const demoClass = classes[0];
+  await prisma.student.create({
+    data: {
+      username: "student_scl",
+      password: await hashPassword("Student@scl"),
+      name: "Demo Student",
+      email: "student_scl@mail.com",
+      phone: "1000000004",
+      address: "Demo address",
+      parentId: demoParent.id,
+      gradeId: demoClass.gradeId,
+      classId: demoClass.id,
+      approved: Approve.ACCEPTED,
+    },
+  });
 
   // ---------------------------------------
   // 8. Seed Students (with group based on class)

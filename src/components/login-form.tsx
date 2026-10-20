@@ -54,9 +54,9 @@ export function LoginForm({
     setError(null);
 
     try {
-      // Demo credentials used for instant login
       const result = await signIn("credentials", {
         redirect: false,
+        callbackUrl: `/${role.toLowerCase()}`,
         username: username,
         password: password,
         userType: role,
@@ -65,8 +65,8 @@ export function LoginForm({
       if (result?.error) {
         setError(result.error);
         setLoading(false);
-      } else {
-        router.push(`/${role.toLowerCase()}`);
+      } else if (result?.url) {
+        router.replace(result.url);
       }
     } catch (err) {
       setError("Demo login failed. Please try again.");
@@ -78,7 +78,7 @@ export function LoginForm({
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.playbackRate = 0.4; // Adjust speed (1 = normal, 2 = 2x faster)
+      videoRef.current.playbackRate = 1;
     }
   }, [loading]);
 
