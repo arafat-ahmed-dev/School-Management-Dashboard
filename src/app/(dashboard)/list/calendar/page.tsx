@@ -2,6 +2,8 @@ import ClassSchedule from "@/components/ClassSchedule";
 import prisma from "../../../../../prisma";
 import { Day } from "@prisma/client";
 
+export const dynamic = "force-dynamic";
+
 // Helper function to convert Day enum to number
 function getDayOfWeekNumber(day: Day): number {
   const dayMap = {

@@ -6,6 +6,8 @@ import AttendanceChartContainer from "@/components/AttendanceChartContainer";
 import EventCalenderContainer from "@/components/EventCalenderContainer";
 import { Skeleton } from "@/components/ui/skeleton";
 
+export const dynamic = "force-dynamic";
+
 const AdminPage = async ({
   searchParams,
 }: {

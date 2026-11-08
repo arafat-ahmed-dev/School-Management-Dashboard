@@ -1,5 +1,7 @@
 import prisma from "../../../../prisma";
 
+export const dynamic = "force-dynamic";
+
 const noStoreHeaders = { "Cache-Control": "no-store" };
 
 export async function GET() {
