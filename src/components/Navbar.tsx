@@ -1,6 +1,7 @@
 import Image from "next/image";
 import NotificationComponent from "./NotificationComponent";
 import UserInfo from "./UserInfo";
+import { Suspense } from "react";
 
 const Navbar = () => {
   return (
@@ -17,10 +18,12 @@ const Navbar = () => {
       {/* ICONS & USER */}
       <div className="flex items-center gap-4 md:gap-6">
         <NotificationComponent />
-        <UserInfo />
+        <Suspense fallback={<div className="h-9 w-24 animate-pulse rounded-full bg-gray-200" />}>
+          <UserInfo />
+        </Suspense>
       </div>
     </div>
   );
 };
 
-export default Navbar
+export default Navbar;

@@ -1,21 +1,6 @@
-import { PrismaClient, Day } from "@prisma/client";
+import { Day } from "@prisma/client";
+import prisma from "../../prisma";
 import { CalendarEvent } from "@/lib/data";
-
-// Global Prisma client instance with connection handling
-declare global {
-  // eslint-disable-next-line no-var, no-unused-vars
-  var __prisma: PrismaClient | undefined;
-}
-
-const prisma =
-  globalThis.__prisma ||
-  new PrismaClient({
-    log: ["error", "warn"],
-  });
-
-if (process.env.NODE_ENV !== "production") {
-  globalThis.__prisma = prisma;
-}
 
 /**
  * Calendar Service - Fetch real schedule data from database

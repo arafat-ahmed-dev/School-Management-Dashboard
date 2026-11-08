@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import Announcements from "@/components/Announcements";
 import BigCalenderContainer from "@/components/BigCalenderContainer";
 import EventCalenderContainer from "@/components/EventCalenderContainer";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/option";
 import prisma from "../../../../prisma";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const StudentPage = async ({
   searchParams,
@@ -265,8 +267,12 @@ const StudentPage = async ({
       </div>
       {/* RIGHT */}
       <div className="flex w-full flex-col gap-8 xl:w-1/3">
-        <EventCalenderContainer searchParams={searchParams} />
-        <Announcements />
+        <Suspense fallback={<Skeleton className="h-80 w-full rounded-md" />}>
+          <EventCalenderContainer searchParams={searchParams} />
+        </Suspense>
+        <Suspense fallback={<Skeleton className="h-80 w-full rounded-md" />}>
+          <Announcements />
+        </Suspense>
       </div>
     </div>
   );

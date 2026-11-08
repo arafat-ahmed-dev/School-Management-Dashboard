@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../../prisma";
 import {
   AverageMarksData,
   Student as StudentType,
@@ -7,22 +7,6 @@ import {
   StudentGrowthItem,
   OverviewMetrics,
 } from "@/types/result-types";
-
-// Global Prisma client instance with connection handling
-declare global {
-  // eslint-disable-next-line no-var, no-unused-vars
-  var __prisma: PrismaClient | undefined;
-}
-
-const prisma =
-  globalThis.__prisma ||
-  new PrismaClient({
-    log: ["error", "warn"],
-  });
-
-if (process.env.NODE_ENV !== "production") {
-  globalThis.__prisma = prisma;
-}
 
 /**
  * Database operations for Result Dashboard Analytics

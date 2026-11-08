@@ -1,17 +1,25 @@
 import prisma from "../../prisma";
 
-const UserCard = async ({ type }: { type: "admin" | "teacher" | "parent" | "student" }) => {
+interface UserCardProps {
+  type: "admin" | "teacher" | "parent" | "student";
+  count?: number;
+}
+
+const UserCard = async ({ type, count }: UserCardProps) => {
   const roleModel: Record<typeof type, any> = {
     admin: prisma.admin,
     teacher: prisma.teacher,
     parent: prisma.parent,
     student: prisma.student,
   };
-  const data = await roleModel[type].count({
-    where: {
-      approved: "ACCEPTED"
-    }
-  });
+  const data =
+    count !== undefined
+      ? count
+      : await roleModel[type].count({
+          where: {
+            approved: "ACCEPTED",
+          },
+        });
   return (
     <div className="min-w-[130px] flex-1 rounded-2xl p-4 capitalize odd:bg-aamPurple even:bg-aamYellow">
       <div className="flex items-center justify-between">

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils"; // Adjusted path
 import { useRouter } from "next/navigation";
 import {
@@ -36,7 +36,15 @@ export function LoginForm({
   const router = useRouter(); // Initialize the Next.js router
   const [error, setError] = useState<string | null>(null); // State for error messages
   const [loading, setLoading] = useState(false); // State for loading
+  const [activeRole, setActiveRole] = useState<string | null>(null); // Active demo role logging in
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
+
+  // Prefetch demo dashboard routes in the background to eliminate navigation lag
+  useEffect(() => {
+    DEMO_ACCOUNTS.forEach((account) => {
+      router.prefetch(`/${account.role.toLowerCase()}`);
+    });
+  }, [router]);
 
   const handleInputChange = () => {
     if (error) {
@@ -50,6 +58,7 @@ export function LoginForm({
 
   // Handle demo account login - directly logs in without showing password
   const handleDemoLogin = async (role: string, username: string, password: string) => {
+    setActiveRole(role);
     setLoading(true);
     setError(null);
 
@@ -65,26 +74,21 @@ export function LoginForm({
       if (result?.error) {
         setError(result.error);
         setLoading(false);
+        setActiveRole(null);
       } else if (result?.url) {
-        router.replace(result.url);
+        router.push(result.url);
       }
     } catch (err) {
       setError("Demo login failed. Please try again.");
       setLoading(false);
+      setActiveRole(null);
     }
   };
-
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 1;
-    }
-  }, [loading]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true); // Set loading to true when starting login
+    setActiveRole(null);
     const formData = new FormData(e.currentTarget);
     const data = {
       userType: formData.get("userType") as string, // Include userType in the data object
@@ -110,11 +114,19 @@ export function LoginForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <video ref={videoRef} autoPlay loop muted width={100} height={100}>
-            <source src="/loading.webm" type="video/webm" />
-            Your browser does not support the video tag.
-          </video>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-[2px]">
+          <div className="flex flex-col items-center gap-3 rounded-2xl bg-white/95 px-6 py-5 shadow-2xl backdrop-blur dark:bg-zinc-900/95">
+            <div className="size-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
+              {activeRole ? (
+                <>
+                  Entering <span className="font-semibold text-indigo-600 dark:text-indigo-400">{activeRole}</span> Portal...
+                </>
+              ) : (
+                "Signing in..."
+              )}
+            </p>
+          </div>
         </div>
       )}
 
@@ -215,6 +227,7 @@ export function LoginForm({
           <div className="grid grid-cols-2 gap-2">
             {DEMO_ACCOUNTS.map((account) => {
               const IconComponent = account.icon;
+              const isCurrentActive = activeRole === account.role;
               return (
                 <button
                   key={account.role}
@@ -231,8 +244,14 @@ export function LoginForm({
                     account.hoverColor
                   )}
                 >
-                  <IconComponent className="w-4 h-4" />
-                  <span className="truncate">Login as {account.role}</span>
+                  {isCurrentActive ? (
+                    <div className="size-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                  ) : (
+                    <IconComponent className="w-4 h-4" />
+                  )}
+                  <span className="truncate">
+                    {isCurrentActive ? `Entering ${account.role}...` : `Login as ${account.role}`}
+                  </span>
                 </button>
               );
             })}

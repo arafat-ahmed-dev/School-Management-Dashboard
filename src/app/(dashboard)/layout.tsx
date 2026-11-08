@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { Suspense } from "react";
 import Loading from "@/components/Loading";
+import NavigationLoader from "@/components/NavigationLoader";
 
 export default function DashboardLayout({
   children,
@@ -12,6 +13,9 @@ export default function DashboardLayout({
 }>) {
   return (
     <div className="flex h-screen">
+      <Suspense fallback={null}>
+        <NavigationLoader />
+      </Suspense>
       {/* LEFT: Fixed Sidebar */}
       <div className="fixed left-0 top-0 h-full w-[14%] bg-white p-2 md:w-[8%] lg:w-[16%] lg:p-4">
         <Link
