@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils"; // Adjusted path
 import { useRouter } from "next/navigation";
 import {
@@ -19,14 +19,14 @@ import {
   SelectValue,
 } from "./ui/select"; // Import Select components
 import { signIn } from "next-auth/react";
-import { Eye, EyeOff, Shield, GraduationCap, Users, UserCheck } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
-// Demo accounts configuration (credentials stored securely, passwords not visible to users)
+// Demo credentials shown for recruiters and reviewers.
 const DEMO_ACCOUNTS = [
-  { role: "Admin", username: "admin_scl", password: "Admin@scl", icon: Shield, color: "from-purple-500 to-indigo-600", hoverColor: "hover:from-purple-600 hover:to-indigo-700" },
-  { role: "Teacher", username: "teacher_scl", password: "Teacher@scl", icon: UserCheck, color: "from-blue-500 to-cyan-600", hoverColor: "hover:from-blue-600 hover:to-cyan-700" },
-  { role: "Student", username: "student_scl", password: "Student@scl", icon: GraduationCap, color: "from-green-500 to-emerald-600", hoverColor: "hover:from-green-600 hover:to-emerald-700" },
-  { role: "Parent", username: "parent_scl", password: "Parent@scl", icon: Users, color: "from-orange-500 to-amber-600", hoverColor: "hover:from-orange-600 hover:to-amber-700" },
+  { role: "Admin", username: "admin_scl", password: "Admin@scl" },
+  { role: "Teacher", username: "teacher_scl", password: "Teacher@scl" },
+  { role: "Student", username: "student_scl", password: "Student@scl" },
+  { role: "Parent", username: "parent_scl", password: "Parent@scl" },
 ] as const;
 
 export function LoginForm({
@@ -36,15 +36,7 @@ export function LoginForm({
   const router = useRouter(); // Initialize the Next.js router
   const [error, setError] = useState<string | null>(null); // State for error messages
   const [loading, setLoading] = useState(false); // State for loading
-  const [activeRole, setActiveRole] = useState<string | null>(null); // Active demo role logging in
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
-
-  // Prefetch demo dashboard routes in the background to eliminate navigation lag
-  useEffect(() => {
-    DEMO_ACCOUNTS.forEach((account) => {
-      router.prefetch(`/${account.role.toLowerCase()}`);
-    });
-  }, [router]);
 
   const handleInputChange = () => {
     if (error) {
@@ -56,39 +48,9 @@ export function LoginForm({
     setShowPassword(!showPassword);
   };
 
-  // Handle demo account login - directly logs in without showing password
-  const handleDemoLogin = async (role: string, username: string, password: string) => {
-    setActiveRole(role);
-    setLoading(true);
-    setError(null);
-
-    try {
-      const result = await signIn("credentials", {
-        redirect: false,
-        callbackUrl: `/${role.toLowerCase()}`,
-        username: username,
-        password: password,
-        userType: role,
-      });
-
-      if (result?.error) {
-        setError(result.error);
-        setLoading(false);
-        setActiveRole(null);
-      } else if (result?.url) {
-        router.push(result.url);
-      }
-    } catch (err) {
-      setError("Demo login failed. Please try again.");
-      setLoading(false);
-      setActiveRole(null);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true); // Set loading to true when starting login
-    setActiveRole(null);
     const formData = new FormData(e.currentTarget);
     const data = {
       userType: formData.get("userType") as string, // Include userType in the data object
@@ -118,13 +80,7 @@ export function LoginForm({
           <div className="flex flex-col items-center gap-3 rounded-2xl bg-white/95 px-6 py-5 shadow-2xl backdrop-blur dark:bg-zinc-900/95">
             <div className="size-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
             <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
-              {activeRole ? (
-                <>
-                  Entering <span className="font-semibold text-indigo-600 dark:text-indigo-400">{activeRole}</span> Portal...
-                </>
-              ) : (
-                "Signing in..."
-              )}
+              Signing in...
             </p>
           </div>
         </div>
@@ -210,54 +166,37 @@ export function LoginForm({
         </CardContent>
       </Card>
 
-      {/* Demo Accounts Panel */}
-      <Card className="border-dashed border-2 border-gray-300 dark:border-gray-600 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      {/* Demo credentials */}
+      <Card className="border-2 border-dashed border-gray-300 bg-gradient-to-br from-gray-50 to-gray-100 dark:border-gray-600 dark:from-gray-900 dark:to-gray-800">
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-xs">
-              ⚡
-            </span>
-            Demo Accounts
+          <CardTitle className="flex items-center gap-2 text-lg">
+            Demo Credentials
           </CardTitle>
           <CardDescription className="text-xs">
-            Quick access for recruiters & reviewers — click to login instantly
+            Use one of these accounts to sign in as a demo user
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
-          <div className="grid grid-cols-2 gap-2">
-            {DEMO_ACCOUNTS.map((account) => {
-              const IconComponent = account.icon;
-              const isCurrentActive = activeRole === account.role;
-              return (
-                <button
-                  key={account.role}
-                  type="button"
-                  onClick={() => handleDemoLogin(account.role, account.username, account.password)}
-                  disabled={loading}
-                  className={cn(
-                    "group relative flex items-center gap-2 px-3 py-2.5 rounded-lg",
-                    "bg-gradient-to-r text-white text-sm font-medium",
-                    "transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]",
-                    "shadow-md hover:shadow-lg",
-                    "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
-                    account.color,
-                    account.hoverColor
-                  )}
-                >
-                  {isCurrentActive ? (
-                    <div className="size-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                  ) : (
-                    <IconComponent className="w-4 h-4" />
-                  )}
-                  <span className="truncate">
-                    {isCurrentActive ? `Entering ${account.role}...` : `Login as ${account.role}`}
-                  </span>
-                </button>
-              );
-            })}
+          <div className="flex flex-col gap-2">
+            {DEMO_ACCOUNTS.map((account) => (
+              <div
+                key={account.role}
+                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+              >
+                <p className="font-semibold text-gray-900 dark:text-gray-100">
+                  {account.role}
+                </p>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Username: <span className="font-mono font-bold text-black">{account.username}</span>
+                </p>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Password: <span className="font-mono font-bold text-black">{account.password}</span>
+                </p>
+              </div>
+            ))}
           </div>
           <p className="mt-3 text-[10px] text-gray-500 dark:text-gray-400 text-center">
-            🔒 Secure demo — no visible passwords • Role-based access control
+            Demo credentials are provided for testing role-based access control
           </p>
         </CardContent>
       </Card>
