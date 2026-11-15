@@ -48,6 +48,29 @@ export function LoginForm({
     setShowPassword(!showPassword);
   };
 
+  const handleQuickLogin = async (role: string, username: string, password: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        username,
+        password,
+        userType: role,
+        callbackUrl: `/${role.toLowerCase()}`,
+      });
+      if (result?.error) {
+        setError(result.error);
+        setLoading(false);
+      } else {
+        window.location.href = `/${role.toLowerCase()}`;
+      }
+    } catch {
+      setError("Login failed. Please try again.");
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true); // Set loading to true when starting login
@@ -63,13 +86,13 @@ export function LoginForm({
       password: data.password,
       userType: data.userType,
     });
-    setLoading(false); // Set loading to false when login completes
     if (result?.error) {
       setError(result?.error);
+      setLoading(false);
     } else {
       // Redirect to user's dashboard based on their role
       const userRole = data.userType.toLowerCase();
-      router.push(`/${userRole}`);
+      window.location.href = `/${userRole}`;
     }
   };
 
@@ -177,21 +200,28 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
-          <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {DEMO_ACCOUNTS.map((account) => (
               <div
                 key={account.role}
-                className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                className="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3 text-sm dark:border-gray-700 dark:bg-gray-800"
               >
-                <p className="font-semibold text-gray-900 dark:text-gray-100">
-                  {account.role}
-                </p>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Username: <span className="font-mono font-bold text-black">{account.username}</span>
-                </p>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Password: <span className="font-mono font-bold text-black">{account.password}</span>
-                </p>
+                <div>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">
+                    {account.role}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {account.username}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => handleQuickLogin(account.role, account.username, account.password)}
+                  className="rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-50"
+                >
+                  Quick Login &rarr;
+                </button>
               </div>
             ))}
           </div>

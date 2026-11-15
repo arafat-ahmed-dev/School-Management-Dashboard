@@ -65,7 +65,12 @@ const matchers = [
 ];
 
 export async function middleware(req: NextRequest) {
-  const token = await getToken({ req });
+  const isSecure = req.cookies.has("__Secure-next-auth.session-token");
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+    secureCookie: isSecure,
+  });
   const requestedPath = req.nextUrl.pathname;
 
   // If user is authenticated and visits root path, redirect to their dashboard
