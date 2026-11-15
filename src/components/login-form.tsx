@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { cn } from "@/lib/utils"; // Adjusted path
-import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -33,7 +32,6 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const router = useRouter(); // Initialize the Next.js router
   const [error, setError] = useState<string | null>(null); // State for error messages
   const [loading, setLoading] = useState(false); // State for loading
   const [showPassword, setShowPassword] = useState(false); // State for password visibility

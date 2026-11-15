@@ -68,7 +68,7 @@ export async function middleware(req: NextRequest) {
   const isSecure = req.cookies.has("__Secure-next-auth.session-token");
   const token = await getToken({
     req,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET || "arafatahmed",
     secureCookie: isSecure,
   });
   const requestedPath = req.nextUrl.pathname;

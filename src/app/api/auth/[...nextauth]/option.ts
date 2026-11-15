@@ -3,6 +3,16 @@ import prisma from "../../../../../prisma";
 import { verifyPassword } from "@/lib/hash";
 import { NextAuthOptions } from "next-auth"; // ✅ Updated from bcrypt to argon2
 
+if (!process.env.NEXTAUTH_URL) {
+  process.env.NEXTAUTH_URL = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "https://schoolmanagement.arafatahmed.dev";
+}
+
+if (!process.env.NEXTAUTH_SECRET) {
+  process.env.NEXTAUTH_SECRET = "arafatahmed";
+}
+
 type UserType = "Admin" | "Student" | "Teacher" | "Parent";
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
